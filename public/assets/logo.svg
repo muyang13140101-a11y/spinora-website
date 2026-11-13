@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" width="160" height="160">
+  <defs>
+    <radialGradient id="discHolo" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#141824"/>
+      <stop offset="45%" stop-color="#1a2030"/>
+      <stop offset="65%" stop-color="#2d374d"/>
+      <stop offset="85%" stop-color="#121622"/>
+      <stop offset="100%" stop-color="#0a0d14"/>
+    </radialGradient>
+    <linearGradient id="rainbowRing" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="25%" stop-color="#818cf8"/>
+      <stop offset="50%" stop-color="#ec4899"/>
+      <stop offset="75%" stop-color="#f59e0b"/>
+      <stop offset="100%" stop-color="#10b981"/>
+    </linearGradient>
+    <linearGradient id="hubGloss" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="100%" stop-color="#0284c7"/>
+    </linearGradient>
+  </defs>
+  <!-- Outer Bevel -->
+  <circle cx="80" cy="80" r="76" fill="url(#discHolo)" stroke="#38455e" stroke-width="2.5"/>
+  <!-- Microgrooves -->
+  <circle cx="80" cy="80" r="68" fill="none" stroke="#252e42" stroke-width="1.2" stroke-dasharray="3 1"/>
+  <circle cx="80" cy="80" r="58" fill="none" stroke="#2a354c" stroke-width="1.2" stroke-dasharray="5 2"/>
+  <circle cx="80" cy="80" r="48" fill="none" stroke="#323f5b" stroke-width="1.0" stroke-dasharray="4 2"/>
+  <!-- Holographic Rainbow Band -->
+  <circle cx="80" cy="80" r="40" fill="none" stroke="url(#rainbowRing)" stroke-width="3" opacity="0.85"/>
+  <!-- Center Clear Hub -->
+  <circle cx="80" cy="80" r="28" fill="#182030" stroke="#475569" stroke-width="2"/>
+  <circle cx="80" cy="80" r="20" fill="url(#hubGloss)"/>
+  <!-- Spindle Hole -->
+  <circle cx="80" cy="80" r="8" fill="#0a0d14" stroke="#ffffff" stroke-width="1.5" stroke-opacity="0.6"/>
+  <!-- Play Wedge Symbol -->
+  <polygon points="76,73 88,80 76,87" fill="#ffffff" opacity="0.95"/>
+</svg>

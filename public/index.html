@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Spinora · 3D CD 与流体动态歌词大屏播放器 | 官方网站</title>
+  <meta name="description" content="Spinora 是一款纯公益、完全免费、零商业广告的 Windows 桌面拟真音乐播放器，搭载 3D 实体 CD/留声机/黑胶/磁带拟真视觉与 Apple Music 风格光学景深歌词。">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" type="image/svg+xml" href="assets/logo.svg">
+</head>
+<body>
+  <!-- 全局流体光学光晕背光 -->
+  <div class="fluid-canvas-bg"></div>
+
+  <!-- 顶部导航 -->
+  <header class="navbar">
+    <div class="nav-inner">
+      <a href="#" class="brand-box">
+        <img src="assets/logo.svg" alt="Spinora Logo" class="brand-logo-img">
+        <span class="brand-title">Spinora</span>
+        <span class="public-good-badge">纯公益 · 完全免费</span>
+      </a>
+      <nav class="nav-menu">
+        <a href="#carriers">五大形态</a>
+        <a href="#specs">原生架构</a>
+        <a href="#download">软件下载</a>
+        <a href="#giftbox">🎁 礼物盒子</a>
+        <a href="#disclaimer">免责与版权声明</a>
+        <a href="#changelog">更新日志</a>
+        <a href="https://github.com/IsaacMorris/spinora" target="_blank" rel="noopener noreferrer" class="nav-gh-btn">
+          <span>GitHub</span> ↗
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <!-- Hero 英雄区 -->
+    <section class="hero-wrapper">
+      <div class="hero-text-block">
+        <div class="hero-eyebrow">
+          <span>🚀 Tauri v2 + Rust 原生微内核</span>
+          <span>·</span>
+          <span>安装包仅 2.44 MB</span>
+        </div>
+        <h1 class="hero-headline">
+          重塑数字音乐的<br>
+          <span class="text-gradient">实体仪式感与流体美学</span>
+        </h1>
+        <p class="hero-desc">
+          完全开源免费、不卖软件、不设付费墙、不接商业广告。将看不见的流媒体代码，凝练为高拟真 3D 亚克力 CD、古典重工大铜号角留声机、黑胶唱机与 iOS 级光学景深动态歌词。
+        </p>
+        <div class="hero-cta-group">
+          <a href="#download" class="btn btn-primary">
+            <span>立即免费下载 Windows 版</span>
+          </a>
+          <a href="#giftbox" class="btn btn-glass">
+            <span>🎁 开启音乐礼物盒</span>
+          </a>
+        </div>
+        <div class="hero-compliance-tips">
+          <span>✓ 纯本地运行</span>
+          <span>✓ 零广告骚扰</span>
+          <span>✓ 内存占用仅 ~40MB</span>
+          <span>✓ 支持 Windows 10 / 11</span>
+        </div>
+      </div>
+
+      <!-- 拟真 3D CD 视觉模拟展台 -->
+      <div class="hero-stage">
+        <div class="acrylic-case-mockup">
+          <div class="cd-disc-spinning">
+            <div class="cd-rainbow-ring"></div>
+            <div class="cd-hub-center">
+              <div class="cd-spindle-hole"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 五大复古载体沉浸画廊 -->
+    <section id="carriers" class="content-section">
+      <div class="section-headline-box">
+        <div class="section-tag">Retro Physical Formats</div>
+        <h2 class="section-h2">五大多形态复古音乐艺术载体</h2>
+        <p class="section-subtext">工业级几何拓扑与 PBR 物理着色器，指尖自由切换属于你的听歌仪式</p>
+      </div>
+
+      <div class="carriers-grid">
+        <div class="carrier-card">
+          <div class="carrier-icon-wrap">💿</div>
+          <h3>实体 CD 唱片盒</h3>
+          <p>高密度亚克力磨砂外盒、深银钛铝金属基底。独创三阶段机械防穿模出舱状态机与各向异性全息极坐标彩虹光栅。</p>
+        </div>
+        <div class="carrier-card">
+          <div class="carrier-icon-wrap">🎺</div>
+          <h3>古典大铜号角留声机</h3>
+          <p>实心重工双壁铸黄铜大喇叭、云母声盒与金属唱针。喇叭与振膜随音乐多维共振，源源不断喷涌出立体 3D 音符粒子。</p>
+        </div>
+        <div class="carrier-card">
+          <div class="carrier-icon-wrap">🎛️</div>
+          <h3>专业监听黑胶唱机</h3>
+          <p>微米同心音槽唱盘、机械唱臂平滑落针。搭载可点击下沉的 33/45 RPM 转速实体按键、起停键与 Pop-up 靶向照明灯。</p>
+        </div>
+        <div class="carrier-card">
+          <div class="carrier-icon-wrap">📼</div>
+          <h3>工程透明双齿轮磁带机</h3>
+          <p>复古烟熏半透明外壳、匀速收卷的双传动齿轮、导带轮机构与联动当前播放专辑主题色的专属磁带贴纸。</p>
+        </div>
+        <div class="carrier-card">
+          <div class="carrier-icon-wrap">🖼️</div>
+          <h3>动态封面沉浸模式</h3>
+          <p>传承 Apple Music 顶级动态设计哲学，超宽渐进高斯羽化、全景无边界流体光晕漫溢与光学景深歌词融为一体。</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 原生架构与技术亮点 -->
+    <section id="specs" class="content-section">
+      <div class="section-headline-box">
+        <div class="section-tag">Engineering Performance</div>
+        <h2 class="section-h2">拒绝臃肿，追求极致原生性能</h2>
+        <p class="section-subtext">由 Rust 原生微内核与 WebGL PBR 渲染管线深度驱动</p>
+      </div>
+
+      <div class="tech-spec-grid">
+        <div class="tech-spec-card">
+          <div class="tech-spec-badge">Tauri v2 + Rust</div>
+          <h3>极致轻盈，内存缩减 80%</h3>
+          <p>彻底告别 Electron 的庞大 Chromium 包袱。运行常驻内存仅需 40MB~70MB，CPU 仅 1%~2%，0.4 秒秒级启动。</p>
+        </div>
+        <div class="tech-spec-card">
+          <div class="tech-spec-badge">Windows SMTC</div>
+          <h3>系统原生媒体控件桥接</h3>
+          <p>深度支持键盘播放/暂停/切歌多媒体按键、任务栏缩略图悬浮控制，免配代理全自动捕获播放曲目。</p>
+        </div>
+        <div class="tech-spec-card">
+          <div class="tech-spec-badge">Apple Liquid Glass</div>
+          <h3>流体液态玻璃控台</h3>
+          <p>无边框通透悬浮架构，双轨时钟引擎毫秒级消除网络抖动，保障 60 FPS 满帧推进与防穿模状态机。</p>
+        </div>
+        <div class="tech-spec-card">
+          <div class="tech-spec-badge">Typography Engine</div>
+          <h3>影视级光学景深歌词</h3>
+          <p>焦点单句高亮呼吸，临近行多阶高斯虚化失焦；集成三源曲库歌词清洗管线，支持一键导出 4K RAW 无损海报。</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 软件下载中心 -->
+    <section id="download" class="content-section">
+      <div class="section-headline-box">
+        <div class="section-tag">Official Releases</div>
+        <h2 class="section-h2">免费获取 Spinora</h2>
+        <p class="section-subtext">通过 GitHub Releases 全球 CDN 享受高速无限制下载，完全公开透明</p>
+      </div>
+
+      <div class="download-grid">
+        <!-- 安装版 -->
+        <div class="dl-card highlight">
+          <div class="dl-ribbon">推荐首选</div>
+          <div class="dl-header">
+            <span class="dl-icon">🪟</span>
+            <div class="dl-title-box">
+              <h3>Windows 原生安装版</h3>
+              <div class="dl-filesize">v2.5.0 Master Edition · 仅 2.44 MB</div>
+            </div>
+          </div>
+          <ul class="dl-features">
+            <li><span>✓</span> 标准 Windows 安装向导，自动生成桌面图标</li>
+            <li><span>✓</span> 集成 Windows 原生系统托盘常驻后台控制</li>
+            <li><span>✓</span> 原生 GPU 硬件加速合成，高分屏 4K 点对点极清</li>
+          </ul>
+          <a href="https://github.com/IsaacMorris/spinora/releases/latest/download/Spinora_Windows_x64_Setup.exe" class="btn btn-primary btn-block">
+            免费下载安装包 (.exe)
+          </a>
+          <div class="dl-safe-tag">支持 64 位 Windows 10 / 11 · 经过安全签名与哈希校验</div>
+        </div>
+
+        <!-- 绿色免安装版 -->
+        <div class="dl-card">
+          <div class="dl-header">
+            <span class="dl-icon">📦</span>
+            <div class="dl-title-box">
+              <h3>Windows 纯绿色便携版</h3>
+              <div class="dl-filesize">v2.5.0 Standalone · 约 9.5 MB</div>
+            </div>
+          </div>
+          <ul class="dl-features">
+            <li><span>✓</span> 单文件可执行程序，双击即运行，免去安装步骤</li>
+            <li><span>✓</span> 不写系统注册表，可装进 U 盘随身携带随处播放</li>
+            <li><span>✓</span> 适合公司办公机、网吧或临时体验环境</li>
+          </ul>
+          <a href="https://github.com/IsaacMorris/spinora/releases/latest/download/Spinora.exe" class="btn btn-glass btn-block">
+            免费下载绿色单文件 (.exe)
+          </a>
+          <div class="dl-safe-tag">解压即用 · 配置文件随程序目录自动留存</div>
+        </div>
+      </div>
+
+      <div class="history-collapse">
+        <details>
+          <summary>查看所有历史版本、更新日志与源码资产归档</summary>
+          <p style="margin-top: 10px;">
+            如需下载以往历史构建或检视完整源码提交：
+            <a href="https://github.com/IsaacMorris/spinora/releases" target="_blank" rel="noopener noreferrer">访问 GitHub Releases 归档库 →</a>
+          </p>
+        </details>
+      </div>
+    </section>
+
+    <!-- 礼物盒子社区互动 -->
+    <section id="giftbox" class="content-section">
+      <div class="section-headline-box">
+        <div class="section-tag">Community & Share</div>
+        <h2 class="section-h2">🎁 音乐礼物盒子</h2>
+        <p class="section-subtext">
+          封存一首触动心灵的歌与真挚的感言；随机开启一个盒子，邂逅一位陌生同好留下的旋律。
+          <br>目前盒中已凝聚 <strong id="total-gifts-count" style="color:var(--accent-cyan);">1</strong> 份有温度的音乐心意。
+        </p>
+      </div>
+
+      <div class="gift-community-box">
+        <!-- 左侧：随机拆盲盒 -->
+        <div class="gift-panel">
+          <div class="panel-header-row">
+            <span class="panel-tag">拆开礼物盲盒</span>
+            <button id="btn-open-random" class="btn btn-sm btn-primary">🎲 随机打开一个礼物</button>
+          </div>
+
+          <div id="gift-display-slot" class="gift-slot">
+            <div class="gift-slot-idle">
+              <div class="blind-box-graphic">📦</div>
+              <p>盒盖紧扣着。点击右上角按键，拆开一份远方朋友留下的音乐礼物。</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- 右侧：放入我的礼物 -->
+        <div class="gift-panel">
+          <div class="panel-header-row">
+            <span class="panel-tag">封存我的心意</span>
+          </div>
+          <form id="gift-form">
+            <div class="form-field">
+              <label for="song_title">歌曲名 <span class="req">*</span></label>
+              <input type="text" id="song_title" maxlength="100" required placeholder="如：Hotel California">
+            </div>
+            <div class="form-field-dual">
+              <div class="form-field">
+                <label for="artist">歌手</label>
+                <input type="text" id="artist" maxlength="100" placeholder="如：Eagles">
+              </div>
+              <div class="form-field">
+                <label for="nickname">你的昵称</label>
+                <input type="text" id="nickname" maxlength="30" placeholder="如：夜行漫游者">
+              </div>
+            </div>
+            <div class="form-field">
+              <label for="message">推荐语与心情感言 <span class="req">*</span></label>
+              <textarea id="message" maxlength="300" required rows="3" placeholder="听这首歌时你在想什么？写下一两句话送给有缘人吧..."></textarea>
+            </div>
+            <div class="form-field">
+              <label for="song_url">歌曲直链或流媒体平台链接 <small>(可选)</small></label>
+              <input type="url" id="song_url" maxlength="500" placeholder="https://open.spotify.com/track/... 或合法音频直链">
+              <span class="form-hint">公益合规提示：请勿提交盗版或侵权音频直链，仅支持合法流媒体平台公共页面或授权音频。</span>
+            </div>
+            <button type="submit" id="btn-submit-gift" class="btn btn-primary btn-block">封存并放入礼物盒</button>
+          </form>
+          <div id="form-feedback" class="toast-msg"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 纯公益与免责版权声明（重中之重） -->
+    <section id="disclaimer" class="content-section">
+      <div class="section-headline-box">
+        <div class="section-tag">Legal & Copyright Compliance</div>
+        <h2 class="section-h2">公益宗旨、版权与免责声明</h2>
+        <p class="section-subtext">恪守版权规范，保障每一位音乐创作者的合法权益</p>
+      </div>
+
+      <div class="disclaimer-container">
+        <div class="disclaimer-item">
+          <h4>🌱 1. 纯公益性质与非商业化宗旨</h4>
+          <p>
+            Spinora 软件及本官方网站均为独立开发者出于对音乐艺术与工业拟物美学的热爱而打造的<strong>纯公益非营利项目</strong>。本项目永久免费，不销售软件、不设付费墙、不接商业广告、不募集任何商业资金。
+          </p>
+        </div>
+        <div class="disclaimer-item">
+          <h4>🎵 2. 音频资产零存储与零托管声明</h4>
+          <p>
+            <strong>本网站及 Spinora 客户端服务器不存储、不分发、不截获、不解析任何未经授权的音频文件本体。</strong> 
+            客户端播放器所展现的声音、曲目封面与元数据，均由用户自行登录的合法第三方音乐平台（如 Spotify Connect API）或用户本地正版媒体库按授权协议实时驱动。
+          </p>
+        </div>
+        <div class="disclaimer-item">
+          <h4>🎁 3. “礼物盒子”社区合规与内容边界</h4>
+          <p>
+            “礼物盒子”仅作为音乐爱好者之间的文字推荐与心得交流板，<strong>严禁任何用户提交侵犯第三方知识产权的盗版音源下载直链、非法破解内容或违规违法言论</strong>。对于用户自主提交的公开外部链接（如 Spotify、网易云等平台分享页），其版权归原权利人所有。
+          </p>
+        </div>
+        <div class="disclaimer-item">
+          <h4>⚖️ 4. 知识产权与快速侵权下架通道 (DMCA / Takedown)</h4>
+          <p>
+            若任何版权方、唱片公司或权利人认为用户在“礼物盒子”中所推荐的内容或外部链接涉嫌侵权，请通过 GitHub Issues 或邮件与我们联系。我们将在收到通知并核验后的 24 小时内对相关记录进行<strong>立即永久屏蔽与下架处理</strong>。
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 更新日志时间轴 -->
+    <section id="changelog" class="content-section">
+      <div class="section-headline-box">
+        <div class="section-tag">Changelog</div>
+        <h2 class="section-h2">版本演进历程</h2>
+        <p class="section-subtext">追求极致细节，保持纯粹与匠心</p>
+      </div>
+
+      <div class="timeline-stream">
+        <div class="timeline-block">
+          <div class="timeline-beacon"></div>
+          <div class="timeline-badge-date">v2.5.0 · 2026 最新架构重构</div>
+          <h4>Tauri v2 + Rust 原生微内核交付</h4>
+          <p>彻底脱离臃肿的 Electron 运行环境，安装包缩减至 2.44 MB，内存占用直降 80%。重构 3 阶段机械互锁防穿模出舱状态机与双向 Windows SMTC 原生媒体桥接。</p>
+        </div>
+        <div class="timeline-block">
+          <div class="timeline-beacon"></div>
+          <div class="timeline-badge-date">v2.1.0 · 载体形态跨越</div>
+          <h4>四大复古载体与 Apple 液态玻璃换装</h4>
+          <p>双壁实心铸铜大铜号角留声机、实体按键黑胶唱机与磁带机上线。流体歌词支持 4K RAW 无损海报与 60FPS 实况短视频导出。</p>
+        </div>
+        <div class="timeline-block">
+          <div class="timeline-beacon"></div>
+          <div class="timeline-badge-date">v1.0.0 · 最初的火花</div>
+          <h4>3D CD 拟真视效原型诞生</h4>
+          <p>实现 Three.js PBR 亚克力 Jewel Case 盒体与全息彩虹薄膜干涉 Shader，开启实体音乐数字化之旅。</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- 页脚 -->
+  <footer class="site-footer">
+    <div class="footer-wrap">
+      <p class="footer-copy">
+        Spinora 遵循 <strong>MIT 开放许可协议</strong> · 完全免费 · 无商业广告 · 不设任何付费墙
+      </p>
+      <p style="color:var(--text-dim); font-size:0.8rem; margin:0.5rem 0;">
+        Powered by Cloudflare Pages &amp; Cloudflare D1 · Binary Distribution by GitHub Releases
+      </p>
+      <div class="footer-links">
+        <a href="https://github.com/IsaacMorris/spinora" target="_blank" rel="noopener noreferrer">GitHub 仓库</a>
+        <span>·</span>
+        <a href="#giftbox">礼物盲盒</a>
+        <span>·</span>
+        <a href="#download">软件下载</a>
+        <span>·</span>
+        <a href="#disclaimer">免责声明</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/app.js"></script>
+</body>
+</html>
