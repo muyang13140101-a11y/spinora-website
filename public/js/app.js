@@ -1,6 +1,7 @@
 // public/js/app.js - Spinora 官方网站交互逻辑与 3D 物理光栅引擎
 
 document.addEventListener("DOMContentLoaded", () => {
+  initMotionAndInteractions();
   initThreeHero();
   initFormatIndex();
   initMusicSearch();
@@ -8,6 +9,64 @@ document.addEventListener("DOMContentLoaded", () => {
   initDisclaimerModal();
   fetchGiftCount();
 });
+
+function initMotionAndInteractions() {
+  // 1. 顶部阅读进度条
+  const progressBar = document.getElementById("scroll-progress-bar");
+  if (progressBar) {
+    window.addEventListener("scroll", () => {
+      const h = document.documentElement;
+      const pct = (h.scrollTop / (h.scrollHeight - h.clientHeight || 1)) * 100;
+      progressBar.style.width = `${Math.min(100, Math.max(0, pct))}%`;
+    }, { passive: true });
+  }
+
+  // 2. 滚动渐显编排
+  const revealEls = document.querySelectorAll("[data-reveal]");
+  if ("IntersectionObserver" in window) {
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("revealed");
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1 });
+    revealEls.forEach(el => io.observe(el));
+  } else {
+    revealEls.forEach(el => el.classList.add("revealed"));
+  }
+
+  // 3. 面板鼠标聚光灯追踪
+  document.querySelectorAll(".spotlight-panel").forEach(panel => {
+    panel.addEventListener("mousemove", (e) => {
+      const rect = panel.getBoundingClientRect();
+      panel.style.setProperty("--mx", `${e.clientX - rect.left}px`);
+      panel.style.setProperty("--my", `${e.clientY - rect.top}px`);
+    });
+  });
+
+  // 4. 实体封套 3D 视差倾斜与塑封膜反光
+  const sleeveCard = document.getElementById("sealed-sleeve-card");
+  if (sleeveCard) {
+    sleeveCard.addEventListener("mousemove", (e) => {
+      if (sleeveCard.classList.contains("is-tearing")) return;
+      const rect = sleeveCard.getBoundingClientRect();
+      const x = (e.clientX - rect.left) / rect.width;
+      const y = (e.clientY - rect.top) / rect.height;
+      const rx = (0.5 - y) * 10;
+      const ry = (x - 0.5) * 12;
+      sleeveCard.style.transform = `rotateX(${rx.toFixed(2)}deg) rotateY(${ry.toFixed(2)}deg) scale(1.015)`;
+      sleeveCard.style.setProperty("--sheen-x", `${(x * 100).toFixed(1)}%`);
+      sleeveCard.style.setProperty("--sheen-y", `${(y * 100).toFixed(1)}%`);
+    });
+    sleeveCard.addEventListener("mouseleave", () => {
+      if (!sleeveCard.classList.contains("is-tearing")) {
+        sleeveCard.style.transform = "";
+      }
+    });
+  }
+}
 
 function escapeHtml(str) {
   if (!str) return '';
@@ -1123,9 +1182,19 @@ function initGiftBox() {
 
   if (!btnOpen || !slot || !form) return;
 
+  async function playUnsealAnimation() {
+    const sleeveCard = document.getElementById("sealed-sleeve-card");
+    if (!sleeveCard) return;
+    sleeveCard.style.transform = "";
+    sleeveCard.classList.add("is-tearing");
+    await new Promise(r => setTimeout(r, 320));
+    sleeveCard.classList.add("is-opening");
+    await new Promise(r => setTimeout(r, 240));
+  }
+
   async function openRandomGift() {
     btnOpen.disabled = true;
-    btnOpen.textContent = "开启中...";
+    btnOpen.textContent = "启封中...";
     if (btnUnsealHero) btnUnsealHero.disabled = true;
 
     if (activeUnpackAudio) {
@@ -1134,24 +1203,32 @@ function initGiftBox() {
     }
 
     try {
-      const res = await fetch("/api/gifts/random", { cache: "no-store" });
-      const result = await res.json();
+      const fetchPromise = fetch("/api/gifts/random", { cache: "no-store" }).then(async r => ({
+        ok: r.ok,
+        result: await r.json()
+      }));
+      const animPromise = playUnsealAnimation();
+      const [{ ok, result }] = await Promise.all([fetchPromise, animPromise]);
 
-      if (res.ok && result.code === 200 && result.data) {
+      if (ok && result.code === 200 && result.data) {
         renderUnpackedCard(result.data, slot);
       } else {
         slot.innerHTML = `
           <div class="sealed-sleeve-card">
-            <div class="sleeve-catalog-no">EMPTY ARCHIVE</div>
-            <h3 class="sleeve-heading">盲盒暂时空空如也</h3>
-            <p class="sleeve-sub">${escapeHtml(result.message || "来右侧做第一个封存音乐礼物的人吧。")}</p>
+            <div class="sleeve-body">
+              <div class="sleeve-catalog-no">EMPTY ARCHIVE</div>
+              <h3 class="sleeve-heading">盲盒暂时空空如也</h3>
+              <p class="sleeve-sub">${escapeHtml(result.message || "来右侧做第一个封存音乐礼物的人吧。")}</p>
+            </div>
           </div>
         `;
       }
     } catch (err) {
       slot.innerHTML = `
         <div class="sealed-sleeve-card">
-          <p style="color:var(--danger);">网络连接不稳定，请稍后刷新重试。</p>
+          <div class="sleeve-body">
+            <p style="color:var(--danger);">网络连接不稳定，请稍后刷新重试。</p>
+          </div>
         </div>
       `;
     } finally {
@@ -1161,7 +1238,16 @@ function initGiftBox() {
   }
 
   btnOpen.addEventListener("click", openRandomGift);
-  if (btnUnsealHero) btnUnsealHero.addEventListener("click", openRandomGift);
+  const sleeveCardEl = document.getElementById("sealed-sleeve-card");
+  if (sleeveCardEl) {
+    sleeveCardEl.addEventListener("click", (e) => {
+      if (e.target.closest("#btn-unseal-hero") || !btnOpen.disabled) {
+        openRandomGift();
+      }
+    });
+  } else if (btnUnsealHero) {
+    btnUnsealHero.addEventListener("click", openRandomGift);
+  }
 
   function renderUnpackedCard(gift, container) {
     const title = escapeHtml(gift.song_title);
@@ -1234,6 +1320,7 @@ function initGiftBox() {
 
     container.innerHTML = `
       <div class="unpacked-card">
+        <div class="unpacked-ambient-glow" style="background-image:url('${escapeHtml(cover)}')"></div>
         <div class="unpacked-hero-row">
           <div class="unpacked-sleeve-box">
             <div class="unpacked-vinyl-disc paused" id="unpacked-vinyl"></div>
@@ -1318,11 +1405,31 @@ function initGiftBox() {
         fillBar.style.width = "0%";
         timeLabel.textContent = "0:00 / 0:30";
       });
+
+      const progressTrack = container.querySelector(".audio-progress-track");
+      if (progressTrack) {
+        progressTrack.addEventListener("click", (e) => {
+          if (!activeUnpackAudio.duration) return;
+          const rect = progressTrack.getBoundingClientRect();
+          const ratio = Math.min(1, Math.max(0, (e.clientX - rect.left) / rect.width));
+          activeUnpackAudio.currentTime = ratio * activeUnpackAudio.duration;
+          if (activeUnpackAudio.paused) {
+            activeUnpackAudio.play();
+            setPlayingUI(true);
+          }
+        });
+      }
     }
 
     const heartBtn = document.getElementById("btn-heart-reaction");
     heartBtn.addEventListener("click", async () => {
       heartBtn.disabled = true;
+      const plusEl = document.createElement("span");
+      plusEl.className = "heart-float-plus";
+      plusEl.textContent = "+1";
+      heartBtn.appendChild(plusEl);
+      setTimeout(() => plusEl.remove(), 820);
+
       try {
         const res = await fetch("/api/gifts/react", {
           method: "POST",
@@ -1456,6 +1563,15 @@ function initGiftBox() {
         const charCountEl = document.getElementById("msg-char-count");
         if (charCountEl) charCountEl.textContent = "0 / 300";
         fetchGiftCount();
+
+        const ceremonyOverlay = document.getElementById("seal-ceremony-overlay");
+        if (ceremonyOverlay) {
+          ceremonyOverlay.classList.remove("hidden");
+          const btnAnother = document.getElementById("btn-seal-another");
+          if (btnAnother) {
+            btnAnother.onclick = () => ceremonyOverlay.classList.add("hidden");
+          }
+        }
       } else {
         feedback.style.color = "var(--danger)";
         feedback.textContent = result.message || "提交失败，请稍后重试。";

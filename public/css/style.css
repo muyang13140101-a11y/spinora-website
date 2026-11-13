@@ -15,6 +15,29 @@
   --font-sans: "Noto Sans SC", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   --font-serif: "Instrument Serif", Georgia, "Songti SC", serif;
   --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+  --ease-spring: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.scroll-progress-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 2px;
+  width: 0%;
+  background: linear-gradient(90deg, var(--amber), var(--amber-bright), #fff);
+  z-index: 9998;
+  transition: width 0.08s linear;
+}
+
+[data-reveal] {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.75s var(--ease-spring), transform 0.75s var(--ease-spring);
+}
+
+[data-reveal].revealed {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 * {
@@ -760,7 +783,7 @@ body {
 }
 
 /* ========================================================
-   03 / 音乐礼物盲盒：黑胶试听间
+   01 / 音乐礼物盲盒：Figma 级实体黑胶封套 & 拆封仪式
    ======================================================== */
 .booth-grid {
   display: grid;
@@ -770,12 +793,45 @@ body {
 }
 
 .booth-panel {
-  background: var(--surface);
-  border: 1px solid var(--hairline);
-  border-radius: 6px;
+  position: relative;
+  background: linear-gradient(180deg, rgba(22, 22, 27, 0.88) 0%, rgba(14, 14, 17, 0.94) 100%);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
   padding: 2rem;
   display: flex;
   flex-direction: column;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 24px 60px -15px rgba(0, 0, 0, 0.7);
+  overflow: hidden;
+  transition: border-color 0.35s ease, box-shadow 0.35s ease;
+}
+
+.spotlight-panel::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(
+    520px circle at var(--mx, 50%) var(--my, 25%),
+    rgba(212, 163, 115, 0.09),
+    transparent 45%
+  );
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.spotlight-panel:hover::before {
+  opacity: 1;
+}
+
+.spotlight-panel > * {
+  position: relative;
+  z-index: 1;
 }
 
 .booth-panel-head {
@@ -783,40 +839,42 @@ body {
   align-items: center;
   justify-content: space-between;
   padding-bottom: 1rem;
-  margin-bottom: 1.4rem;
-  border-bottom: 1px solid var(--hairline);
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
 }
 
 .booth-label {
   font-family: var(--font-mono);
-  font-size: 0.78rem;
-  letter-spacing: 1.5px;
+  font-size: 0.76rem;
+  letter-spacing: 1.8px;
   color: var(--ink);
   font-weight: 500;
 }
 
 .booth-sub-meta {
-  font-size: 0.78rem;
+  font-size: 0.76rem;
   color: var(--ink-dim);
 }
 
 .btn-text-action {
-  background: transparent;
-  border: 1px solid var(--hairline-strong);
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.12);
   color: var(--ink);
-  font-size: 0.8rem;
-  padding: 5px 12px;
-  border-radius: 3px;
+  font-size: 0.78rem;
+  padding: 6px 14px;
+  border-radius: 999px;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.25s var(--ease-spring);
 }
 
 .btn-text-action:hover {
   border-color: var(--amber);
   color: var(--amber-bright);
+  background: rgba(212, 163, 115, 0.1);
+  transform: translateY(-1px);
 }
 
-/* 左侧未拆封黑胶档案袋 */
+/* 左侧实体唱片封套与启封仪式 */
 .booth-slot {
   flex: 1;
   display: flex;
@@ -824,46 +882,146 @@ body {
   justify-content: center;
 }
 
+.sealed-sleeve-stage {
+  perspective: 1200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 460px;
+  padding: 0.5rem 0;
+}
+
 .sealed-sleeve-card {
-  border: 1px dashed var(--hairline-strong);
-  border-radius: 4px;
-  padding: 2.8rem 1.8rem;
+  position: relative;
+  width: 100%;
+  max-width: 390px;
+  border-radius: 14px;
+  background:
+    radial-gradient(circle at 50% 0%, rgba(212, 163, 115, 0.12) 0%, transparent 55%),
+    linear-gradient(155deg, #1b1b20 0%, #101014 60%, #0b0b0e 100%);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.12),
+    inset -8px 0 16px rgba(0, 0, 0, 0.5),
+    0 28px 50px -12px rgba(0, 0, 0, 0.85);
+  overflow: hidden;
+  transform-style: preserve-3d;
+  transition: transform 0.28s var(--ease-spring), box-shadow 0.35s ease, opacity 0.35s ease;
+  cursor: pointer;
+}
+
+.sealed-sleeve-card:hover {
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.2),
+    0 34px 64px -10px rgba(0, 0, 0, 0.9),
+    0 0 40px -10px rgba(212, 163, 115, 0.18);
+}
+
+/* 塑封膜高光反光层 */
+.sleeve-foil-sheen {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    420px circle at var(--sheen-x, 50%) var(--sheen-y, 30%),
+    rgba(255, 255, 255, 0.12),
+    transparent 52%
+  );
+  pointer-events: none;
+  z-index: 3;
+  mix-blend-mode: screen;
+}
+
+/* 顶部虚线撕拉封条 */
+.sleeve-tear-strip {
+  position: relative;
+  z-index: 4;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 11px 18px;
+  background: linear-gradient(90deg, rgba(212, 163, 115, 0.14), rgba(212, 163, 115, 0.05));
+  border-bottom: 1px dashed rgba(212, 163, 115, 0.42);
+  transition: transform 0.48s var(--ease-spring), opacity 0.38s ease;
+}
+
+.tear-perforation {
+  width: 22px;
+  height: 8px;
+  border-radius: 999px;
+  border: 1px solid rgba(212, 163, 115, 0.55);
+  background: rgba(0, 0, 0, 0.35);
+}
+
+.tear-label {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  letter-spacing: 1.6px;
+  color: var(--amber-bright);
+}
+
+.tear-notch {
+  width: 0;
+  height: 0;
+  border-top: 5px solid transparent;
+  border-bottom: 5px solid transparent;
+  border-left: 7px solid var(--amber);
+}
+
+.sleeve-body {
+  padding: 2.2rem 2rem 1.8rem;
   text-align: center;
-  background: radial-gradient(circle at 50% 30%, rgba(212, 163, 115, 0.06) 0%, transparent 70%);
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  min-height: 440px;
+  position: relative;
+  z-index: 2;
 }
 
-.sleeve-disc-window {
-  width: 112px;
-  height: 112px;
-  border-radius: 50%;
-  border: 1px solid var(--hairline-strong);
-  padding: 6px;
+.sleeve-spine-tag {
+  font-family: var(--font-mono);
+  font-size: 0.64rem;
+  letter-spacing: 2px;
+  color: var(--ink-dim);
   margin-bottom: 1.4rem;
 }
 
-.sleeve-disc-spin {
+/* 黄铜火漆印章 */
+.sleeve-wax-seal {
+  width: 78px;
+  height: 78px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 32% 30%, #f0cca3, #c8915a 55%, #7a522c 100%);
+  padding: 5px;
+  margin-bottom: 1.5rem;
+  box-shadow:
+    0 12px 26px rgba(0, 0, 0, 0.65),
+    0 0 24px rgba(212, 163, 115, 0.28),
+    inset 0 2px 3px rgba(255, 255, 255, 0.45);
+  transition: transform 0.45s var(--ease-spring), opacity 0.4s ease;
+}
+
+.sealed-sleeve-card:hover .sleeve-wax-seal {
+  transform: scale(1.06) rotate(-4deg);
+}
+
+.wax-seal-inner {
   width: 100%;
   height: 100%;
   border-radius: 50%;
-  background: repeating-radial-gradient(circle at center, #09090b 0, #09090b 2px, #222227 3px, #09090b 4px);
-  position: relative;
-  animation: slowSpin 18s linear infinite;
+  border: 1.5px solid rgba(58, 34, 14, 0.45);
+  background: radial-gradient(circle at 40% 35%, #dfb180, #b87f47 75%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.sleeve-disc-spin::after {
-  content: '';
-  position: absolute;
-  top: 50%; left: 50%;
-  transform: translate(-50%, -50%);
-  width: 26px; height: 26px;
-  border-radius: 50%;
-  background: var(--amber);
-  border: 4px solid #09090b;
+.wax-monogram {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 2.1rem;
+  color: #361e09;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.35);
+  line-height: 1;
 }
 
 .sleeve-catalog-no {
@@ -871,43 +1029,140 @@ body {
   font-size: 0.68rem;
   letter-spacing: 2px;
   color: var(--amber);
-  margin-bottom: 0.85rem;
+  margin-bottom: 0.65rem;
 }
 
 .sleeve-heading {
-  font-size: 1.25rem;
+  font-size: 1.32rem;
   font-weight: 600;
-  margin-bottom: 0.5rem;
+  letter-spacing: -0.3px;
+  margin-bottom: 0.55rem;
 }
 
 .sleeve-sub {
-  font-size: 0.88rem;
+  font-size: 0.86rem;
   color: var(--ink-muted);
-  max-width: 310px;
+  max-width: 280px;
   margin-bottom: 1.8rem;
   line-height: 1.65;
 }
 
-/* 拆开后的唱片卡片 */
+.btn-unseal-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--ink);
+  color: #0a0a0c;
+  border: none;
+  padding: 0.82rem 1.7rem;
+  border-radius: 999px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.5);
+  transition: all 0.3s var(--ease-spring);
+}
+
+.btn-unseal-pill:hover {
+  background: var(--amber-bright);
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 14px 30px rgba(212, 163, 115, 0.25);
+}
+
+.btn-unseal-pill .btn-arrow {
+  transition: transform 0.25s var(--ease-spring);
+}
+
+.btn-unseal-pill:hover .btn-arrow {
+  transform: translateX(4px);
+}
+
+.sleeve-bottom-stamp {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 18px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  background: rgba(0, 0, 0, 0.25);
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 1.4px;
+  color: var(--ink-dim);
+}
+
+/* 拆封动画状态类 */
+.sealed-sleeve-card.is-tearing .sleeve-tear-strip {
+  transform: translateX(115%) rotate(3deg);
+  opacity: 0;
+}
+
+.sealed-sleeve-card.is-tearing .sleeve-wax-seal {
+  transform: scale(1.25) rotate(12deg);
+  opacity: 0;
+}
+
+.sealed-sleeve-card.is-opening {
+  transform: translateY(28px) scale(0.93) rotateX(8deg);
+  opacity: 0;
+}
+
+/* 拆开后的唱片卡片（含专辑氛围光晕 + 滑出动效） */
 .unpacked-card {
+  position: relative;
   display: flex;
   flex-direction: column;
-  animation: fadeUp 0.35s ease;
+  border-radius: 12px;
+  padding: 1.25rem;
+  background: rgba(16, 16, 20, 0.72);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  overflow: hidden;
+  animation: unsealReveal 0.65s var(--ease-spring) both;
+}
+
+.unpacked-ambient-glow {
+  position: absolute;
+  top: -40px;
+  left: -30px;
+  right: -30px;
+  height: 210px;
+  background-size: cover;
+  background-position: center;
+  filter: blur(55px) saturate(1.4);
+  opacity: 0.22;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.unpacked-card > *:not(.unpacked-ambient-glow) {
+  position: relative;
+  z-index: 1;
+}
+
+@keyframes unsealReveal {
+  0% {
+    opacity: 0;
+    transform: translateY(28px) scale(0.95);
+    filter: blur(6px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
 }
 
 .unpacked-hero-row {
   display: flex;
   align-items: center;
-  gap: 1.4rem;
+  gap: 1.5rem;
   padding-bottom: 1.25rem;
   margin-bottom: 1.15rem;
-  border-bottom: 1px solid var(--hairline);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .unpacked-sleeve-box {
   position: relative;
-  width: 118px;
-  height: 88px;
+  width: 128px;
+  height: 92px;
   flex-shrink: 0;
 }
 
@@ -915,25 +1170,35 @@ body {
   position: absolute;
   right: 0;
   top: 4px;
-  width: 80px;
-  height: 80px;
+  width: 84px;
+  height: 84px;
   border-radius: 50%;
   background: repeating-radial-gradient(circle at center, #09090b 0, #09090b 2px, #27272a 3px, #09090b 4px);
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  animation: slowSpin 10s linear infinite;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  animation: discSlideOut 0.8s var(--ease-spring) 0.15s both, slowSpin 10s linear infinite;
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: transform 0.35s var(--ease-spring);
+}
+
+.unpacked-sleeve-box:hover .unpacked-vinyl-disc {
+  transform: translateX(12px);
+}
+
+@keyframes discSlideOut {
+  0% { transform: translateX(-34px) scale(0.88); opacity: 0; }
+  100% { transform: translateX(0) scale(1); opacity: 1; }
 }
 
 .unpacked-vinyl-disc.paused {
-  animation-play-state: paused;
+  animation: discSlideOut 0.8s var(--ease-spring) 0.15s both, slowSpin 10s linear infinite paused;
 }
 
 .unpacked-vinyl-disc::after {
   content: '';
-  width: 22px;
-  height: 22px;
+  width: 24px;
+  height: 24px;
   border-radius: 50%;
   background: var(--amber);
   border: 4px solid #09090b;
@@ -942,13 +1207,18 @@ body {
 .unpacked-cover-img {
   position: relative;
   z-index: 2;
-  width: 88px;
-  height: 88px;
-  border-radius: 3px;
+  width: 92px;
+  height: 92px;
+  border-radius: 8px;
   object-fit: cover;
-  box-shadow: 6px 8px 20px rgba(0, 0, 0, 0.75);
-  border: 1px solid var(--hairline-strong);
+  box-shadow: 8px 12px 28px rgba(0, 0, 0, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.16);
   background: var(--surface-elevated);
+  transition: transform 0.35s var(--ease-spring);
+}
+
+.unpacked-sleeve-box:hover .unpacked-cover-img {
+  transform: translateX(-4px) rotate(-2deg);
 }
 
 .unpacked-song-meta {
@@ -1209,38 +1479,113 @@ body {
   background: var(--amber-bright);
 }
 
-/* 右侧：曲库源切换 + 搜索 + 表单 */
-.source-filter-row {
+/* 右侧：曲库源切换 + 搜索 + 表单 (Studio Liner Note 卡片质感) */
+.seal-panel-rel {
+  position: relative;
+}
+
+.seal-ceremony-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 40;
+  background: rgba(12, 12, 15, 0.94);
+  backdrop-filter: blur(22px);
+  -webkit-backdrop-filter: blur(22px);
   display: flex;
-  gap: 0.5rem;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 2rem;
+  animation: fadeUp 0.45s var(--ease-spring) both;
+}
+
+.seal-ceremony-overlay.hidden {
+  display: none;
+}
+
+.ceremony-stamp-ring {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  border: 1px dashed rgba(212, 163, 115, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+  animation: stampDrop 0.65s var(--ease-spring) both;
+}
+
+.ceremony-wax-seal {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #f0cca3, #c8915a 60%, #7a522c 100%);
+  color: #361e09;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 10px 28px rgba(212, 163, 115, 0.3);
+}
+
+@keyframes stampDrop {
+  0% { transform: scale(1.7) rotate(-14deg); opacity: 0; }
+  70% { transform: scale(0.95) rotate(2deg); opacity: 1; }
+  100% { transform: scale(1) rotate(0deg); opacity: 1; }
+}
+
+.ceremony-title {
+  font-size: 1.35rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.ceremony-desc {
+  font-size: 0.88rem;
+  color: var(--ink-muted);
+  max-width: 280px;
+  margin-bottom: 1.8rem;
+  line-height: 1.65;
+}
+
+.source-filter-row {
+  display: inline-flex;
+  gap: 0.25rem;
   flex-wrap: wrap;
-  margin-bottom: 0.9rem;
+  padding: 4px;
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 999px;
+  margin-bottom: 1.1rem;
 }
 
 .source-tab {
   background: transparent;
-  border: 1px solid var(--hairline);
+  border: none;
   color: var(--ink-muted);
-  padding: 4px 11px;
-  border-radius: 3px;
+  padding: 5px 13px;
+  border-radius: 999px;
   font-size: 0.76rem;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.25s var(--ease-spring);
 }
 
 .source-tab:hover {
   color: var(--ink);
-  border-color: var(--ink-muted);
 }
 
 .source-tab.active {
-  background: var(--amber-soft);
+  background: rgba(212, 163, 115, 0.16);
   color: var(--amber-bright);
-  border-color: var(--amber);
+  box-shadow: inset 0 0 0 1px rgba(212, 163, 115, 0.4);
 }
 
 .search-music-wrapper {
-  margin-bottom: 1rem;
+  margin-bottom: 1.15rem;
   position: relative;
 }
 
@@ -1252,18 +1597,20 @@ body {
 
 .search-input-box input {
   width: 100%;
-  background: var(--surface-elevated);
-  border: 1px solid var(--hairline-strong);
+  background: rgba(8, 8, 10, 0.65);
+  border: 1px solid rgba(255, 255, 255, 0.11);
   color: var(--ink);
-  padding: 0.8rem 4.2rem 0.8rem 0.95rem;
-  border-radius: 4px;
+  padding: 0.85rem 4.2rem 0.85rem 1.05rem;
+  border-radius: 10px;
   font-size: 0.9rem;
-  transition: border-color 0.2s;
+  transition: all 0.25s ease;
 }
 
 .search-input-box input:focus {
   outline: none;
   border-color: var(--amber);
+  background: rgba(12, 12, 15, 0.9);
+  box-shadow: 0 0 0 3px rgba(212, 163, 115, 0.14);
 }
 
 .btn-clear-search {
@@ -1411,19 +1758,21 @@ body {
   display: flex;
   align-items: center;
   gap: 12px;
-  background: var(--surface-elevated);
-  border: 1px solid var(--amber);
-  padding: 10px 12px;
-  border-radius: 4px;
-  margin-bottom: 1rem;
+  background: rgba(212, 163, 115, 0.06);
+  border: 1px solid rgba(212, 163, 115, 0.35);
+  padding: 10px 14px;
+  border-radius: 10px;
+  margin-bottom: 1.05rem;
+  animation: fadeUp 0.35s var(--ease-spring) both;
 }
 
 .preview-cover {
   width: 48px;
   height: 48px;
-  border-radius: 2px;
+  border-radius: 6px;
   object-fit: cover;
   flex-shrink: 0;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.5);
 }
 
 .preview-details {
@@ -1528,37 +1877,74 @@ body {
 }
 
 .mood-chip {
-  background: transparent;
-  border: 1px solid var(--hairline);
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.09);
   color: var(--ink-muted);
-  padding: 3px 9px;
-  border-radius: 3px;
+  padding: 4px 11px;
+  border-radius: 999px;
   font-size: 0.74rem;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.25s var(--ease-spring);
 }
 
 .mood-chip:hover {
   border-color: var(--amber);
   color: var(--amber-bright);
+  background: rgba(212, 163, 115, 0.09);
+  transform: translateY(-1px);
 }
 
 .form-field textarea,
 .form-field-half input {
   width: 100%;
-  background: var(--surface-elevated);
-  border: 1px solid var(--hairline-strong);
+  background: rgba(8, 8, 10, 0.65);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   color: var(--ink);
-  padding: 0.75rem 0.9rem;
-  border-radius: 4px;
+  padding: 0.78rem 0.95rem;
+  border-radius: 10px;
   font-size: 0.88rem;
   font-family: inherit;
+  transition: all 0.25s ease;
 }
 
 .form-field textarea:focus,
 .form-field-half input:focus {
   outline: none;
   border-color: var(--amber);
+  background: rgba(12, 12, 15, 0.9);
+  box-shadow: 0 0 0 3px rgba(212, 163, 115, 0.14);
+}
+
+.audio-progress-track {
+  cursor: pointer;
+  height: 5px;
+  border-radius: 999px;
+  transition: height 0.2s ease;
+}
+
+.audio-progress-track:hover {
+  height: 7px;
+}
+
+.btn-heart-resonate {
+  position: relative;
+}
+
+.heart-float-plus {
+  position: absolute;
+  top: -10px;
+  right: 8px;
+  font-family: var(--font-mono);
+  font-size: 0.76rem;
+  font-weight: 700;
+  color: var(--amber-bright);
+  pointer-events: none;
+  animation: floatPlusOne 0.8s var(--ease-spring) forwards;
+}
+
+@keyframes floatPlusOne {
+  0% { opacity: 1; transform: translateY(0) scale(0.8); }
+  100% { opacity: 0; transform: translateY(-22px) scale(1.15); }
 }
 
 .form-field-row {

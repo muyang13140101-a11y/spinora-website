@@ -13,6 +13,8 @@
   <link rel="icon" type="image/svg+xml" href="assets/logo.svg">
 </head>
 <body>
+  <!-- 顶部阅读进度条 -->
+  <div class="scroll-progress-bar" id="scroll-progress-bar" aria-hidden="true"></div>
   <!-- 胶片颗粒噪点层 -->
   <div class="film-grain-overlay" aria-hidden="true"></div>
   <!-- 克制的棚拍暖琥珀微光 -->
@@ -98,29 +100,57 @@
 
       <div class="booth-grid">
         <!-- 左侧：拆开礼物盲盒 -->
-        <div class="booth-panel">
+        <div class="booth-panel spotlight-panel" data-reveal>
           <div class="booth-panel-head">
             <span class="booth-label">UNSEAL / 拆开盲盒</span>
             <button id="btn-open-random" class="btn-text-action">换一首 / 随机开启</button>
           </div>
 
           <div id="gift-display-slot" class="booth-slot">
-            <div class="sealed-sleeve-card">
-              <div class="sleeve-disc-window">
-                <div class="sleeve-disc-spin"></div>
+            <div class="sealed-sleeve-stage" id="sealed-sleeve-stage">
+              <div class="sealed-sleeve-card" id="sealed-sleeve-card">
+                <div class="sleeve-foil-sheen" aria-hidden="true"></div>
+                <div class="sleeve-tear-strip" id="sleeve-tear-strip">
+                  <span class="tear-perforation"></span>
+                  <span class="tear-label">PULL TO UNSEAL · 沿虚线启封</span>
+                  <span class="tear-notch"></span>
+                </div>
+                <div class="sleeve-body">
+                  <div class="sleeve-spine-tag">SPINORA ARCHIVE · VOL.01</div>
+                  <div class="sleeve-wax-seal" id="sleeve-wax-seal">
+                    <div class="wax-seal-inner">
+                      <span class="wax-monogram">S</span>
+                    </div>
+                  </div>
+                  <div class="sleeve-catalog-no">BLIND BOX · 未知曲目</div>
+                  <h3 class="sleeve-heading">一份未拆封的音乐心意</h3>
+                  <p class="sleeve-sub">封套内藏着陌生听友选出的旋律、封面与只属于此刻的留言。</p>
+                  <button type="button" id="btn-unseal-hero" class="btn-unseal-pill">
+                    <span>轻触启封这份礼物</span>
+                    <span class="btn-arrow">→</span>
+                  </button>
+                </div>
+                <div class="sleeve-bottom-stamp">
+                  <span>30S PREVIEW</span>
+                  <span>MULTI-PLATFORM</span>
+                </div>
               </div>
-              <div class="sleeve-catalog-no">SPINORA ARCHIVE · BLIND BOX</div>
-              <h3 class="sleeve-heading">一份未拆封的音乐心意</h3>
-              <p class="sleeve-sub">里面封存着一位陌生听友选出的歌曲、封面与一段只属于此刻的留言。</p>
-              <button type="button" id="btn-unseal-hero" class="btn btn-solid">
-                拆开这份礼物
-              </button>
             </div>
           </div>
         </div>
 
         <!-- 右侧：封存我的礼物 -->
-        <div class="booth-panel">
+        <div class="booth-panel spotlight-panel seal-panel-rel" data-reveal>
+          <!-- 封存成功印章动画遮罩 -->
+          <div class="seal-ceremony-overlay hidden" id="seal-ceremony-overlay">
+            <div class="ceremony-stamp-ring">
+              <div class="ceremony-wax-seal">SEALED</div>
+            </div>
+            <h3 class="ceremony-title">心意已封存入盒</h3>
+            <p class="ceremony-desc">这首歌正静静躺在盲盒中，等待远方的有缘人将它拆开。</p>
+            <button type="button" id="btn-seal-another" class="btn-unseal-pill">再封存一首</button>
+          </div>
+
           <div class="booth-panel-head">
             <span class="booth-label">SEAL / 封存心意</span>
             <span class="booth-sub-meta">多平台曲库自动对齐</span>
