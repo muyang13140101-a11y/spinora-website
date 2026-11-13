@@ -513,7 +513,7 @@ body {
 }
 
 .pane-visual-box {
-  height: 230px;
+  height: 290px;
   background: radial-gradient(circle at center, #1a1a20 0%, #0d0d10 100%);
   border: 1px solid var(--hairline);
   border-radius: 4px;
