@@ -1,15 +1,14 @@
-// public/js/app.js - Spinora 官方网站 2.0 交互逻辑与 3D 引擎
+// public/js/app.js - Spinora 官方网站交互逻辑与 3D 物理光栅引擎
 
 document.addEventListener("DOMContentLoaded", () => {
   initThreeHero();
-  initCarrierTabs();
+  initFormatIndex();
   initMusicSearch();
   initGiftBox();
   initDisclaimerModal();
   fetchGiftCount();
 });
 
-// XSS 安全字符转义
 function escapeHtml(str) {
   if (!str) return '';
   const d = document.createElement('div');
@@ -18,142 +17,201 @@ function escapeHtml(str) {
 }
 
 // ========================================================
-// 1. WebGL 交互式 3D 拟真 CD 唱盘 (Three.js)
+// 1. 开放式 WebGL 3D 实体 CD 背景舞台 (Three.js)
 // ========================================================
-let threeScene, threeCamera, threeRenderer, cdGroup, cdDisc, jewelCase;
+let threeScene, threeCamera, threeRenderer, cdGroup, cdDisc, jewelCase, dustPoints;
 let isDragging = false, prevMouseX = 0, prevMouseY = 0;
 let discEjected = true;
-let discSpeed = 0.015;
+let discSpeed = 0.008;
 let isHoloEnhanced = false;
+
+function buildRealisticCDTexture() {
+  const size = 1024;
+  const canvas = document.createElement("canvas");
+  canvas.width = size;
+  canvas.height = size;
+  const ctx = canvas.getContext("2d");
+  const cx = size / 2;
+  const cy = size / 2;
+
+  // 1. 拉丝银铝基底
+  ctx.fillStyle = "#b8bcc4";
+  ctx.fillRect(0, 0, size, size);
+
+  // 2. 真实 CD 物理各向异性光栅反射（细腻金属光谱，非廉价纯色彩虹）
+  const conic = ctx.createConicGradient(0.4, cx, cy);
+  conic.addColorStop(0.00, "rgba(255, 255, 255, 0.40)");
+  conic.addColorStop(0.08, "rgba(212, 163, 115, 0.32)");
+  conic.addColorStop(0.18, "rgba(147, 197, 253, 0.35)");
+  conic.addColorStop(0.28, "rgba(255, 255, 255, 0.15)");
+  conic.addColorStop(0.42, "rgba(244, 180, 210, 0.25)");
+  conic.addColorStop(0.55, "rgba(255, 255, 255, 0.45)");
+  conic.addColorStop(0.68, "rgba(165, 243, 252, 0.30)");
+  conic.addColorStop(0.80, "rgba(212, 163, 115, 0.28)");
+  conic.addColorStop(0.92, "rgba(255, 255, 255, 0.20)");
+  conic.addColorStop(1.00, "rgba(255, 255, 255, 0.40)");
+  ctx.fillStyle = conic;
+  ctx.fillRect(0, 0, size, size);
+
+  // 3. 微米级数据轨同心圆细纹
+  for (let r = 170; r < 495; r += 3) {
+    ctx.beginPath();
+    ctx.arc(cx, cy, r, 0, Math.PI * 2);
+    ctx.strokeStyle = r % 9 === 0 ? "rgba(255,255,255,0.12)" : "rgba(0,0,0,0.06)";
+    ctx.lineWidth = 0.8;
+    ctx.stroke();
+  }
+
+  // 4. 刻录区外缘与内圈 Lead-in 边界环
+  ctx.beginPath();
+  ctx.arc(cx, cy, 162, 0, Math.PI * 2);
+  ctx.lineWidth = 4;
+  ctx.strokeStyle = "rgba(255,255,255,0.35)";
+  ctx.stroke();
+
+  ctx.beginPath();
+  ctx.arc(cx, cy, 496, 0, Math.PI * 2);
+  ctx.lineWidth = 3;
+  ctx.strokeStyle = "rgba(255,255,255,0.4)";
+  ctx.stroke();
+
+  const tex = new THREE.CanvasTexture(canvas);
+  tex.anisotropy = 8;
+  return tex;
+}
 
 function initThreeHero() {
   const container = document.getElementById("three-container");
   if (!container || typeof THREE === "undefined") return;
 
-  // 清除加载文案
   container.innerHTML = "";
 
-  const width = container.clientWidth || 400;
-  const height = container.clientHeight || 380;
+  const width = container.clientWidth || window.innerWidth;
+  const height = container.clientHeight || 680;
 
   threeScene = new THREE.Scene();
-  threeCamera = new THREE.PerspectiveCamera(40, width / height, 0.1, 100);
-  threeCamera.position.set(0, 0, 7.5);
+  threeCamera = new THREE.PerspectiveCamera(36, width / height, 0.1, 100);
+  threeCamera.position.set(0, 0, 8.8);
 
   threeRenderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
   threeRenderer.setSize(width, height);
   threeRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   threeRenderer.toneMapping = THREE.ACESFilmicToneMapping;
-  threeRenderer.toneMappingExposure = 1.2;
+  threeRenderer.toneMappingExposure = 1.15;
   container.appendChild(threeRenderer.domElement);
 
-  // 环境光与物理高光
-  const ambientLight = new THREE.AmbientLight(0xffffff, 1.2);
+  // 棚拍布光：暖琥珀主光 + 冷银轮廓光
+  const ambientLight = new THREE.AmbientLight(0xffffff, 0.85);
   threeScene.add(ambientLight);
 
-  const keyLight = new THREE.DirectionalLight(0x38bdf8, 2.2);
-  keyLight.position.set(5, 5, 4);
+  const keyLight = new THREE.DirectionalLight(0xfde6c4, 2.0);
+  keyLight.position.set(5, 6, 5);
   threeScene.add(keyLight);
 
-  const rimLight = new THREE.DirectionalLight(0xec4899, 1.8);
-  rimLight.position.set(-5, -3, 3);
+  const rimLight = new THREE.DirectionalLight(0xcbd5e1, 1.4);
+  rimLight.position.set(-6, -3, 3);
   threeScene.add(rimLight);
 
-  // CD 总装配组
+  // 3D CD 总装配组（桌面端置右作为开放背景视觉焦点）
   cdGroup = new THREE.Group();
   threeScene.add(cdGroup);
-  cdGroup.rotation.x = 0.25;
-  cdGroup.rotation.y = -0.35;
+  cdGroup.position.set(width > 960 ? 2.15 : 0, width > 960 ? 0.05 : 0.6, 0);
+  cdGroup.rotation.x = 0.22;
+  cdGroup.rotation.y = -0.42;
 
-  // 1. 亚克力 CD 唱片盒 (透光磨砂外壳)
-  const caseGeo = new THREE.BoxGeometry(4.2, 4.2, 0.32);
+  // 1. 亚克力磨砂外盒
+  const caseGeo = new THREE.BoxGeometry(4.3, 4.3, 0.28);
   const caseMat = new THREE.MeshPhysicalMaterial({
-    color: 0x1e293b,
-    metalness: 0.1,
-    roughness: 0.15,
-    transmission: 0.75, // 高透明磨砂亚克力
-    thickness: 0.5,
+    color: 0x18181c,
+    metalness: 0.08,
+    roughness: 0.16,
+    transmission: 0.72,
+    thickness: 0.45,
     transparent: true,
-    opacity: 0.65,
-    reflectivity: 0.9
+    opacity: 0.68,
+    reflectivity: 0.95
   });
   jewelCase = new THREE.Mesh(caseGeo, caseMat);
-  jewelCase.position.set(-0.6, 0, 0);
+  jewelCase.position.set(-0.75, 0, 0);
   cdGroup.add(jewelCase);
 
-  // 内部歌词衬卡 (深黑底烫银工艺)
-  const linerGeo = new THREE.PlaneGeometry(3.9, 3.9);
+  // 盒内印刷衬底（深黑哑光）
+  const linerGeo = new THREE.PlaneGeometry(4.0, 4.0);
   const linerMat = new THREE.MeshStandardMaterial({
-    color: 0x0f172a,
-    roughness: 0.8,
-    metalness: 0.2
+    color: 0x0b0b0e,
+    roughness: 0.85,
+    metalness: 0.1
   });
   const liner = new THREE.Mesh(linerGeo, linerMat);
-  liner.position.set(0, 0, -0.1);
+  liner.position.set(0, 0, -0.09);
   jewelCase.add(liner);
 
-  // 2. 拟真实体 CD 光盘
-  const discGeo = new THREE.CylinderGeometry(1.85, 1.85, 0.04, 64);
-  
-  // 生成彩虹光栅纹理
-  const canvas = document.createElement("canvas");
-  canvas.width = 512;
-  canvas.height = 512;
-  const ctx = canvas.getContext("2d");
-  const grad = ctx.createConicGradient(0, 256, 256);
-  grad.addColorStop(0.00, "#ff3366");
-  grad.addColorStop(0.18, "#ffaa00");
-  grad.addColorStop(0.36, "#33ff77");
-  grad.addColorStop(0.54, "#00ccff");
-  grad.addColorStop(0.72, "#9933ff");
-  grad.addColorStop(0.90, "#ff33aa");
-  grad.addColorStop(1.00, "#ff3366");
-  ctx.fillStyle = grad;
-  ctx.fillRect(0, 0, 512, 512);
+  // 左侧脊柱纹理条
+  const spineGeo = new THREE.BoxGeometry(0.28, 4.26, 0.26);
+  const spineMat = new THREE.MeshStandardMaterial({
+    color: 0x27272c,
+    roughness: 0.4,
+    metalness: 0.5
+  });
+  const spine = new THREE.Mesh(spineGeo, spineMat);
+  spine.position.set(-2.0, 0, 0);
+  jewelCase.add(spine);
 
-  // 绘制数据环带与中心扣环
-  ctx.beginPath();
-  ctx.arc(256, 256, 240, 0, Math.PI * 2);
-  ctx.lineWidth = 10;
-  ctx.strokeStyle = "rgba(255,255,255,0.4)";
-  ctx.stroke();
-
-  const rainbowTexture = new THREE.CanvasTexture(canvas);
+  // 2. 实体 CD 光盘
+  const discGeo = new THREE.CylinderGeometry(1.92, 1.92, 0.032, 96);
+  const cdTexture = buildRealisticCDTexture();
 
   const discMat = new THREE.MeshPhysicalMaterial({
     color: 0xffffff,
-    metalness: 0.95,
-    roughness: 0.18,
-    map: rainbowTexture,
+    metalness: 0.92,
+    roughness: 0.16,
+    map: cdTexture,
     clearcoat: 1.0,
-    clearcoatRoughness: 0.1,
+    clearcoatRoughness: 0.08,
     reflectivity: 1.0
   });
 
   cdDisc = new THREE.Mesh(discGeo, discMat);
   cdDisc.rotation.x = Math.PI / 2;
-  cdDisc.position.set(1.4, 0, 0.08); // 默认滑出姿态
+  cdDisc.position.set(1.45, 0, 0.06);
   cdGroup.add(cdDisc);
 
-  // 光盘内孔与透明固定环
-  const hubGeo = new THREE.CylinderGeometry(0.55, 0.55, 0.05, 32);
+  // 透明聚碳酸酯内环与中心孔
+  const hubGeo = new THREE.CylinderGeometry(0.56, 0.56, 0.038, 48);
   const hubMat = new THREE.MeshPhysicalMaterial({
-    color: 0xcccccc,
-    metalness: 0.2,
+    color: 0xe4e4e7,
+    metalness: 0.1,
     roughness: 0.1,
-    transmission: 0.85,
+    transmission: 0.88,
     transparent: true,
-    opacity: 0.8
+    opacity: 0.85
   });
   const hub = new THREE.Mesh(hubGeo, hubMat);
   cdDisc.add(hub);
 
-  const holeGeo = new THREE.CylinderGeometry(0.24, 0.24, 0.06, 32);
-  const holeMat = new THREE.MeshBasicMaterial({ color: 0x05070a });
+  const holeGeo = new THREE.CylinderGeometry(0.24, 0.24, 0.05, 32);
+  const holeMat = new THREE.MeshBasicMaterial({ color: 0x0a0a0c });
   const hole = new THREE.Mesh(holeGeo, holeMat);
   cdDisc.add(hole);
 
-  // 鼠标拖拽 3D 旋转视角交互
+  // 3. 空间微尘粒子（增强物理空气感）
+  const dustCount = 120;
+  const dustPos = new Float32Array(dustCount * 3);
+  for (let i = 0; i < dustCount * 3; i++) {
+    dustPos[i] = (Math.random() - 0.5) * 14;
+  }
+  const dustGeo = new THREE.BufferGeometry();
+  dustGeo.setAttribute("position", new THREE.BufferAttribute(dustPos, 3));
+  const dustMat = new THREE.PointsMaterial({
+    color: 0xd4a373,
+    size: 0.025,
+    transparent: true,
+    opacity: 0.35
+  });
+  dustPoints = new THREE.Points(dustGeo, dustMat);
+  threeScene.add(dustPoints);
+
+  // 鼠标拖拽 3D 视角交互
   container.addEventListener("mousedown", (e) => {
     isDragging = true;
     prevMouseX = e.clientX;
@@ -164,17 +222,14 @@ function initThreeHero() {
     if (!isDragging) return;
     const deltaX = e.clientX - prevMouseX;
     const deltaY = e.clientY - prevMouseY;
-    cdGroup.rotation.y += deltaX * 0.008;
-    cdGroup.rotation.x += deltaY * 0.008;
+    cdGroup.rotation.y += deltaX * 0.006;
+    cdGroup.rotation.x += deltaY * 0.006;
     prevMouseX = e.clientX;
     prevMouseY = e.clientY;
   });
 
-  window.addEventListener("mouseup", () => {
-    isDragging = false;
-  });
+  window.addEventListener("mouseup", () => { isDragging = false; });
 
-  // 移动端 Touch 支持
   container.addEventListener("touchstart", (e) => {
     if (e.touches.length === 1) {
       isDragging = true;
@@ -187,15 +242,15 @@ function initThreeHero() {
     if (!isDragging || e.touches.length !== 1) return;
     const deltaX = e.touches[0].clientX - prevMouseX;
     const deltaY = e.touches[0].clientY - prevMouseY;
-    cdGroup.rotation.y += deltaX * 0.01;
-    cdGroup.rotation.x += deltaY * 0.01;
+    cdGroup.rotation.y += deltaX * 0.008;
+    cdGroup.rotation.x += deltaY * 0.008;
     prevMouseX = e.touches[0].clientX;
     prevMouseY = e.touches[0].clientY;
   });
 
   window.addEventListener("touchend", () => { isDragging = false; });
 
-  // 控制按钮交互
+  // 硬件控制按钮
   const btnEject = document.getElementById("btn-eject-cd");
   const btnSpeed = document.getElementById("btn-speed-cd");
   const btnHolo = document.getElementById("btn-holo-cd");
@@ -204,16 +259,16 @@ function initThreeHero() {
     btnEject.addEventListener("click", () => {
       discEjected = !discEjected;
       btnEject.classList.toggle("active", discEjected);
-      btnEject.textContent = discEjected ? "💿 唱片已抽出" : "💿 推入盒中";
+      btnEject.textContent = discEjected ? "出舱 / EJECT" : "归位 / LOAD";
     });
   }
 
   if (btnSpeed) {
     const speeds = [
-      { label: "🔄 转速: 正常", val: 0.015 },
-      { label: "⚡ 转速: 极速", val: 0.045 },
-      { label: "⏸ 转速: 暂停", val: 0.000 },
-      { label: "🐢 转速: 缓慢", val: 0.005 }
+      { label: "转速 / 1X", val: 0.008 },
+      { label: "转速 / 3X", val: 0.028 },
+      { label: "转速 / PAUSE", val: 0.0 },
+      { label: "转速 / 0.5X", val: 0.003 }
     ];
     let sIdx = 0;
     btnSpeed.addEventListener("click", () => {
@@ -227,13 +282,12 @@ function initThreeHero() {
     btnHolo.addEventListener("click", () => {
       isHoloEnhanced = !isHoloEnhanced;
       btnHolo.classList.toggle("active", isHoloEnhanced);
-      discMat.roughness = isHoloEnhanced ? 0.05 : 0.18;
-      discMat.clearcoatRoughness = isHoloEnhanced ? 0.02 : 0.1;
-      discMat.reflectivity = isHoloEnhanced ? 1.5 : 1.0;
+      discMat.roughness = isHoloEnhanced ? 0.06 : 0.16;
+      discMat.clearcoatRoughness = isHoloEnhanced ? 0.02 : 0.08;
+      discMat.reflectivity = isHoloEnhanced ? 1.4 : 1.0;
     });
   }
 
-  // 自适应窗口重绘
   window.addEventListener("resize", () => {
     if (!container) return;
     const w = container.clientWidth;
@@ -241,46 +295,41 @@ function initThreeHero() {
     threeCamera.aspect = w / h;
     threeCamera.updateProjectionMatrix();
     threeRenderer.setSize(w, h);
+    cdGroup.position.set(w > 960 ? 2.15 : 0, w > 960 ? 0.05 : 0.6, 0);
   });
 
-  // 动画主循环
   function animate() {
     requestAnimationFrame(animate);
-
-    // 光盘自主自转
     if (cdDisc) {
       cdDisc.rotation.y += discSpeed;
-
-      // 唱片平滑出舱/归位动画
-      const targetX = discEjected ? 1.4 : -0.6;
-      cdDisc.position.x += (targetX - cdDisc.position.x) * 0.08;
+      const targetX = discEjected ? 1.45 : -0.75;
+      cdDisc.position.x += (targetX - cdDisc.position.x) * 0.07;
     }
-
-    // 默认空闲微漂浮律动
     if (!isDragging && cdGroup) {
-      cdGroup.rotation.y += 0.002;
+      cdGroup.rotation.y += 0.0012;
     }
-
+    if (dustPoints) {
+      dustPoints.rotation.y += 0.0003;
+    }
     threeRenderer.render(threeScene, threeCamera);
   }
   animate();
 }
 
 // ========================================================
-// 2. 五大复古形态 Tab 切换器
+// 2. 五种物理媒介形态索引切换器
 // ========================================================
-function initCarrierTabs() {
-  const tabs = document.querySelectorAll(".carrier-tab");
-  const panes = document.querySelectorAll(".carrier-content-pane");
+function initFormatIndex() {
+  const items = document.querySelectorAll(".format-index-item");
+  const panes = document.querySelectorAll(".format-pane");
 
-  tabs.forEach(tab => {
-    tab.addEventListener("click", () => {
-      const targetId = tab.getAttribute("data-target");
-
-      tabs.forEach(t => t.classList.remove("active"));
+  items.forEach(item => {
+    item.addEventListener("click", () => {
+      const targetId = item.getAttribute("data-target");
+      items.forEach(i => i.classList.remove("active"));
       panes.forEach(p => p.classList.remove("active"));
 
-      tab.classList.add("active");
+      item.classList.add("active");
       const targetPane = document.getElementById(targetId);
       if (targetPane) targetPane.classList.add("active");
     });
@@ -288,14 +337,13 @@ function initCarrierTabs() {
 }
 
 // ========================================================
-// 3. 歌曲智能搜索与元数据全自动补全 (后端多源 + 浏览器iTunes JSONP双保险)
+// 3. 歌曲智能搜索与元数据全自动补全 (多源 + 浏览器 JSONP 双保险)
 // ========================================================
 let searchDebounceTimer = null;
 let currentPreviewAudio = null;
 let currentSearchSource = "all";
 let isManualMode = false;
 
-// 浏览器端 iTunes JSONP 兜底搜索（不经过 Cloudflare IP，永不被苹果限流）
 function searchItunesJSONP(query) {
   return new Promise((resolve) => {
     const cbName = "spinoraItunesCb_" + Date.now() + "_" + Math.floor(Math.random() * 1000);
@@ -350,7 +398,7 @@ function initMusicSearch() {
   const dropdown = document.getElementById("search-results-dropdown");
   const spinner = document.getElementById("search-spinner");
   const btnClear = document.getElementById("btn-clear-search");
-  const sourceTabs = document.querySelectorAll("#search-source-tabs .source-chip");
+  const sourceTabs = document.querySelectorAll("#search-source-tabs .source-tab");
   const previewCard = document.getElementById("selected-song-preview");
   const btnAudioTest = document.getElementById("btn-preview-audio-test");
   const btnResetTrack = document.getElementById("btn-reset-selected");
@@ -359,7 +407,6 @@ function initMusicSearch() {
 
   if (!searchInput || !dropdown) return;
 
-  // 曲库源切换
   sourceTabs.forEach(tab => {
     tab.addEventListener("click", () => {
       sourceTabs.forEach(t => t.classList.remove("active"));
@@ -371,7 +418,6 @@ function initMusicSearch() {
     });
   });
 
-  // 清空搜索框
   if (btnClear) {
     btnClear.addEventListener("click", () => {
       searchInput.value = "";
@@ -382,7 +428,6 @@ function initMusicSearch() {
     });
   }
 
-  // 手动填写切换
   if (btnToggleManual && manualBox) {
     btnToggleManual.addEventListener("click", () => {
       isManualMode = !isManualMode;
@@ -395,7 +440,6 @@ function initMusicSearch() {
     });
   }
 
-  // 重选歌曲
   if (btnResetTrack) {
     btnResetTrack.addEventListener("click", () => {
       previewCard.classList.add("hidden");
@@ -409,7 +453,6 @@ function initMusicSearch() {
     });
   }
 
-  // 搜索输入防抖
   searchInput.addEventListener("input", () => {
     clearTimeout(searchDebounceTimer);
     const query = searchInput.value.trim();
@@ -449,7 +492,6 @@ function initMusicSearch() {
           seen.add(key);
           merged.push(t);
         } else {
-          // 补充 Apple 的 30s 试听与高清封面
           const idx = merged.findIndex(m => `${m.title.toLowerCase()}__${m.artist.toLowerCase()}` === key);
           if (idx >= 0) {
             if (!merged[idx].preview_url && t.preview_url) merged[idx].preview_url = t.preview_url;
@@ -462,8 +504,8 @@ function initMusicSearch() {
         renderSearchResults(merged.slice(0, 12), dropdown);
       } else {
         dropdown.innerHTML = `
-          <div style="padding:16px; text-align:center; color:var(--text-muted); font-size:0.84rem;">
-            未搜索到相关曲目，可以尝试切换上方曲库标签，或点击下方 <strong style="color:var(--accent-cyan);">手动填写</strong>。
+          <div style="padding:16px; text-align:center; color:var(--ink-muted); font-size:0.84rem;">
+            未搜索到相关曲目，可切换上方曲库或点击「手动填写」。
           </div>
         `;
         dropdown.classList.remove("hidden");
@@ -472,21 +514,19 @@ function initMusicSearch() {
       spinner.classList.add("hidden");
       dropdown.innerHTML = `
         <div style="padding:16px; text-align:center; color:var(--danger); font-size:0.84rem;">
-          搜索请求暂不可用，请点击下方「手动填写」继续封存礼物。
+          搜索请求暂不可用，请点击「手动填写」继续。
         </div>
       `;
       dropdown.classList.remove("hidden");
     }
   }
 
-  // 点击外部关闭搜索下拉
   document.addEventListener("click", (e) => {
     if (!searchInput.contains(e.target) && !dropdown.contains(e.target)) {
       dropdown.classList.add("hidden");
     }
   });
 
-  // 渲染搜索结果列表
   function renderSearchResults(tracks, container) {
     container.innerHTML = "";
     tracks.forEach(track => {
@@ -500,7 +540,7 @@ function initMusicSearch() {
         </div>
         <div class="search-item-badges">
           <span class="search-source-pill">${escapeHtml(track.source_label || '曲库')}</span>
-          ${track.preview_url ? '<span class="search-preview-badge">可试听</span>' : ''}
+          ${track.preview_url ? '<span class="search-preview-badge">30s</span>' : ''}
         </div>
       `;
 
@@ -514,7 +554,6 @@ function initMusicSearch() {
     container.classList.remove("hidden");
   }
 
-  // 选中某首歌曲：全自动补全表单数据
   function selectTrack(track) {
     isManualMode = false;
     if (manualBox) manualBox.classList.add("hidden");
@@ -526,7 +565,6 @@ function initMusicSearch() {
     document.getElementById("preview_url").value = track.preview_url || "";
     document.getElementById("platform_links").value = JSON.stringify(track.platform_links || {});
 
-    // 更新选中预览卡片
     const coverEl = document.getElementById("preview-cover-img");
     coverEl.src = track.cover || "assets/logo.svg";
     coverEl.onerror = () => { coverEl.src = "assets/logo.svg"; };
@@ -538,17 +576,16 @@ function initMusicSearch() {
     const statusTag = document.getElementById("preview-status-tag");
     if (statusTag) {
       statusTag.textContent = track.preview_url
-        ? "✓ 已匹配高清封面、30s 原声试听与六大平台跳链"
-        : "✓ 已自动生成六大音乐平台收听直达链接";
+        ? "已匹配封面、30s 原声试听与六大平台跳链"
+        : "已自动生成六大平台收听直达链接";
     }
 
     previewCard.classList.remove("hidden");
 
-    // 音频试听测试
     if (btnAudioTest) {
       if (track.preview_url) {
         btnAudioTest.classList.remove("hidden");
-        btnAudioTest.textContent = "▶ 试听";
+        btnAudioTest.textContent = "试听";
         btnAudioTest.onclick = () => togglePreviewAudio(track.preview_url, btnAudioTest);
       } else {
         btnAudioTest.classList.add("hidden");
@@ -559,21 +596,20 @@ function initMusicSearch() {
   function togglePreviewAudio(url, buttonEl) {
     if (currentPreviewAudio && !currentPreviewAudio.paused) {
       currentPreviewAudio.pause();
-      buttonEl.textContent = "▶ 试听";
+      buttonEl.textContent = "试听";
       return;
     }
     if (!currentPreviewAudio || currentPreviewAudio.src !== url) {
       if (currentPreviewAudio) currentPreviewAudio.pause();
       currentPreviewAudio = new Audio(url);
       currentPreviewAudio.addEventListener("ended", () => {
-        buttonEl.textContent = "▶ 试听";
+        buttonEl.textContent = "试听";
       });
     }
     currentPreviewAudio.play();
-    buttonEl.textContent = "⏸ 暂停";
+    buttonEl.textContent = "暂停";
   }
 
-  // 一键灵感祝福词 & 字数统计
   const msgTextarea = document.getElementById("message");
   const charCountEl = document.getElementById("msg-char-count");
   const moodChips = document.querySelectorAll(".mood-chip");
@@ -595,18 +631,9 @@ function initMusicSearch() {
 }
 
 // ========================================================
-// 4. 音乐礼物盒 2.0 (拆盲盒 + 30s试听 + 全平台矢量图标 + 邮箱回响)
+// 4. 音乐礼物盲盒 (纯文字极简按钮 + 30s 试听 + 邮箱回信)
 // ========================================================
 let activeUnpackAudio = null;
-
-const PLATFORM_SVGS = {
-  spotify: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg>',
-  netease: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm3.2 13.85c-.62.92-1.68 1.4-2.88 1.4-1.95 0-3.53-1.46-3.53-3.42 0-1.92 1.54-3.43 3.47-3.43.4 0 .77.07 1.11.2l-.38-2.6c-.06-.42.22-.82.64-.89.42-.06.82.22.89.64l.83 5.56c.14.94-.06 1.83-.15 2.54zm-2.88-3.8c-.99 0-1.8.82-1.8 1.83 0 1.02.81 1.84 1.8 1.84.97 0 1.73-.76 1.79-1.74l-.16-1.07c-.38-.53-.98-.86-1.63-.86z"/></svg>',
-  qq: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm3.8 13.4c-.7 1.1-2 1.8-3.5 1.8a4.2 4.2 0 0 1-4.3-4.2 4.2 4.2 0 0 1 4.3-4.2c1.2 0 2.3.5 3 1.3V7.2a.8.8 0 0 1 1.6 0v5.9a3.5 3.5 0 0 1-1.1 2.3zm-3.5-4.9a2.5 2.5 0 1 0 2.5 2.5 2.5 2.5 0 0 0-2.5-2.5z"/></svg>',
-  kugou: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14.5v-9l6.5 4.5-6.5 4.5z"/></svg>',
-  apple: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M15.96 6.33c.67-.81 1.12-1.94.99-3.07-.96.04-2.13.64-2.82 1.45-.61.71-1.15 1.86-1 2.97 1.07.08 2.16-.54 2.83-1.35z"/></svg>',
-  tidal: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 4.5l3.5 3.5L12 11.5 8.5 8 12 4.5zm-7 7L8.5 8 12 11.5 8.5 15 5 11.5zm14 0L15.5 8 12 11.5 15.5 15 19 11.5zm-7 3.5L15.5 18.5 12 22l-3.5-3.5L12 15z"/></svg>'
-};
 
 function initGiftBox() {
   const btnOpen = document.getElementById("btn-open-random");
@@ -620,7 +647,7 @@ function initGiftBox() {
 
   async function openRandomGift() {
     btnOpen.disabled = true;
-    btnOpen.innerHTML = "<span>正在开启盲盒...</span>";
+    btnOpen.textContent = "开启中...";
     if (btnUnsealHero) btnUnsealHero.disabled = true;
 
     if (activeUnpackAudio) {
@@ -636,29 +663,28 @@ function initGiftBox() {
         renderUnpackedCard(result.data, slot);
       } else {
         slot.innerHTML = `
-          <div class="sealed-box-card">
-            <div class="sealed-ribbon">EMPTY BOX</div>
-            <h3 class="sealed-title">盲盒暂时空空如也</h3>
-            <p class="sealed-desc">${escapeHtml(result.message || "来右侧做第一个封存音乐礼物的人吧！")}</p>
+          <div class="sealed-sleeve-card">
+            <div class="sleeve-catalog-no">EMPTY ARCHIVE</div>
+            <h3 class="sleeve-heading">盲盒暂时空空如也</h3>
+            <p class="sleeve-sub">${escapeHtml(result.message || "来右侧做第一个封存音乐礼物的人吧。")}</p>
           </div>
         `;
       }
     } catch (err) {
       slot.innerHTML = `
-        <div class="sealed-box-card">
+        <div class="sealed-sleeve-card">
           <p style="color:var(--danger);">网络连接不稳定，请稍后刷新重试。</p>
         </div>
       `;
     } finally {
       btnOpen.disabled = false;
-      btnOpen.innerHTML = "<span>🎲 换一首 / 拆盲盒</span>";
+      btnOpen.textContent = "换一首 / 随机开启";
     }
   }
 
   btnOpen.addEventListener("click", openRandomGift);
   if (btnUnsealHero) btnUnsealHero.addEventListener("click", openRandomGift);
 
-  // 渲染拆开的礼物卡片
   function renderUnpackedCard(gift, container) {
     const title = escapeHtml(gift.song_title);
     const artist = escapeHtml(gift.artist || '未知艺术家');
@@ -682,13 +708,13 @@ function initGiftBox() {
       previewPlayerHtml = `
         <div class="preview-audio-bar">
           <button type="button" class="btn-play-preview" id="btn-play-gift-audio" aria-label="播放试听">
-            <svg id="icon-play-svg" viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><polygon points="6 4 20 12 6 20 6 4"/></svg>
+            <svg id="icon-play-svg" viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><polygon points="6 4 20 12 6 20 6 4"/></svg>
           </button>
           <div class="audio-progress-wrap">
             <div class="audio-label">
               <span>
                 <span class="eq-bars" id="audio-eq-bars"><span></span><span></span><span></span><span></span></span>
-                30 秒官方高保真试听
+                30S PREVIEW
               </span>
               <span id="audio-time-label">0:00 / 0:30</span>
             </div>
@@ -701,27 +727,27 @@ function initGiftBox() {
     } else {
       previewPlayerHtml = `
         <div class="preview-audio-unavailable">
-          🎵 该曲目暂无 30s 试听片段，请点击下方你常用的音乐平台收听完整版
+          当前曲目暂无 30s 试听片段，请点击下方平台前往聆听完整版
         </div>
       `;
     }
 
     const platformButtons = `
       <div class="listen-platforms-box">
-        <div class="listen-title">选择你常用的平台收听整首歌曲：</div>
+        <div class="listen-title">选择你常用的平台收听全曲：</div>
         <div class="platform-chips-row">
-          <a href="${escapeHtml(links.netease || `https://music.163.com/#/search/m/?s=${query}`)}" target="_blank" rel="noopener noreferrer" class="platform-chip chip-netease">${PLATFORM_SVGS.netease} 网易云</a>
-          <a href="${escapeHtml(links.qq || `https://y.qq.com/n/ryqq/search?w=${query}`)}" target="_blank" rel="noopener noreferrer" class="platform-chip chip-qq">${PLATFORM_SVGS.qq} QQ音乐</a>
-          <a href="${escapeHtml(links.kugou || `https://www.kugou.com/yy/html/search.html#searchType=song&searchKeyWord=${query}`)}" target="_blank" rel="noopener noreferrer" class="platform-chip chip-kugou">${PLATFORM_SVGS.kugou} 酷狗</a>
-          <a href="${escapeHtml(links.spotify || `https://open.spotify.com/search/${query}`)}" target="_blank" rel="noopener noreferrer" class="platform-chip chip-spotify">${PLATFORM_SVGS.spotify} Spotify</a>
-          <a href="${escapeHtml(links.apple || `https://music.apple.com/search?term=${query}`)}" target="_blank" rel="noopener noreferrer" class="platform-chip chip-apple">${PLATFORM_SVGS.apple} Apple</a>
-          <a href="${escapeHtml(links.tidal || `https://listen.tidal.com/search?q=${query}`)}" target="_blank" rel="noopener noreferrer" class="platform-chip chip-tidal">${PLATFORM_SVGS.tidal} Tidal</a>
+          <a href="${escapeHtml(links.netease || `https://music.163.com/#/search/m/?s=${query}`)}" target="_blank" rel="noopener noreferrer" class="platform-chip">网易云音乐</a>
+          <a href="${escapeHtml(links.qq || `https://y.qq.com/n/ryqq/search?w=${query}`)}" target="_blank" rel="noopener noreferrer" class="platform-chip">QQ音乐</a>
+          <a href="${escapeHtml(links.kugou || `https://www.kugou.com/yy/html/search.html#searchType=song&searchKeyWord=${query}`)}" target="_blank" rel="noopener noreferrer" class="platform-chip">酷狗音乐</a>
+          <a href="${escapeHtml(links.spotify || `https://open.spotify.com/search/${query}`)}" target="_blank" rel="noopener noreferrer" class="platform-chip">Spotify</a>
+          <a href="${escapeHtml(links.apple || `https://music.apple.com/search?term=${query}`)}" target="_blank" rel="noopener noreferrer" class="platform-chip">Apple Music</a>
+          <a href="${escapeHtml(links.tidal || `https://listen.tidal.com/search?q=${query}`)}" target="_blank" rel="noopener noreferrer" class="platform-chip">Tidal</a>
         </div>
       </div>
     `;
 
     const existingReplyHtml = replyMessage
-      ? `<div class="reply-echo-box">💬 上一位拆盒听友回响：${escapeHtml(replyMessage)}</div>`
+      ? `<div class="reply-echo-box">上一位拆盒听友回响：${escapeHtml(replyMessage)}</div>`
       : '';
 
     container.innerHTML = `
@@ -734,7 +760,7 @@ function initGiftBox() {
           <div class="unpacked-song-meta">
             <div class="unpacked-song-title" title="《${title}》">《${title}》</div>
             <div class="unpacked-artist-name">${artist}</div>
-            <div class="unpacked-meta-time">封存于 ${dateStr}</div>
+            <div class="unpacked-meta-time">SEALED · ${dateStr}</div>
           </div>
         </div>
 
@@ -742,9 +768,7 @@ function initGiftBox() {
 
         <div class="unpacked-quote-box">
           “ ${msg} ”
-          <div class="unpacked-quote-sender">
-            <span>—— 来自 <strong>${nickname}</strong> 的分享</span>
-          </div>
+          <div class="unpacked-quote-sender">—— ${nickname}</div>
         </div>
 
         ${existingReplyHtml}
@@ -753,21 +777,20 @@ function initGiftBox() {
         <div class="resonance-wall">
           <div class="resonance-actions">
             <button type="button" class="btn-heart-resonate" id="btn-heart-reaction" data-id="${gift.id}">
-              <span>❤️ 产生共鸣</span>
+              <span>产生共鸣</span>
               <strong id="heart-count">${likes}</strong>
             </button>
-            <span style="font-size:0.76rem; color:var(--text-dim);">写句回信可邮件通知送礼人</span>
+            <span style="font-size:0.76rem; color:var(--ink-dim);">写句回信可邮件通知送礼人</span>
           </div>
           <div class="reply-input-row">
             <input type="text" id="receiver-reply-msg" placeholder="写一句拆盒感言给送礼人..." maxlength="150">
-            <button type="button" id="btn-submit-reply" class="btn-send-reply" data-id="${gift.id}">💌 寄出回信</button>
+            <button type="button" id="btn-submit-reply" class="btn-send-reply" data-id="${gift.id}">寄出回信</button>
           </div>
-          <div id="reply-feedback" style="font-size:0.78rem; color:var(--accent-cyan); display:none; margin-top:2px;"></div>
+          <div id="reply-feedback" style="font-size:0.78rem; color:var(--amber-bright); display:none; margin-top:2px;"></div>
         </div>
       </div>
     `;
 
-    // 绑定试听播放器逻辑
     if (previewUrl) {
       const playBtn = document.getElementById("btn-play-gift-audio");
       const playSvg = document.getElementById("icon-play-svg");
@@ -815,7 +838,6 @@ function initGiftBox() {
       });
     }
 
-    // 绑定点赞共鸣逻辑
     const heartBtn = document.getElementById("btn-heart-reaction");
     heartBtn.addEventListener("click", async () => {
       heartBtn.disabled = true;
@@ -828,12 +850,12 @@ function initGiftBox() {
         const d = await res.json();
         if (res.ok && d.code === 200) {
           document.getElementById("heart-count").textContent = d.likes_count;
-          heartBtn.style.background = "rgba(244, 63, 94, 0.35)";
+          heartBtn.style.borderColor = "var(--amber)";
+          heartBtn.style.color = "var(--amber-bright)";
         }
       } catch (e) {}
     });
 
-    // 绑定回信逻辑 (触发邮件通知)
     const replyBtn = document.getElementById("btn-submit-reply");
     const replyInput = document.getElementById("receiver-reply-msg");
     const replyFeedback = document.getElementById("reply-feedback");
@@ -857,21 +879,20 @@ function initGiftBox() {
         });
         const d = await res.json();
         replyFeedback.style.display = "block";
-        replyFeedback.style.color = res.ok ? "var(--accent-cyan)" : "var(--danger)";
-        replyFeedback.textContent = d.message || "💌 回信已成功寄出！";
+        replyFeedback.style.color = res.ok ? "var(--amber-bright)" : "var(--danger)";
+        replyFeedback.textContent = d.message || "回信已成功寄出。";
         if (res.ok) replyInput.value = "";
       } catch (e) {
         replyFeedback.style.display = "block";
         replyFeedback.style.color = "var(--danger)";
-        replyFeedback.textContent = "发送失败，请稍后重试";
+        replyFeedback.textContent = "发送失败，请稍后重试。";
       } finally {
         replyBtn.disabled = false;
-        replyBtn.textContent = "💌 寄出回信";
+        replyBtn.textContent = "寄出回信";
       }
     });
   }
 
-  // 2. 封存礼物表单提交 (支持搜索选中 + 手动兜底)
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
     feedback.textContent = "";
@@ -917,7 +938,7 @@ function initGiftBox() {
     }
 
     btnSubmit.disabled = true;
-    btnSubmit.innerHTML = "<span>正在封存心意...</span>";
+    btnSubmit.textContent = "正在封存心意...";
 
     try {
       const res = await fetch("/api/gifts", {
@@ -940,7 +961,7 @@ function initGiftBox() {
 
       if (res.ok && result.code === 200) {
         feedback.style.color = "var(--success)";
-        feedback.textContent = "🎉 礼物已成功封存入盒！当有听友拆开并回信时将通知你。";
+        feedback.textContent = "礼物已成功封存入盒，感谢你的分享。";
         form.reset();
         document.getElementById("song_title").value = "";
         document.getElementById("artist").value = "";
@@ -959,15 +980,14 @@ function initGiftBox() {
       }
     } catch (err) {
       feedback.style.color = "var(--danger)";
-      feedback.textContent = "网络连接故障，请检查您的网络设置。";
+      feedback.textContent = "网络连接故障，请检查网络设置。";
     } finally {
       btnSubmit.disabled = false;
-      btnSubmit.innerHTML = "<span>🎁 封存并放入礼物盒</span>";
+      btnSubmit.textContent = "封存并放入礼物盒";
     }
   });
 }
 
-// 获取全站累计礼物数
 async function fetchGiftCount() {
   const counter = document.getElementById("total-gifts-count");
   if (!counter) return;
@@ -984,7 +1004,7 @@ async function fetchGiftCount() {
 }
 
 // ========================================================
-// 5. 版权与免责声明 Modal 弹窗
+// 5. 版权与免责声明弹窗
 // ========================================================
 function initDisclaimerModal() {
   const modal = document.getElementById("disclaimer-modal");
