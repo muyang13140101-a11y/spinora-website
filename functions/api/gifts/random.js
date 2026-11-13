@@ -3,13 +3,30 @@
 
 export async function onRequestGet({ env }) {
   try {
-    const gift = await env.DB.prepare(
-      `SELECT id, song_title, artist, message, song_url, nickname, created_at 
-       FROM gifts 
-       WHERE status = 'active' 
-       ORDER BY RANDOM() 
-       LIMIT 1`
-    ).first();
+    let gift;
+    try {
+      gift = await env.DB.prepare(
+        `SELECT id, song_title, artist, message, song_url, nickname, created_at,
+                COALESCE(album_cover, '') as album_cover,
+                COALESCE(preview_url, '') as preview_url,
+                COALESCE(platform_links, '{}') as platform_links,
+                COALESCE(likes_count, 0) as likes_count,
+                COALESCE(reply_message, '') as reply_message
+         FROM gifts 
+         WHERE status = 'active' 
+         ORDER BY RANDOM() 
+         LIMIT 1`
+      ).first();
+    } catch (e) {
+      // 容错降级读取老表
+      gift = await env.DB.prepare(
+        `SELECT id, song_title, artist, message, song_url, nickname, created_at
+         FROM gifts 
+         WHERE status = 'active' 
+         ORDER BY RANDOM() 
+         LIMIT 1`
+      ).first();
+    }
 
     if (!gift) {
       return new Response(JSON.stringify({
@@ -21,40 +38,53 @@ export async function onRequestGet({ env }) {
       });
     }
 
-    // 智能识别链接类型：是音频直链还是第三方平台
-    let is_direct_audio = false;
-    let platform_name = "外部链接";
-
-    if (gift.song_url) {
-      const lower = gift.song_url.toLowerCase().split('?')[0];
-      if (lower.endsWith('.mp3') || lower.endsWith('.m4a') || lower.endsWith('.wav') || lower.endsWith('.ogg') || lower.endsWith('.flac')) {
-        is_direct_audio = true;
+    // 解析平台链接
+    let platform_links = {};
+    if (gift.platform_links) {
+      try {
+        platform_links = typeof gift.platform_links === 'string' ? JSON.parse(gift.platform_links) : gift.platform_links;
+      } catch (e) {
+        platform_links = {};
       }
-
-      if (lower.includes('spotify.com')) platform_name = "Spotify";
-      else if (lower.includes('music.163.com')) platform_name = "网易云音乐";
-      else if (lower.includes('qq.com')) platform_name = "QQ音乐";
-      else if (lower.includes('apple.com')) platform_name = "Apple Music";
-      else if (lower.includes('bilibili.com')) platform_name = "哔哩哔哩";
-      else if (lower.includes('youtube.com') || lower.includes('youtu.be')) platform_name = "YouTube";
     }
+
+    // 如果没有预置平台链接，自动生成主要平台检索链接
+    const query = encodeURIComponent(`${gift.song_title} ${gift.artist}`);
+    if (!platform_links.spotify) platform_links.spotify = `https://open.spotify.com/search/${query}`;
+    if (!platform_links.netease) platform_links.netease = `https://music.163.com/#/search/m/?s=${query}`;
+    if (!platform_links.qq) platform_links.qq = `https://y.qq.com/n/ryqq/search?w=${query}`;
+    if (!platform_links.kugou) platform_links.kugou = `https://www.kugou.com/yy/html/search.html#searchType=song&searchKeyWord=${query}`;
+    if (!platform_links.apple) platform_links.apple = `https://music.apple.com/search?term=${query}`;
 
     return new Response(JSON.stringify({
       code: 200,
       data: {
-        ...gift,
-        is_direct_audio,
-        platform_name
+        id: gift.id,
+        song_title: gift.song_title,
+        artist: gift.artist,
+        message: gift.message,
+        song_url: gift.song_url,
+        nickname: gift.nickname,
+        created_at: gift.created_at,
+        album_cover: gift.album_cover || '',
+        preview_url: gift.preview_url || '',
+        platform_links: platform_links,
+        likes_count: gift.likes_count || 0,
+        reply_message: gift.reply_message || ''
       }
     }), {
       status: 200,
       headers: {
         "Content-Type": "application/json; charset=utf-8",
-        "Cache-Control": "no-store, no-cache, must-revalidate"
+        "Cache-Control": "no-cache, no-store, must-revalidate"
       }
     });
   } catch (err) {
-    return new Response(JSON.stringify({ code: 500, message: "随机获取失败", error: err.message }), {
+    return new Response(JSON.stringify({
+      code: 500,
+      message: "获取盲盒失败",
+      error: err.message
+    }), {
       status: 500,
       headers: { "Content-Type": "application/json; charset=utf-8" }
     });

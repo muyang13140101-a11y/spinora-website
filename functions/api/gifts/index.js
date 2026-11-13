@@ -28,35 +28,45 @@ export async function onRequestPost({ request, env }) {
     }
 
     const body = await request.json();
-    let { song_title, artist, message, song_url, nickname } = body;
+    let { 
+      song_title, 
+      artist, 
+      message, 
+      song_url, 
+      nickname,
+      sender_email,
+      album_cover,
+      preview_url,
+      platform_links
+    } = body;
 
     // 1. 必填与长度校验
     if (!song_title || typeof song_title !== 'string' || song_title.trim().length === 0) {
       return new Response(JSON.stringify({ code: 422, message: "歌曲名称不能为空" }), { status: 422 });
     }
     if (!message || typeof message !== 'string' || message.trim().length === 0) {
-      return new Response(JSON.stringify({ code: 422, message: "推荐语不能为空" }), { status: 422 });
+      return new Response(JSON.stringify({ code: 422, message: "推荐语与祝福不能为空" }), { status: 422 });
     }
 
     song_title = sanitize(song_title).slice(0, 100);
     artist = sanitize(artist || '未知艺术家').slice(0, 100);
-    message = sanitize(message).slice(0, 300);
+    message = sanitize(message).slice(0, 500);
     nickname = sanitize(nickname || '神秘访客').slice(0, 30);
     song_url = (song_url || '').trim().slice(0, 500);
+    sender_email = sanitize(sender_email || '').slice(0, 100);
+    album_cover = (album_cover || '').trim().slice(0, 500);
+    preview_url = (preview_url || '').trim().slice(0, 500);
 
-    // 2. URL 协议合法性与防钓鱼检测
-    if (song_url) {
+    let linksJson = '{}';
+    if (platform_links) {
       try {
-        const parsed = new URL(song_url);
-        if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') {
-          return new Response(JSON.stringify({ code: 422, message: "歌曲链接必须为标准的 http 或 https 地址" }), { status: 422 });
-        }
+        linksJson = typeof platform_links === 'string' ? platform_links : JSON.stringify(platform_links);
       } catch (e) {
-        return new Response(JSON.stringify({ code: 422, message: "提供的歌曲链接格式不合法" }), { status: 422 });
+        linksJson = '{}';
       }
     }
 
-    // 3. 简单频控防刷 (同一 IP 1 分钟内最多提交 3 次)
+    // 2. 简单频控防刷 (同一 IP 1 分钟内最多提交 3 次)
     const clientIp = request.headers.get("cf-connecting-ip") || request.headers.get("x-real-ip") || "127.0.0.1";
     const ipHash = await sha256(clientIp + "spinora_salt_public_good");
 
@@ -74,19 +84,41 @@ export async function onRequestPost({ request, env }) {
       });
     }
 
-    // 4. 写入 D1
-    const stmt = await env.DB.prepare(
-      "INSERT INTO gifts (song_title, artist, message, song_url, nickname, ip_hash) VALUES (?, ?, ?, ?, ?, ?)"
-    ).bind(song_title, artist, message, song_url, nickname, ipHash).run();
+    // 3. 写入 D1 (兼容模式：如果额外列存在则写入，降级处理确保健壮)
+    try {
+      const stmt = await env.DB.prepare(
+        `INSERT INTO gifts (
+          song_title, artist, message, song_url, nickname, ip_hash,
+          sender_email, album_cover, preview_url, platform_links
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+      ).bind(
+        song_title, artist, message, song_url, nickname, ipHash,
+        sender_email, album_cover, preview_url, linksJson
+      ).run();
 
-    return new Response(JSON.stringify({
-      code: 200,
-      message: "🎁 礼物已成功封存入盒！感谢你的温暖分享。",
-      data: { id: stmt.meta.last_row_id }
-    }), {
-      status: 200,
-      headers: { "Content-Type": "application/json; charset=utf-8" }
-    });
+      return new Response(JSON.stringify({
+        code: 200,
+        message: "🎁 音乐礼物已成功封存入盒！感谢你的温度分享。",
+        data: { id: stmt.meta?.last_row_id }
+      }), {
+        status: 200,
+        headers: { "Content-Type": "application/json; charset=utf-8" }
+      });
+    } catch (dbErr) {
+      // 容错降级：如果用户尚未执行 ALTER TABLE，按基础字段写入
+      const fallbackStmt = await env.DB.prepare(
+        "INSERT INTO gifts (song_title, artist, message, song_url, nickname, ip_hash) VALUES (?, ?, ?, ?, ?, ?)"
+      ).bind(song_title, artist, message, song_url, nickname, ipHash).run();
+
+      return new Response(JSON.stringify({
+        code: 200,
+        message: "🎁 礼物已成功封存入盒！",
+        data: { id: fallbackStmt.meta?.last_row_id }
+      }), {
+        status: 200,
+        headers: { "Content-Type": "application/json; charset=utf-8" }
+      });
+    }
   } catch (err) {
     return new Response(JSON.stringify({ code: 500, message: "服务器异常，请稍后重试", error: err.message }), {
       status: 500,

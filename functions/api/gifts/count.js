@@ -18,3 +18,4 @@ export async function onRequestGet({ env }) {
     return new Response(JSON.stringify({ code: 500, total: 0 }), { status: 500 });
   }
 }
+
