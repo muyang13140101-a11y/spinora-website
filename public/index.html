@@ -262,11 +262,11 @@
     <!-- 音乐礼物盒子 2.0 (全交互：多平台智能搜索 + 30s试听 + 全平台跳链 + 邮箱回信通知) -->
     <section id="giftbox" class="content-section giftbox-section">
       <div class="section-headline-box">
-        <div class="section-tag">Community & Resonance</div>
-        <h2 class="section-h2">🎁 音乐礼物盒子 2.0</h2>
+        <div class="section-tag">Community &amp; Resonance</div>
+        <h2 class="section-h2">音乐礼物盒子 2.0</h2>
         <p class="section-subtext">
-          搜索选歌一键自动补全封面与平台，封存一段祝福；随机拆开一个盒子，在线试听并一键前往你喜欢的流媒体平台聆听全曲。
-          <br>目前盒中已凝聚 <strong id="total-gifts-count" style="color:var(--accent-cyan);">1</strong> 份有温度的音乐心意。
+          搜索选歌一键自动对齐多平台曲库，封存一段旋律与祝福；随机拆开一个盒子，在线试听并自由选择你常用的音乐软件收听全曲。
+          <br>目前盒中已凝聚 <strong id="total-gifts-count" class="count-highlight">1</strong> 份有温度的音乐心意
         </p>
       </div>
 
@@ -275,76 +275,124 @@
         <div class="gift-panel gift-panel-receiver">
           <div class="panel-header-row">
             <div class="panel-title-wrap">
-              <span class="panel-icon">🎲</span>
+              <span class="panel-dot"></span>
               <span class="panel-tag">拆开礼物盲盒</span>
             </div>
             <button id="btn-open-random" class="btn btn-sm btn-primary">
-              <span>随机拆一个盲盒</span>
+              <span>🎲 换一首 / 拆盲盒</span>
             </button>
           </div>
 
           <div id="gift-display-slot" class="gift-slot">
-            <div class="gift-slot-idle">
-              <div class="blind-box-graphic">🎁</div>
-              <p class="idle-title">一份未知的音乐心意正在静候</p>
-              <p class="idle-desc">点击右上角按钮，随机拆开一位陌生听友封存在网络角落里的旋律与祝福。</p>
+            <div class="sealed-box-card" id="sealed-box-trigger">
+              <div class="sealed-vinyl-silhouette">
+                <div class="sealed-vinyl-center"></div>
+              </div>
+              <div class="sealed-ribbon">SPINORA · BLIND BOX</div>
+              <h3 class="sealed-title">一份未知的音乐心意正在静候</h3>
+              <p class="sealed-desc">里面封存着一位陌生听友珍藏的旋律与祝福，点击下方按钮立即揭晓。</p>
+              <button type="button" id="btn-unseal-hero" class="btn btn-primary btn-unseal">
+                <span>✨ 拆开这份音乐礼物</span>
+              </button>
             </div>
           </div>
         </div>
 
-        <!-- 右侧：封存我的礼物 (赠送端体验 · 智能搜索补全) -->
+        <!-- 右侧：封存我的礼物 (赠送端体验 · 多源智能搜索 + 手动兜底) -->
         <div class="gift-panel gift-panel-sender">
           <div class="panel-header-row">
             <div class="panel-title-wrap">
-              <span class="panel-icon">✨</span>
+              <span class="panel-dot dot-purple"></span>
               <span class="panel-tag">封存我的音乐心意</span>
             </div>
-            <span class="panel-hint-badge">全自动元数据</span>
+            <span class="panel-hint-badge">多平台聚合曲库</span>
+          </div>
+
+          <!-- 曲库来源切换标签 -->
+          <div class="search-source-tabs" id="search-source-tabs">
+            <button type="button" class="source-chip active" data-source="all">全部聚合</button>
+            <button type="button" class="source-chip" data-source="qq">QQ音乐</button>
+            <button type="button" class="source-chip" data-source="netease">网易云</button>
+            <button type="button" class="source-chip" data-source="kugou">酷狗</button>
+            <button type="button" class="source-chip" data-source="deezer">全球曲库</button>
           </div>
 
           <!-- 歌曲智能搜索联动组件 -->
           <div class="search-music-wrapper">
-            <label class="form-label">
-              <span>智能搜索选歌</span>
-              <span class="label-sub">输入歌名/歌手，自动匹配高保真封面与多平台链接</span>
-            </label>
             <div class="search-input-box">
-              <span class="search-icon">🔍</span>
-              <input type="text" id="music-search-input" placeholder="输入你想分享的歌曲 (如: 周杰伦 晴天 / Hotel California / Taylor Swift)..." autocomplete="off">
+              <svg class="search-icon-svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+              </svg>
+              <input type="text" id="music-search-input" placeholder="搜歌名或歌手 (如: 周杰伦 晴天 / Hotel California)..." autocomplete="off">
+              <button type="button" id="btn-clear-search" class="btn-clear-search hidden" title="清空搜索">&times;</button>
               <div id="search-spinner" class="search-spinner hidden"></div>
             </div>
             <!-- 实时搜索自动补全下拉单 -->
             <div id="search-results-dropdown" class="search-dropdown hidden"></div>
+            <div class="manual-toggle-row">
+              <span class="manual-hint">支持 QQ / 网易云 / 酷狗 / Spotify / Apple Music</span>
+              <button type="button" id="btn-toggle-manual" class="btn-link-subtle">没搜到？手动填写</button>
+            </div>
           </div>
 
           <form id="gift-form">
+            <!-- 手动填写兜底表单（默认隐藏） -->
+            <div id="manual-entry-box" class="manual-entry-box hidden">
+              <div class="form-field-row">
+                <div class="form-field-half">
+                  <label for="manual_song_title">歌曲名 <span class="req">*</span></label>
+                  <input type="text" id="manual_song_title" maxlength="100" placeholder="输入歌曲名称">
+                </div>
+                <div class="form-field-half">
+                  <label for="manual_artist">歌手名</label>
+                  <input type="text" id="manual_artist" maxlength="100" placeholder="输入歌手名">
+                </div>
+              </div>
+            </div>
+
             <!-- 选定歌曲的实时预览卡片 (自动填充后展示) -->
             <div id="selected-song-preview" class="selected-song-preview hidden">
-              <img id="preview-cover-img" src="" alt="Album Cover" class="preview-cover">
+              <img id="preview-cover-img" src="assets/logo.svg" alt="Album Cover" class="preview-cover">
               <div class="preview-details">
-                <div id="preview-song-title" class="preview-title">已选歌曲名</div>
+                <div class="preview-title-row">
+                  <span id="preview-song-title" class="preview-title">已选歌曲名</span>
+                  <span id="preview-source-tag" class="preview-source-tag">QQ音乐</span>
+                </div>
                 <div id="preview-artist-name" class="preview-artist">歌手名</div>
-                <div class="preview-status-tag">✓ 官方高保真封面与 30s 试听音频已就绪</div>
+                <div id="preview-status-tag" class="preview-status-tag">✓ 已自动生成六大平台收听直达链接</div>
               </div>
-              <button type="button" id="btn-preview-audio-test" class="btn-audio-mini" title="试听 30 秒原声">▶ 试听</button>
+              <div class="preview-actions">
+                <button type="button" id="btn-preview-audio-test" class="btn-audio-mini hidden" title="试听 30 秒原声">▶ 试听</button>
+                <button type="button" id="btn-reset-selected" class="btn-reset-track" title="重新选歌">重选</button>
+              </div>
             </div>
 
             <!-- 隐藏域存储自动解析的数据 -->
-            <input type="hidden" id="song_title" required>
+            <input type="hidden" id="song_title">
             <input type="hidden" id="artist">
             <input type="hidden" id="album_cover">
             <input type="hidden" id="preview_url">
             <input type="hidden" id="platform_links">
 
             <div class="form-field">
-              <label for="message">对拆礼人的祝福语与听歌心情 <span class="req">*</span></label>
-              <textarea id="message" rows="3" required maxlength="500" placeholder="写下一段这首歌触动你的瞬间，或者给未来拆开这个盒子的陌生听友一句温暖祝福..."></textarea>
+              <div class="label-between">
+                <label for="message">对拆礼人的祝福语与听歌心情 <span class="req">*</span></label>
+                <span id="msg-char-count" class="char-count">0 / 300</span>
+              </div>
+              <!-- 一键灵感标签 -->
+              <div class="mood-chips-row">
+                <button type="button" class="mood-chip" data-text="戴上耳机，把前奏听完，希望这首歌也能陪你度过一个安静的夜晚。">🌙 深夜单曲</button>
+                <button type="button" class="mood-chip" data-text="今天天气真好，把这首充满力量与阳光的旋律分享给路过的你！">☀️ 分享好心情</button>
+                <button type="button" class="mood-chip" data-text="无论你此刻身在何处、心情如何，祝你听歌愉快，万事顺遂。">💌 陌生人祝福</button>
+              </div>
+              <textarea id="message" rows="3" required maxlength="300" placeholder="写下一段这首歌触动你的瞬间，或者给未来拆开这个盒子的陌生听友一句温暖祝福..."></textarea>
             </div>
 
             <div class="form-field-row">
               <div class="form-field-half">
                 <label for="nickname">你的称呼 (选填)</label>
-                <input type="text" id="nickname" maxlength="30" placeholder="如：深夜漫步者 / 留空为匿名">
+                <input type="text" id="nickname" maxlength="30" placeholder="如：深夜漫步者 / 匿名">
               </div>
               <div class="form-field-half">
                 <label for="sender_email">
@@ -354,7 +402,7 @@
               </div>
             </div>
             <div class="email-privacy-notice">
-              🔒 邮箱严格隐私保密，不对外公开展示。仅用于当有人拆开你的盲盒并写下感动回信时，系统发送邮件通知你。
+              🔒 邮箱严格隐私保密，绝不公开展示。仅当有人拆开你的盲盒并写下感动回信时，系统才会发邮件通知你。
             </div>
 
             <button type="submit" id="btn-submit-gift" class="btn btn-primary btn-block">

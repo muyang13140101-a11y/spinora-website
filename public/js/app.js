@@ -288,23 +288,133 @@ function initCarrierTabs() {
 }
 
 // ========================================================
-// 3. 歌曲智能搜索与元数据全自动补全 (涵盖各大流媒体)
+// 3. 歌曲智能搜索与元数据全自动补全 (后端多源 + 浏览器iTunes JSONP双保险)
 // ========================================================
 let searchDebounceTimer = null;
 let currentPreviewAudio = null;
+let currentSearchSource = "all";
+let isManualMode = false;
+
+// 浏览器端 iTunes JSONP 兜底搜索（不经过 Cloudflare IP，永不被苹果限流）
+function searchItunesJSONP(query) {
+  return new Promise((resolve) => {
+    const cbName = "spinoraItunesCb_" + Date.now() + "_" + Math.floor(Math.random() * 1000);
+    const script = document.createElement("script");
+    const timer = setTimeout(() => {
+      cleanup();
+      resolve([]);
+    }, 3500);
+
+    function cleanup() {
+      clearTimeout(timer);
+      if (script.parentNode) script.parentNode.removeChild(script);
+      try { delete window[cbName]; } catch (e) { window[cbName] = undefined; }
+    }
+
+    window[cbName] = (data) => {
+      cleanup();
+      const tracks = (data?.results || []).map(item => {
+        const title = item.trackName || "";
+        const artist = item.artistName || "未知歌手";
+        const q = encodeURIComponent(`${title} ${artist}`);
+        return {
+          id: `apple_${item.trackId}`,
+          source: "apple",
+          source_label: "Apple",
+          title,
+          artist,
+          album: item.collectionName || "",
+          cover: (item.artworkUrl100 || "").replace("100x100bb", "600x600bb"),
+          preview_url: item.previewUrl || "",
+          platform_links: {
+            spotify: `https://open.spotify.com/search/${q}`,
+            netease: `https://music.163.com/#/search/m/?s=${q}`,
+            qq: `https://y.qq.com/n/ryqq/search?w=${q}`,
+            kugou: `https://www.kugou.com/yy/html/search.html#searchType=song&searchKeyWord=${q}`,
+            apple: item.trackViewUrl || `https://music.apple.com/search?term=${q}`,
+            tidal: `https://listen.tidal.com/search?q=${q}`
+          }
+        };
+      });
+      resolve(tracks);
+    };
+
+    script.src = `https://itunes.apple.com/search?term=${encodeURIComponent(query)}&entity=song&limit=5&callback=${cbName}`;
+    script.onerror = () => { cleanup(); resolve([]); };
+    document.body.appendChild(script);
+  });
+}
 
 function initMusicSearch() {
   const searchInput = document.getElementById("music-search-input");
   const dropdown = document.getElementById("search-results-dropdown");
   const spinner = document.getElementById("search-spinner");
+  const btnClear = document.getElementById("btn-clear-search");
+  const sourceTabs = document.querySelectorAll("#search-source-tabs .source-chip");
   const previewCard = document.getElementById("selected-song-preview");
   const btnAudioTest = document.getElementById("btn-preview-audio-test");
+  const btnResetTrack = document.getElementById("btn-reset-selected");
+  const btnToggleManual = document.getElementById("btn-toggle-manual");
+  const manualBox = document.getElementById("manual-entry-box");
 
   if (!searchInput || !dropdown) return;
 
+  // 曲库源切换
+  sourceTabs.forEach(tab => {
+    tab.addEventListener("click", () => {
+      sourceTabs.forEach(t => t.classList.remove("active"));
+      tab.classList.add("active");
+      currentSearchSource = tab.getAttribute("data-source") || "all";
+      if (searchInput.value.trim().length > 0) {
+        triggerSearch(searchInput.value.trim());
+      }
+    });
+  });
+
+  // 清空搜索框
+  if (btnClear) {
+    btnClear.addEventListener("click", () => {
+      searchInput.value = "";
+      btnClear.classList.add("hidden");
+      dropdown.classList.add("hidden");
+      dropdown.innerHTML = "";
+      searchInput.focus();
+    });
+  }
+
+  // 手动填写切换
+  if (btnToggleManual && manualBox) {
+    btnToggleManual.addEventListener("click", () => {
+      isManualMode = !isManualMode;
+      manualBox.classList.toggle("hidden", !isManualMode);
+      btnToggleManual.textContent = isManualMode ? "返回搜索选歌" : "没搜到？手动填写";
+      if (isManualMode) {
+        previewCard.classList.add("hidden");
+        document.getElementById("manual_song_title")?.focus();
+      }
+    });
+  }
+
+  // 重选歌曲
+  if (btnResetTrack) {
+    btnResetTrack.addEventListener("click", () => {
+      previewCard.classList.add("hidden");
+      document.getElementById("song_title").value = "";
+      document.getElementById("artist").value = "";
+      document.getElementById("album_cover").value = "";
+      document.getElementById("preview_url").value = "";
+      document.getElementById("platform_links").value = "";
+      if (currentPreviewAudio) currentPreviewAudio.pause();
+      searchInput.focus();
+    });
+  }
+
+  // 搜索输入防抖
   searchInput.addEventListener("input", () => {
     clearTimeout(searchDebounceTimer);
     const query = searchInput.value.trim();
+
+    if (btnClear) btnClear.classList.toggle("hidden", query.length === 0);
 
     if (query.length === 0) {
       dropdown.classList.add("hidden");
@@ -312,28 +422,62 @@ function initMusicSearch() {
       return;
     }
 
-    spinner.classList.remove("hidden");
-    searchDebounceTimer = setTimeout(async () => {
-      try {
-        const res = await fetch(`/api/search?q=${encodeURIComponent(query)}`);
-        const result = await res.json();
-        spinner.classList.add("hidden");
-
-        if (res.ok && result.code === 200 && result.data && result.data.length > 0) {
-          renderSearchResults(result.data, dropdown);
-        } else {
-          dropdown.innerHTML = `
-            <div style="padding:14px; text-align:center; color:var(--text-dim); font-size:0.85rem;">
-              未找到匹配的歌曲，可尝试输入更精准的歌名或歌手
-            </div>
-          `;
-          dropdown.classList.remove("hidden");
-        }
-      } catch (e) {
-        spinner.classList.add("hidden");
-      }
-    }, 320);
+    searchDebounceTimer = setTimeout(() => triggerSearch(query), 320);
   });
+
+  async function triggerSearch(query) {
+    spinner.classList.remove("hidden");
+    try {
+      const apiPromise = fetch(`/api/search?q=${encodeURIComponent(query)}&source=${encodeURIComponent(currentSearchSource)}`)
+        .then(r => r.ok ? r.json() : { code: r.status, data: [] })
+        .catch(() => ({ code: 500, data: [] }));
+
+      const itunesPromise = (currentSearchSource === "all" || currentSearchSource === "deezer")
+        ? searchItunesJSONP(query)
+        : Promise.resolve([]);
+
+      const [apiRes, itunesTracks] = await Promise.all([apiPromise, itunesPromise]);
+      spinner.classList.add("hidden");
+
+      const serverTracks = Array.isArray(apiRes?.data) ? apiRes.data : [];
+      const merged = [...serverTracks];
+      const seen = new Set(merged.map(t => `${t.title.toLowerCase()}__${t.artist.toLowerCase()}`));
+
+      for (const t of itunesTracks) {
+        const key = `${t.title.toLowerCase()}__${t.artist.toLowerCase()}`;
+        if (!seen.has(key)) {
+          seen.add(key);
+          merged.push(t);
+        } else {
+          // 补充 Apple 的 30s 试听与高清封面
+          const idx = merged.findIndex(m => `${m.title.toLowerCase()}__${m.artist.toLowerCase()}` === key);
+          if (idx >= 0) {
+            if (!merged[idx].preview_url && t.preview_url) merged[idx].preview_url = t.preview_url;
+            if (!merged[idx].cover && t.cover) merged[idx].cover = t.cover;
+          }
+        }
+      }
+
+      if (merged.length > 0) {
+        renderSearchResults(merged.slice(0, 12), dropdown);
+      } else {
+        dropdown.innerHTML = `
+          <div style="padding:16px; text-align:center; color:var(--text-muted); font-size:0.84rem;">
+            未搜索到相关曲目，可以尝试切换上方曲库标签，或点击下方 <strong style="color:var(--accent-cyan);">手动填写</strong>。
+          </div>
+        `;
+        dropdown.classList.remove("hidden");
+      }
+    } catch (e) {
+      spinner.classList.add("hidden");
+      dropdown.innerHTML = `
+        <div style="padding:16px; text-align:center; color:var(--danger); font-size:0.84rem;">
+          搜索请求暂不可用，请点击下方「手动填写」继续封存礼物。
+        </div>
+      `;
+      dropdown.classList.remove("hidden");
+    }
+  }
 
   // 点击外部关闭搜索下拉
   document.addEventListener("click", (e) => {
@@ -349,12 +493,15 @@ function initMusicSearch() {
       const item = document.createElement("div");
       item.className = "search-dropdown-item";
       item.innerHTML = `
-        <img src="${escapeHtml(track.cover || 'assets/logo.svg')}" alt="" class="search-thumb" loading="lazy">
+        <img src="${escapeHtml(track.cover || 'assets/logo.svg')}" alt="" class="search-thumb" loading="lazy" onerror="this.src='assets/logo.svg'">
         <div class="search-item-meta">
           <div class="search-item-title">${escapeHtml(track.title)}</div>
-          <div class="search-item-artist">${escapeHtml(track.artist)} · ${escapeHtml(track.album || '')}</div>
+          <div class="search-item-artist">${escapeHtml(track.artist)}${track.album ? ' · ' + escapeHtml(track.album) : ''}</div>
         </div>
-        <span class="search-preview-badge">30s 原声</span>
+        <div class="search-item-badges">
+          <span class="search-source-pill">${escapeHtml(track.source_label || '曲库')}</span>
+          ${track.preview_url ? '<span class="search-preview-badge">可试听</span>' : ''}
+        </div>
       `;
 
       item.addEventListener("click", () => {
@@ -369,25 +516,40 @@ function initMusicSearch() {
 
   // 选中某首歌曲：全自动补全表单数据
   function selectTrack(track) {
+    isManualMode = false;
+    if (manualBox) manualBox.classList.add("hidden");
+    if (btnToggleManual) btnToggleManual.textContent = "没搜到？手动填写";
+
     document.getElementById("song_title").value = track.title;
     document.getElementById("artist").value = track.artist;
-    document.getElementById("album_cover").value = track.cover;
-    document.getElementById("preview_url").value = track.preview_url;
+    document.getElementById("album_cover").value = track.cover || "";
+    document.getElementById("preview_url").value = track.preview_url || "";
     document.getElementById("platform_links").value = JSON.stringify(track.platform_links || {});
 
     // 更新选中预览卡片
-    document.getElementById("preview-cover-img").src = track.cover || 'assets/logo.svg';
+    const coverEl = document.getElementById("preview-cover-img");
+    coverEl.src = track.cover || "assets/logo.svg";
+    coverEl.onerror = () => { coverEl.src = "assets/logo.svg"; };
     document.getElementById("preview-song-title").textContent = track.title;
     document.getElementById("preview-artist-name").textContent = track.artist;
+    const srcTag = document.getElementById("preview-source-tag");
+    if (srcTag) srcTag.textContent = track.source_label || "聚合曲库";
+
+    const statusTag = document.getElementById("preview-status-tag");
+    if (statusTag) {
+      statusTag.textContent = track.preview_url
+        ? "✓ 已匹配高清封面、30s 原声试听与六大平台跳链"
+        : "✓ 已自动生成六大音乐平台收听直达链接";
+    }
+
     previewCard.classList.remove("hidden");
 
     // 音频试听测试
     if (btnAudioTest) {
       if (track.preview_url) {
         btnAudioTest.classList.remove("hidden");
-        btnAudioTest.onclick = () => {
-          togglePreviewAudio(track.preview_url, btnAudioTest);
-        };
+        btnAudioTest.textContent = "▶ 试听";
+        btnAudioTest.onclick = () => togglePreviewAudio(track.preview_url, btnAudioTest);
       } else {
         btnAudioTest.classList.add("hidden");
       }
@@ -410,15 +572,45 @@ function initMusicSearch() {
     currentPreviewAudio.play();
     buttonEl.textContent = "⏸ 暂停";
   }
+
+  // 一键灵感祝福词 & 字数统计
+  const msgTextarea = document.getElementById("message");
+  const charCountEl = document.getElementById("msg-char-count");
+  const moodChips = document.querySelectorAll(".mood-chip");
+
+  if (msgTextarea && charCountEl) {
+    msgTextarea.addEventListener("input", () => {
+      charCountEl.textContent = `${msgTextarea.value.length} / 300`;
+    });
+  }
+
+  moodChips.forEach(chip => {
+    chip.addEventListener("click", () => {
+      if (!msgTextarea) return;
+      msgTextarea.value = chip.getAttribute("data-text") || "";
+      if (charCountEl) charCountEl.textContent = `${msgTextarea.value.length} / 300`;
+      msgTextarea.focus();
+    });
+  });
 }
 
 // ========================================================
-// 4. 音乐礼物盒 2.0 (拆盲盒 + 30s试听 + 全平台跳链 + 邮箱回响)
+// 4. 音乐礼物盒 2.0 (拆盲盒 + 30s试听 + 全平台矢量图标 + 邮箱回响)
 // ========================================================
 let activeUnpackAudio = null;
 
+const PLATFORM_SVGS = {
+  spotify: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg>',
+  netease: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm3.2 13.85c-.62.92-1.68 1.4-2.88 1.4-1.95 0-3.53-1.46-3.53-3.42 0-1.92 1.54-3.43 3.47-3.43.4 0 .77.07 1.11.2l-.38-2.6c-.06-.42.22-.82.64-.89.42-.06.82.22.89.64l.83 5.56c.14.94-.06 1.83-.15 2.54zm-2.88-3.8c-.99 0-1.8.82-1.8 1.83 0 1.02.81 1.84 1.8 1.84.97 0 1.73-.76 1.79-1.74l-.16-1.07c-.38-.53-.98-.86-1.63-.86z"/></svg>',
+  qq: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm3.8 13.4c-.7 1.1-2 1.8-3.5 1.8a4.2 4.2 0 0 1-4.3-4.2 4.2 4.2 0 0 1 4.3-4.2c1.2 0 2.3.5 3 1.3V7.2a.8.8 0 0 1 1.6 0v5.9a3.5 3.5 0 0 1-1.1 2.3zm-3.5-4.9a2.5 2.5 0 1 0 2.5 2.5 2.5 2.5 0 0 0-2.5-2.5z"/></svg>',
+  kugou: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14.5v-9l6.5 4.5-6.5 4.5z"/></svg>',
+  apple: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M15.96 6.33c.67-.81 1.12-1.94.99-3.07-.96.04-2.13.64-2.82 1.45-.61.71-1.15 1.86-1 2.97 1.07.08 2.16-.54 2.83-1.35z"/></svg>',
+  tidal: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 4.5l3.5 3.5L12 11.5 8.5 8 12 4.5zm-7 7L8.5 8 12 11.5 8.5 15 5 11.5zm14 0L15.5 8 12 11.5 15.5 15 19 11.5zm-7 3.5L15.5 18.5 12 22l-3.5-3.5L12 15z"/></svg>'
+};
+
 function initGiftBox() {
   const btnOpen = document.getElementById("btn-open-random");
+  const btnUnsealHero = document.getElementById("btn-unseal-hero");
   const slot = document.getElementById("gift-display-slot");
   const form = document.getElementById("gift-form");
   const feedback = document.getElementById("form-feedback");
@@ -426,10 +618,10 @@ function initGiftBox() {
 
   if (!btnOpen || !slot || !form) return;
 
-  // 1. 拆盲盒
-  btnOpen.addEventListener("click", async () => {
+  async function openRandomGift() {
     btnOpen.disabled = true;
-    btnOpen.innerHTML = "<span>正在破盒开启...</span>";
+    btnOpen.innerHTML = "<span>正在开启盲盒...</span>";
+    if (btnUnsealHero) btnUnsealHero.disabled = true;
 
     if (activeUnpackAudio) {
       activeUnpackAudio.pause();
@@ -444,26 +636,29 @@ function initGiftBox() {
         renderUnpackedCard(result.data, slot);
       } else {
         slot.innerHTML = `
-          <div class="gift-slot-idle">
-            <div class="blind-box-graphic">🍃</div>
-            <p class="idle-title">盲盒暂时空空如也</p>
-            <p class="idle-desc">${escapeHtml(result.message || "来右侧做第一个封存音乐礼物的人吧！")}</p>
+          <div class="sealed-box-card">
+            <div class="sealed-ribbon">EMPTY BOX</div>
+            <h3 class="sealed-title">盲盒暂时空空如也</h3>
+            <p class="sealed-desc">${escapeHtml(result.message || "来右侧做第一个封存音乐礼物的人吧！")}</p>
           </div>
         `;
       }
     } catch (err) {
       slot.innerHTML = `
-        <div class="gift-slot-idle">
+        <div class="sealed-box-card">
           <p style="color:var(--danger);">网络连接不稳定，请稍后刷新重试。</p>
         </div>
       `;
     } finally {
       btnOpen.disabled = false;
-      btnOpen.innerHTML = "<span>🎲 再拆一个盲盒</span>";
+      btnOpen.innerHTML = "<span>🎲 换一首 / 拆盲盒</span>";
     }
-  });
+  }
 
-  // 渲染拆开的礼物卡片 (包含专辑黑胶唱盘、30秒高保真试听、各大平台链接、共鸣与回信)
+  btnOpen.addEventListener("click", openRandomGift);
+  if (btnUnsealHero) btnUnsealHero.addEventListener("click", openRandomGift);
+
+  // 渲染拆开的礼物卡片
   function renderUnpackedCard(gift, container) {
     const title = escapeHtml(gift.song_title);
     const artist = escapeHtml(gift.artist || '未知艺术家');
@@ -473,20 +668,28 @@ function initGiftBox() {
     const previewUrl = gift.preview_url || '';
     const links = gift.platform_links || {};
     const likes = gift.likes_count || 0;
+    const replyMessage = gift.reply_message || '';
     const dateStr = new Date(gift.created_at || Date.now()).toLocaleDateString('zh-CN', {
       year: 'numeric',
       month: 'long',
       day: 'numeric'
     });
 
+    const query = encodeURIComponent(`${gift.song_title} ${gift.artist || ''}`.trim());
+
     let previewPlayerHtml = '';
     if (previewUrl) {
       previewPlayerHtml = `
         <div class="preview-audio-bar">
-          <button type="button" class="btn-play-preview" id="btn-play-gift-audio">▶</button>
+          <button type="button" class="btn-play-preview" id="btn-play-gift-audio" aria-label="播放试听">
+            <svg id="icon-play-svg" viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><polygon points="6 4 20 12 6 20 6 4"/></svg>
+          </button>
           <div class="audio-progress-wrap">
             <div class="audio-label">
-              <span>30 秒官方原声片段</span>
+              <span>
+                <span class="eq-bars" id="audio-eq-bars"><span></span><span></span><span></span><span></span></span>
+                30 秒官方高保真试听
+              </span>
               <span id="audio-time-label">0:00 / 0:30</span>
             </div>
             <div class="audio-progress-track">
@@ -495,31 +698,43 @@ function initGiftBox() {
           </div>
         </div>
       `;
+    } else {
+      previewPlayerHtml = `
+        <div class="preview-audio-unavailable">
+          🎵 该曲目暂无 30s 试听片段，请点击下方你常用的音乐平台收听完整版
+        </div>
+      `;
     }
 
-    // 各大流媒体平台跳链按钮
     const platformButtons = `
       <div class="listen-platforms-box">
-        <div class="listen-title">拆礼人一键前往正版平台聆听全曲：</div>
+        <div class="listen-title">选择你常用的平台收听整首歌曲：</div>
         <div class="platform-chips-row">
-          <a href="${escapeHtml(links.spotify || `https://open.spotify.com/search/${encodeURIComponent(title + ' ' + artist)}`)}" target="_blank" rel="noopener noreferrer" class="platform-chip chip-spotify">🟢 Spotify</a>
-          <a href="${escapeHtml(links.netease || `https://music.163.com/#/search/m/?s=${encodeURIComponent(title + ' ' + artist)}`)}" target="_blank" rel="noopener noreferrer" class="platform-chip chip-netease">🔴 网易云音乐</a>
-          <a href="${escapeHtml(links.qq || `https://y.qq.com/n/ryqq/search?w=${encodeURIComponent(title + ' ' + artist)}`)}" target="_blank" rel="noopener noreferrer" class="platform-chip chip-qq">🟢 QQ音乐</a>
-          <a href="${escapeHtml(links.kugou || `https://www.kugou.com/yy/html/search.html#searchType=song&searchKeyWord=${encodeURIComponent(title + ' ' + artist)}`)}" target="_blank" rel="noopener noreferrer" class="platform-chip chip-kugou">🔵 酷狗音乐</a>
-          <a href="${escapeHtml(links.apple || `https://music.apple.com/search?term=${encodeURIComponent(title + ' ' + artist)}`)}" target="_blank" rel="noopener noreferrer" class="platform-chip chip-apple">🍎 Apple Music</a>
+          <a href="${escapeHtml(links.netease || `https://music.163.com/#/search/m/?s=${query}`)}" target="_blank" rel="noopener noreferrer" class="platform-chip chip-netease">${PLATFORM_SVGS.netease} 网易云</a>
+          <a href="${escapeHtml(links.qq || `https://y.qq.com/n/ryqq/search?w=${query}`)}" target="_blank" rel="noopener noreferrer" class="platform-chip chip-qq">${PLATFORM_SVGS.qq} QQ音乐</a>
+          <a href="${escapeHtml(links.kugou || `https://www.kugou.com/yy/html/search.html#searchType=song&searchKeyWord=${query}`)}" target="_blank" rel="noopener noreferrer" class="platform-chip chip-kugou">${PLATFORM_SVGS.kugou} 酷狗</a>
+          <a href="${escapeHtml(links.spotify || `https://open.spotify.com/search/${query}`)}" target="_blank" rel="noopener noreferrer" class="platform-chip chip-spotify">${PLATFORM_SVGS.spotify} Spotify</a>
+          <a href="${escapeHtml(links.apple || `https://music.apple.com/search?term=${query}`)}" target="_blank" rel="noopener noreferrer" class="platform-chip chip-apple">${PLATFORM_SVGS.apple} Apple</a>
+          <a href="${escapeHtml(links.tidal || `https://listen.tidal.com/search?q=${query}`)}" target="_blank" rel="noopener noreferrer" class="platform-chip chip-tidal">${PLATFORM_SVGS.tidal} Tidal</a>
         </div>
       </div>
     `;
 
+    const existingReplyHtml = replyMessage
+      ? `<div class="reply-echo-box">💬 上一位拆盒听友回响：${escapeHtml(replyMessage)}</div>`
+      : '';
+
     container.innerHTML = `
       <div class="unpacked-card">
-        <div class="unpacked-top-row">
-          <div class="unpacked-vinyl-wrapper">
-            <img src="${escapeHtml(cover)}" alt="" class="unpacked-cover-img" id="unpacked-cover">
+        <div class="unpacked-hero-row">
+          <div class="unpacked-sleeve-box">
+            <div class="unpacked-vinyl-disc paused" id="unpacked-vinyl"></div>
+            <img src="${escapeHtml(cover)}" alt="" class="unpacked-cover-img" id="unpacked-cover" onerror="this.src='assets/logo.svg'">
           </div>
           <div class="unpacked-song-meta">
-            <div class="unpacked-song-title">《${title}》</div>
+            <div class="unpacked-song-title" title="《${title}》">《${title}》</div>
             <div class="unpacked-artist-name">${artist}</div>
+            <div class="unpacked-meta-time">封存于 ${dateStr}</div>
           </div>
         </div>
 
@@ -527,29 +742,27 @@ function initGiftBox() {
 
         <div class="unpacked-quote-box">
           “ ${msg} ”
+          <div class="unpacked-quote-sender">
+            <span>—— 来自 <strong>${nickname}</strong> 的分享</span>
+          </div>
         </div>
 
-        <div class="unpacked-sender-tag">
-          <span>由 <strong>${nickname}</strong> 封存入盒</span>
-          <span>${dateStr}</span>
-        </div>
-
+        ${existingReplyHtml}
         ${platformButtons}
 
-        <!-- 双向共鸣与回信区 -->
         <div class="resonance-wall">
           <div class="resonance-actions">
             <button type="button" class="btn-heart-resonate" id="btn-heart-reaction" data-id="${gift.id}">
-              <span>❤️ 共鸣心意</span>
+              <span>❤️ 产生共鸣</span>
               <strong id="heart-count">${likes}</strong>
             </button>
-            <span style="font-size:0.78rem; color:var(--text-dim);">觉得感动？点个赞或回一句话</span>
+            <span style="font-size:0.76rem; color:var(--text-dim);">写句回信可邮件通知送礼人</span>
           </div>
           <div class="reply-input-row">
             <input type="text" id="receiver-reply-msg" placeholder="写一句拆盒感言给送礼人..." maxlength="150">
-            <button type="button" id="btn-submit-reply" class="btn-send-reply" data-id="${gift.id}">💌 回信</button>
+            <button type="button" id="btn-submit-reply" class="btn-send-reply" data-id="${gift.id}">💌 寄出回信</button>
           </div>
-          <div id="reply-feedback" style="font-size:0.78rem; color:var(--accent-cyan); display:none; margin-top:4px;"></div>
+          <div id="reply-feedback" style="font-size:0.78rem; color:var(--accent-cyan); display:none; margin-top:2px;"></div>
         </div>
       </div>
     `;
@@ -557,21 +770,33 @@ function initGiftBox() {
     // 绑定试听播放器逻辑
     if (previewUrl) {
       const playBtn = document.getElementById("btn-play-gift-audio");
-      const coverImg = document.getElementById("unpacked-cover");
+      const playSvg = document.getElementById("icon-play-svg");
+      const vinylDisc = document.getElementById("unpacked-vinyl");
+      const eqBars = document.getElementById("audio-eq-bars");
       const fillBar = document.getElementById("audio-fill-bar");
       const timeLabel = document.getElementById("audio-time-label");
 
       activeUnpackAudio = new Audio(previewUrl);
 
+      const setPlayingUI = (playing) => {
+        if (playing) {
+          playSvg.innerHTML = '<rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/>';
+          vinylDisc.classList.remove("paused");
+          eqBars.classList.add("playing");
+        } else {
+          playSvg.innerHTML = '<polygon points="6 4 20 12 6 20 6 4"/>';
+          vinylDisc.classList.add("paused");
+          eqBars.classList.remove("playing");
+        }
+      };
+
       playBtn.addEventListener("click", () => {
         if (activeUnpackAudio.paused) {
           activeUnpackAudio.play();
-          playBtn.textContent = "⏸";
-          coverImg.classList.remove("paused");
+          setPlayingUI(true);
         } else {
           activeUnpackAudio.pause();
-          playBtn.textContent = "▶";
-          coverImg.classList.add("paused");
+          setPlayingUI(false);
         }
       });
 
@@ -584,10 +809,9 @@ function initGiftBox() {
       });
 
       activeUnpackAudio.addEventListener("ended", () => {
-        playBtn.textContent = "▶";
+        setPlayingUI(false);
         fillBar.style.width = "0%";
         timeLabel.textContent = "0:00 / 0:30";
-        coverImg.classList.add("paused");
       });
     }
 
@@ -604,7 +828,7 @@ function initGiftBox() {
         const d = await res.json();
         if (res.ok && d.code === 200) {
           document.getElementById("heart-count").textContent = d.likes_count;
-          heartBtn.style.background = "rgba(244, 63, 94, 0.4)";
+          heartBtn.style.background = "rgba(244, 63, 94, 0.35)";
         }
       } catch (e) {}
     });
@@ -618,7 +842,7 @@ function initGiftBox() {
       const text = replyInput.value.trim();
       if (!text) return;
       replyBtn.disabled = true;
-      replyBtn.textContent = "发送中...";
+      replyBtn.textContent = "寄出中...";
 
       try {
         const res = await fetch("/api/gifts/react", {
@@ -633,36 +857,56 @@ function initGiftBox() {
         });
         const d = await res.json();
         replyFeedback.style.display = "block";
+        replyFeedback.style.color = res.ok ? "var(--accent-cyan)" : "var(--danger)";
         replyFeedback.textContent = d.message || "💌 回信已成功寄出！";
-        replyInput.value = "";
+        if (res.ok) replyInput.value = "";
       } catch (e) {
         replyFeedback.style.display = "block";
         replyFeedback.style.color = "var(--danger)";
         replyFeedback.textContent = "发送失败，请稍后重试";
       } finally {
         replyBtn.disabled = false;
-        replyBtn.textContent = "已投递";
+        replyBtn.textContent = "💌 寄出回信";
       }
     });
   }
 
-  // 2. 封存礼物表单提交
+  // 2. 封存礼物表单提交 (支持搜索选中 + 手动兜底)
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
     feedback.textContent = "";
 
-    const song_title = document.getElementById("song_title").value.trim();
-    const artist = document.getElementById("artist").value.trim() || '未知艺术家';
+    let song_title = document.getElementById("song_title").value.trim();
+    let artist = document.getElementById("artist").value.trim() || '未知艺术家';
+    let album_cover = document.getElementById("album_cover").value.trim();
+    let preview_url = document.getElementById("preview_url").value.trim();
+    let platform_links = document.getElementById("platform_links").value.trim();
+
+    if (isManualMode || !song_title) {
+      const manualTitle = document.getElementById("manual_song_title")?.value.trim();
+      const manualArtist = document.getElementById("manual_artist")?.value.trim();
+      if (manualTitle) {
+        song_title = manualTitle;
+        artist = manualArtist || '未知艺术家';
+        const q = encodeURIComponent(`${song_title} ${artist}`);
+        platform_links = JSON.stringify({
+          spotify: `https://open.spotify.com/search/${q}`,
+          netease: `https://music.163.com/#/search/m/?s=${q}`,
+          qq: `https://y.qq.com/n/ryqq/search?w=${q}`,
+          kugou: `https://www.kugou.com/yy/html/search.html#searchType=song&searchKeyWord=${q}`,
+          apple: `https://music.apple.com/search?term=${q}`,
+          tidal: `https://listen.tidal.com/search?q=${q}`
+        });
+      }
+    }
+
     const message = document.getElementById("message").value.trim();
     const nickname = document.getElementById("nickname").value.trim() || '神秘访客';
     const sender_email = document.getElementById("sender_email").value.trim();
-    const album_cover = document.getElementById("album_cover").value.trim();
-    const preview_url = document.getElementById("preview_url").value.trim();
-    const platform_links = document.getElementById("platform_links").value.trim();
 
     if (!song_title) {
       feedback.style.color = "var(--danger)";
-      feedback.textContent = "请先在上方搜索框选择一首你想封存的歌曲。";
+      feedback.textContent = "请先在上方搜索选一首歌，或点击「手动填写」输入歌名。";
       return;
     }
 
@@ -673,7 +917,7 @@ function initGiftBox() {
     }
 
     btnSubmit.disabled = true;
-    btnSubmit.innerHTML = "<span>正在施法封存心意...</span>";
+    btnSubmit.innerHTML = "<span>正在封存心意...</span>";
 
     try {
       const res = await fetch("/api/gifts", {
@@ -698,8 +942,16 @@ function initGiftBox() {
         feedback.style.color = "var(--success)";
         feedback.textContent = "🎉 礼物已成功封存入盒！当有听友拆开并回信时将通知你。";
         form.reset();
+        document.getElementById("song_title").value = "";
+        document.getElementById("artist").value = "";
+        document.getElementById("album_cover").value = "";
+        document.getElementById("preview_url").value = "";
+        document.getElementById("platform_links").value = "";
         document.getElementById("selected-song-preview").classList.add("hidden");
         document.getElementById("music-search-input").value = "";
+        document.getElementById("btn-clear-search")?.classList.add("hidden");
+        const charCountEl = document.getElementById("msg-char-count");
+        if (charCountEl) charCountEl.textContent = "0 / 300";
         fetchGiftCount();
       } else {
         feedback.style.color = "var(--danger)";

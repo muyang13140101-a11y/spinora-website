@@ -55,6 +55,7 @@ export async function onRequestGet({ env }) {
     if (!platform_links.qq) platform_links.qq = `https://y.qq.com/n/ryqq/search?w=${query}`;
     if (!platform_links.kugou) platform_links.kugou = `https://www.kugou.com/yy/html/search.html#searchType=song&searchKeyWord=${query}`;
     if (!platform_links.apple) platform_links.apple = `https://music.apple.com/search?term=${query}`;
+    if (!platform_links.tidal) platform_links.tidal = `https://listen.tidal.com/search?q=${query}`;
 
     return new Response(JSON.stringify({
       code: 200,
