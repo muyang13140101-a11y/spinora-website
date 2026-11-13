@@ -487,10 +487,8 @@ let heroAngularVel = (25.0 * 2.0 * Math.PI) / 60.0; // 软件默认 25 RPM
 
 function updateHeroDiscCover(coverUrl) {
   if (!heroCDAssembly || !coverUrl || coverUrl.includes('logo.svg')) return;
-  const loader = new THREE.TextureLoader();
-  loader.setCrossOrigin('anonymous');
-  loader.load(coverUrl, (tex) => {
-    tex.anisotropy = 8;
+  loadCoverTexture(coverUrl).then((tex) => {
+    if (!tex) return;
     heroCDAssembly.labelMaterial.map = tex;
     heroCDAssembly.labelMaterial.needsUpdate = true;
     heroCDAssembly.bookletMaterial.map = tex;
@@ -1729,13 +1727,748 @@ function initMusicSearch() {
 }
 
 // ========================================================
-// 4. 音乐礼物盲盒 (纯文字极简按钮 + 30s 试听 + 邮箱回信)
+// 4a. 封面跨域加载：优先走 /api/cover 同源代理，失败再直连
+// ========================================================
+function loadCoverTexture(url) {
+  return new Promise((resolve) => {
+    if (!url || url.includes("logo.svg") || typeof THREE === "undefined") return resolve(null);
+    const loader = new THREE.TextureLoader();
+    loader.setCrossOrigin("anonymous");
+    let done = false;
+    const finish = (tex) => {
+      if (done) return;
+      done = true;
+      if (tex) tex.anisotropy = 8;
+      resolve(tex || null);
+    };
+    setTimeout(() => finish(null), 8000);
+    loader.load(`/api/cover?url=${encodeURIComponent(url)}`, finish, undefined, () => {
+      loader.load(url.replace(/^http:/, "https:"), finish, undefined, () => finish(null));
+    });
+  });
+}
+
+// ========================================================
+// 4b. 立体实体礼物盒舞台：礼盒 → 缎带 → 盒盖 → CD 唱片盒 → CD → 聆听
+// ========================================================
+const giftEase = {
+  inOut: (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2),
+  out: (t) => 1 - Math.pow(1 - t, 3),
+  bounce: (x) => {
+    const n1 = 7.5625, d1 = 2.75;
+    if (x < 1 / d1) return n1 * x * x;
+    if (x < 2 / d1) return n1 * (x -= 1.5 / d1) * x + 0.75;
+    if (x < 2.5 / d1) return n1 * (x -= 2.25 / d1) * x + 0.9375;
+    return n1 * (x -= 2.625 / d1) * x + 0.984375;
+  }
+};
+const clamp01 = (v) => Math.min(1, Math.max(0, v));
+
+function createGiftPaperTexture(base, noiseAmp, withFoil) {
+  const c = document.createElement("canvas");
+  c.width = 512;
+  c.height = 512;
+  const ctx = c.getContext("2d");
+  ctx.fillStyle = base;
+  ctx.fillRect(0, 0, 512, 512);
+
+  const img = ctx.getImageData(0, 0, 512, 512);
+  for (let i = 0; i < img.data.length; i += 4) {
+    const n = (Math.random() - 0.5) * noiseAmp;
+    img.data[i] += n;
+    img.data[i + 1] += n;
+    img.data[i + 2] += n;
+  }
+  ctx.putImageData(img, 0, 0);
+
+  // 纸张纤维
+  ctx.strokeStyle = "rgba(255,255,255,0.05)";
+  for (let i = 0; i < 260; i++) {
+    const y = Math.random() * 512;
+    ctx.lineWidth = Math.random() * 0.9;
+    ctx.beginPath();
+    ctx.moveTo(0, y);
+    ctx.lineTo(512, y + (Math.random() - 0.5) * 8);
+    ctx.stroke();
+  }
+
+  if (withFoil) {
+    // 烫金火漆徽记（避开中央十字缎带，放在象限内）
+    ctx.save();
+    ctx.translate(128, 384);
+    ctx.strokeStyle = "rgba(230,190,148,0.9)";
+    ctx.lineWidth = 2.2;
+    ctx.beginPath();
+    ctx.arc(0, 0, 58, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.lineWidth = 0.9;
+    ctx.beginPath();
+    ctx.arc(0, 0, 49, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.fillStyle = "rgba(230,190,148,0.95)";
+    ctx.font = 'italic 68px "Instrument Serif", Georgia, serif';
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText("S", 0, 5);
+    ctx.restore();
+
+    ctx.fillStyle = "rgba(230,190,148,0.78)";
+    ctx.font = '500 15px "JetBrains Mono", monospace';
+    ctx.textAlign = "left";
+    ctx.fillText("SPINORA", 316, 420);
+    ctx.fillText("GIFT ARCHIVE", 316, 442);
+    ctx.fillStyle = "rgba(230,190,148,0.45)";
+    ctx.fillText("HANDLE WITH LOVE", 316, 470);
+  }
+
+  const tex = new THREE.CanvasTexture(c);
+  tex.anisotropy = 8;
+  return tex;
+}
+
+function createGiftBoxStage(container, cb) {
+  const W0 = container.clientWidth || 520;
+  const H0 = container.clientHeight || 500;
+
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(34, W0 / H0, 0.1, 80);
+  const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.setSize(W0, H0);
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 1.05;
+  container.appendChild(renderer.domElement);
+
+  // ---------- 灯光：暖调棚拍主光 + 冷边光 + 黄铜补光 ----------
+  scene.add(new THREE.AmbientLight(0xffffff, 0.72));
+  const keyLight = new THREE.DirectionalLight(0xffe2bd, 2.0);
+  keyLight.position.set(4, 8, 6);
+  scene.add(keyLight);
+  const rimLight = new THREE.DirectionalLight(0xbfd2ff, 1.15);
+  rimLight.position.set(-6, 3, -4);
+  scene.add(rimLight);
+  const brassFill = new THREE.PointLight(0xd4a373, 1.3, 16);
+  brassFill.position.set(0, 4.5, 4);
+  scene.add(brassFill);
+
+  // ---------- 礼盒本体 ----------
+  const giftGroup = new THREE.Group();
+  scene.add(giftGroup);
+
+  const BW = 4.6, BH = 2.2, BD = 4.6, T = 0.08, RW = 0.6;
+
+  const paperMat = new THREE.MeshStandardMaterial({
+    map: createGiftPaperTexture("#1b1b1f", 16, false),
+    roughness: 0.8,
+    metalness: 0.05
+  });
+  const liningMat = new THREE.MeshStandardMaterial({
+    map: createGiftPaperTexture("#e6d9c2", 10, false),
+    roughness: 0.92,
+    metalness: 0.0,
+    side: THREE.DoubleSide
+  });
+  const ribbonMat = new THREE.MeshPhysicalMaterial({
+    color: 0xc99a62,
+    roughness: 0.3,
+    metalness: 0.6,
+    clearcoat: 0.7,
+    clearcoatRoughness: 0.2,
+    side: THREE.DoubleSide
+  });
+
+  // 地面接触阴影
+  const shCanvas = document.createElement("canvas");
+  shCanvas.width = shCanvas.height = 256;
+  const shCtx = shCanvas.getContext("2d");
+  const shGrad = shCtx.createRadialGradient(128, 128, 20, 128, 128, 128);
+  shGrad.addColorStop(0, "rgba(0,0,0,0.75)");
+  shGrad.addColorStop(0.55, "rgba(0,0,0,0.35)");
+  shGrad.addColorStop(1, "rgba(0,0,0,0)");
+  shCtx.fillStyle = shGrad;
+  shCtx.fillRect(0, 0, 256, 256);
+  const shadow = new THREE.Mesh(
+    new THREE.PlaneGeometry(8.4, 8.4),
+    new THREE.MeshBasicMaterial({ map: new THREE.CanvasTexture(shCanvas), transparent: true, depthWrite: false })
+  );
+  shadow.rotation.x = -Math.PI / 2;
+  shadow.position.y = 0.004;
+  shadow.userData.noPick = true;
+  giftGroup.add(shadow);
+
+  const addBox = (parent, w, h, d, mat, x, y, z) => {
+    const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), mat);
+    m.position.set(x, y, z);
+    parent.add(m);
+    return m;
+  };
+
+  // 盒底 + 四壁
+  addBox(giftGroup, BW, T, BD, paperMat, 0, T / 2, 0);
+  addBox(giftGroup, BW, BH, T, paperMat, 0, BH / 2, BD / 2 - T / 2);
+  addBox(giftGroup, BW, BH, T, paperMat, 0, BH / 2, -BD / 2 + T / 2);
+  addBox(giftGroup, T, BH, BD - 2 * T, paperMat, -BW / 2 + T / 2, BH / 2, 0);
+  addBox(giftGroup, T, BH, BD - 2 * T, paperMat, BW / 2 - T / 2, BH / 2, 0);
+
+  // 象牙白内衬纸
+  const IW = BW - 2 * T - 0.006;
+  const wallH = BH - T - 0.01;
+  const liningSpecs = [
+    [0, T + wallH / 2, BD / 2 - T - 0.003, Math.PI],
+    [0, T + wallH / 2, -BD / 2 + T + 0.003, 0],
+    [-BW / 2 + T + 0.003, T + wallH / 2, 0, Math.PI / 2],
+    [BW / 2 - T - 0.003, T + wallH / 2, 0, -Math.PI / 2]
+  ];
+  liningSpecs.forEach(([x, y, z, ry]) => {
+    const p = new THREE.Mesh(new THREE.PlaneGeometry(IW, wallH), liningMat);
+    p.position.set(x, y, z);
+    p.rotation.y = ry;
+    giftGroup.add(p);
+  });
+
+  // 揉皱的拉菲草纸床（让唱片盒在盒中可见）
+  const bedGeo = new THREE.PlaneGeometry(IW, IW, 36, 36);
+  const bedPos = bedGeo.attributes.position;
+  for (let i = 0; i < bedPos.count; i++) {
+    const x = bedPos.getX(i), y = bedPos.getY(i);
+    const crinkle = Math.sin(x * 4.1 + y * 2.3) * 0.035 + Math.cos(x * 7.3 - y * 5.1) * 0.025 + Math.random() * 0.045;
+    bedPos.setZ(i, crinkle);
+  }
+  bedGeo.computeVertexNormals();
+  const bedMat = new THREE.MeshStandardMaterial({ color: 0xe9ddc7, roughness: 0.95, flatShading: true, side: THREE.DoubleSide });
+  const bed = new THREE.Mesh(bedGeo, bedMat);
+  bed.rotation.x = -Math.PI / 2;
+  bed.position.y = 1.08;
+  giftGroup.add(bed);
+
+  const shredMats = [
+    new THREE.MeshStandardMaterial({ color: 0xefe4cf, roughness: 0.9 }),
+    new THREE.MeshStandardMaterial({ color: 0xd9c7a6, roughness: 0.9 }),
+    new THREE.MeshStandardMaterial({ color: 0xc99a62, roughness: 0.45, metalness: 0.55 })
+  ];
+  const shredGeo = new THREE.BoxGeometry(0.035, 0.008, 0.42);
+  for (let i = 0; i < 90; i++) {
+    const s = new THREE.Mesh(shredGeo, shredMats[i % 7 === 0 ? 2 : i % 2]);
+    const a = Math.random() * Math.PI * 2;
+    const r = 0.6 + Math.random() * 1.45;
+    s.position.set(Math.cos(a) * r, 1.12 + Math.random() * 0.1, Math.sin(a) * r);
+    s.rotation.set((Math.random() - 0.5) * 0.6, Math.random() * Math.PI, (Math.random() - 0.5) * 0.6);
+    giftGroup.add(s);
+  }
+
+  // 盒身竖向缎带（以底边为原点，便于“松开下落”）
+  const baseRibbons = [];
+  const baseRibbonGeo = new THREE.PlaneGeometry(RW, BH);
+  baseRibbonGeo.translate(0, BH / 2, 0);
+  [
+    [0, 0, BD / 2 + 0.005, 0],
+    [0, 0, -BD / 2 - 0.005, Math.PI],
+    [-BW / 2 - 0.005, 0, 0, -Math.PI / 2],
+    [BW / 2 + 0.005, 0, 0, Math.PI / 2]
+  ].forEach(([x, y, z, ry]) => {
+    const r = new THREE.Mesh(baseRibbonGeo, ribbonMat);
+    r.position.set(x, y, z);
+    r.rotation.y = ry;
+    giftGroup.add(r);
+    baseRibbons.push(r);
+  });
+
+  // ---------- 盒盖 ----------
+  const LW = BW + 0.14, LH = 0.6;
+  const lidBaseY = BH - LH + 0.1;
+  const lidGroup = new THREE.Group();
+  lidGroup.position.y = lidBaseY;
+  giftGroup.add(lidGroup);
+
+  const lidPaperMat = paperMat.clone();
+  lidPaperMat.transparent = true;
+  const lidTopMat = new THREE.MeshStandardMaterial({
+    map: createGiftPaperTexture("#1b1b1f", 16, true),
+    roughness: 0.78,
+    metalness: 0.08,
+    transparent: true
+  });
+  const lidRibbonMat = ribbonMat.clone();
+  lidRibbonMat.transparent = true;
+  const lidFadeMats = [lidPaperMat, lidTopMat, lidRibbonMat];
+
+  const lidTop = new THREE.Mesh(
+    new THREE.BoxGeometry(LW, T, LW),
+    [lidPaperMat, lidPaperMat, lidTopMat, lidPaperMat, lidPaperMat, lidPaperMat]
+  );
+  lidTop.position.y = LH - T / 2;
+  lidGroup.add(lidTop);
+  addBox(lidGroup, LW, LH, T, lidPaperMat, 0, LH / 2, LW / 2 - T / 2);
+  addBox(lidGroup, LW, LH, T, lidPaperMat, 0, LH / 2, -LW / 2 + T / 2);
+  addBox(lidGroup, T, LH, LW - 2 * T, lidPaperMat, -LW / 2 + T / 2, LH / 2, 0);
+  addBox(lidGroup, T, LH, LW - 2 * T, lidPaperMat, LW / 2 - T / 2, LH / 2, 0);
+
+  // 盒盖十字缎带
+  const ribA = new THREE.Mesh(new THREE.PlaneGeometry(RW, LW + 0.01), lidRibbonMat);
+  ribA.rotation.x = -Math.PI / 2;
+  ribA.position.y = LH + 0.004;
+  lidGroup.add(ribA);
+  const ribB = new THREE.Mesh(new THREE.PlaneGeometry(LW + 0.01, RW), lidRibbonMat);
+  ribB.rotation.x = -Math.PI / 2;
+  ribB.position.y = LH + 0.005;
+  lidGroup.add(ribB);
+  [
+    [0, LW / 2 + 0.005, 0],
+    [0, -LW / 2 - 0.005, Math.PI],
+    [-LW / 2 - 0.005, 0, -Math.PI / 2],
+    [LW / 2 + 0.005, 0, Math.PI / 2]
+  ].forEach(([x, z, ry], idx) => {
+    const r = new THREE.Mesh(new THREE.PlaneGeometry(RW, LH), lidRibbonMat);
+    r.position.set(idx < 2 ? 0 : x, LH / 2, idx < 2 ? z : 0);
+    r.rotation.y = ry;
+    lidGroup.add(r);
+  });
+
+  // 缎带蝴蝶结
+  const bow = new THREE.Group();
+  bow.position.y = LH + 0.01;
+  lidGroup.add(bow);
+  const loopGeo = new THREE.TorusGeometry(0.46, 0.09, 14, 48);
+  [-1, 1].forEach((s) => {
+    const loop = new THREE.Mesh(loopGeo, lidRibbonMat);
+    loop.scale.set(1, 0.68, 0.32);
+    loop.position.set(s * 0.44, 0.31, 0);
+    loop.rotation.set(0, s * 0.32, s * -0.32);
+    bow.add(loop);
+
+    const tail = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.014, 1.15), lidRibbonMat);
+    tail.position.set(s * 0.34, 0.012, 0.5);
+    tail.rotation.y = s * 0.5;
+    bow.add(tail);
+  });
+  const knot = new THREE.Mesh(new THREE.SphereGeometry(0.16, 20, 16), lidRibbonMat);
+  knot.scale.set(1.15, 0.9, 0.8);
+  knot.position.y = 0.13;
+  bow.add(knot);
+
+  // ---------- 盒中的 Spinora 实体 CD 唱片盒（与软件同源建模） ----------
+  const rainbowTex = createRadialRainbowTexture();
+  const defaultCover = createDefaultSpinoraCoverTexture();
+  const cd = createSpinoraCDAssembly(rainbowTex, defaultCover);
+  const cdHolder = new THREE.Group();
+  cdHolder.add(cd.stageGroup);
+
+  const CD_IN_POS = new THREE.Vector3(0, 1.28, 0.05);
+  const CD_IN_QUAT = new THREE.Quaternion().setFromEuler(new THREE.Euler(-Math.PI / 2, 0, 0.14));
+  const CD_RISE_POS = new THREE.Vector3(-0.25, 3.0, 1.3);
+
+  const CAM_CLOSED = { pos: new THREE.Vector3(0, 5.4, 9.6), look: new THREE.Vector3(0, 1.3, 0) };
+  const CAM_REVEAL = { pos: new THREE.Vector3(0.3, 4.4, 9.4), look: new THREE.Vector3(0.35, 2.85, 1.0) };
+
+  const faceDummy = new THREE.Object3D();
+  faceDummy.position.copy(CD_RISE_POS);
+  faceDummy.lookAt(CAM_REVEAL.pos);
+  const CD_FACE_QUAT = faceDummy.quaternion.clone();
+
+  function placeCDInBox() {
+    giftGroup.add(cdHolder);
+    cdHolder.position.copy(CD_IN_POS);
+    cdHolder.quaternion.copy(CD_IN_QUAT);
+    cd.caseLidHinge.rotation.y = 0;
+    cd.discPositioner.position.copy(cd.discInsidePos);
+    cd.discPositioner.rotation.set(0, 0, 0);
+    cd.stageGroup.rotation.set(0, 0, 0);
+  }
+  placeCDInBox();
+
+  // ---------- 状态机 ----------
+  let state = "closed";
+  let t = 0;
+  let giftReady = false;
+  let isEmpty = false;
+  let pendingAutoOpen = false;
+  let pendingListen = false;
+  let caseC = 0, caseTarget = 1;
+  let hoverLift = 0, hoverTarget = 0;
+  let spin = 0;
+  let dragYaw = 0, dragPitch = 0;
+  let flipX = 0, flipY = 0;
+  let lastDiscTap = 0;
+  let lastUserSpin = 0;
+  const riseFromPos = new THREE.Vector3();
+  const riseFromQuat = new THREE.Quaternion();
+  let giftRotFrom = 0;
+
+  const cam = { pos: CAM_CLOSED.pos.clone(), look: CAM_CLOSED.look.clone() };
+  let camTween = null;
+  function tweenCamera(toPos, toLook, dur) {
+    camTween = { fromPos: cam.pos.clone(), fromLook: cam.look.clone(), toPos: toPos.clone(), toLook: toLook.clone(), t: 0, dur };
+  }
+
+  function setState(s) {
+    state = s;
+    t = 0;
+    if (s === "rise") {
+      scene.attach(cdHolder);
+      riseFromPos.copy(cdHolder.position);
+      riseFromQuat.copy(cdHolder.quaternion);
+      giftRotFrom = Math.atan2(Math.sin(giftGroup.rotation.y), Math.cos(giftGroup.rotation.y));
+      tweenCamera(CAM_REVEAL.pos, CAM_REVEAL.look, 1.5);
+    }
+    if (cb.onStateChange) cb.onStateChange(s);
+  }
+
+  function setLidOpacity(o) {
+    lidFadeMats.forEach((m) => { m.opacity = o; });
+  }
+
+  function applyCase(c) {
+    cd.caseLidHinge.rotation.y = -2.05 * giftEase.inOut(clamp01(c / 0.65));
+    cd.discPositioner.position.lerpVectors(cd.discInsidePos, cd.discEjectedPos, giftEase.inOut(clamp01((c - 0.35) / 0.65)));
+  }
+
+  function zoomIn() {
+    const discWorld = new THREE.Vector3();
+    cd.discRotator.getWorldPosition(discWorld);
+    const q = new THREE.Quaternion();
+    cd.discRotator.getWorldQuaternion(q);
+    const normal = new THREE.Vector3(0, 0, 1).applyQuaternion(q);
+    const camPos = discWorld.clone().add(normal.multiplyScalar(5.4));
+    camPos.y += 0.25;
+    tweenCamera(camPos, discWorld, 0.9);
+    setState("zoomIn");
+  }
+
+  function zoomOut() {
+    flipX = 0;
+    flipY = 0;
+    tweenCamera(CAM_REVEAL.pos, CAM_REVEAL.look, 0.85);
+    setState("zoomOut");
+  }
+
+  function openListen() {
+    pendingListen = false;
+    setState("sheet");
+    if (cb.onOpenListen) cb.onOpenListen();
+  }
+
+  function update(dt, now) {
+    t += dt;
+    const sec = now / 1000;
+
+    switch (state) {
+      case "closed": {
+        if (now - lastUserSpin > 1800) giftGroup.rotation.y += dt * 0.16;
+        giftGroup.position.y = Math.sin(sec * 1.4) * 0.035;
+        hoverLift += (hoverTarget - hoverLift) * Math.min(1, dt * 8);
+        lidGroup.position.y = lidBaseY + hoverLift * 0.16;
+        bow.rotation.y = Math.sin(sec * 1.8) * 0.04;
+        break;
+      }
+      case "drop": {
+        const p = clamp01(t / 0.75);
+        giftGroup.position.y = 3.2 * (1 - giftEase.bounce(p));
+        if (p >= 1) {
+          setState("closed");
+          if (pendingAutoOpen) {
+            pendingAutoOpen = false;
+            setState("untie");
+          }
+        }
+        break;
+      }
+      case "untie": {
+        const p = clamp01(t / 0.8);
+        const s = p < 0.3 ? 1 + 0.25 * giftEase.out(p / 0.3) : 1.25 * (1 - giftEase.inOut(clamp01((p - 0.3) / 0.7)));
+        bow.scale.setScalar(Math.max(0.001, s));
+        bow.rotation.y += dt * 6 * p;
+        const fall = 1 - giftEase.inOut(clamp01((t - 0.25) / 0.55));
+        baseRibbons.forEach((r) => { r.scale.y = Math.max(0.001, fall); });
+        lidGroup.position.y = lidBaseY + hoverLift * 0.16;
+        if (p >= 1) setState("lidOff");
+        break;
+      }
+      case "lidOff": {
+        const p = clamp01(t / 1.05);
+        const e = giftEase.inOut(p);
+        lidGroup.position.set(2.6 * e, lidBaseY + 3.6 * e, -1.9 * e);
+        lidGroup.rotation.set(-0.5 * e, 0.45 * e, -0.65 * e);
+        setLidOpacity(1 - clamp01((p - 0.45) / 0.55));
+        if (p >= 1) {
+          lidGroup.visible = false;
+          if (giftReady) setState(isEmpty ? "empty" : "rise");
+          else setState("waitData");
+        }
+        break;
+      }
+      case "waitData": {
+        cdHolder.position.y = CD_IN_POS.y + Math.sin(sec * 3) * 0.03;
+        if (giftReady) setState(isEmpty ? "empty" : "rise");
+        break;
+      }
+      case "rise": {
+        const p = clamp01(t / 1.4);
+        const e = giftEase.inOut(p);
+        cdHolder.position.lerpVectors(riseFromPos, CD_RISE_POS, e);
+        cdHolder.position.y += Math.sin(p * Math.PI) * 0.45;
+        cdHolder.quaternion.copy(riseFromQuat).slerp(CD_FACE_QUAT, giftEase.inOut(clamp01((t - 0.2) / 1.1)));
+        giftGroup.position.y = -1.6 * e;
+        giftGroup.position.z = -0.6 * e;
+        giftGroup.rotation.y = giftRotFrom * (1 - e);
+        if (p >= 1) setState("openCase");
+        break;
+      }
+      case "openCase": {
+        caseC = clamp01(t / 1.4);
+        applyCase(caseC);
+        if (caseC >= 1) {
+          caseTarget = 1;
+          setState("revealed");
+        }
+        break;
+      }
+      case "revealed": {
+        caseC += (caseTarget - caseC) * Math.min(1, dt * 4);
+        applyCase(caseC);
+        cdHolder.position.y = CD_RISE_POS.y + Math.sin(sec * 1.2) * 0.05;
+        cd.stageGroup.rotation.y += (dragYaw - cd.stageGroup.rotation.y) * Math.min(1, dt * 6);
+        cd.stageGroup.rotation.x += (dragPitch - cd.stageGroup.rotation.x) * Math.min(1, dt * 6);
+        break;
+      }
+      case "zoomIn": {
+        cd.stageGroup.rotation.y += (0 - cd.stageGroup.rotation.y) * Math.min(1, dt * 6);
+        cd.stageGroup.rotation.x += (0 - cd.stageGroup.rotation.x) * Math.min(1, dt * 6);
+        if (!camTween) {
+          setState("zoomed");
+          if (pendingListen) openListen();
+        }
+        break;
+      }
+      case "zoomed":
+      case "sheet":
+      case "zoomOut": {
+        cd.discPositioner.rotation.x += (flipX - cd.discPositioner.rotation.x) * Math.min(1, dt * 6);
+        cd.discPositioner.rotation.y += (flipY - cd.discPositioner.rotation.y) * Math.min(1, dt * 6);
+        if (state === "zoomOut" && !camTween) {
+          dragYaw = 0;
+          dragPitch = 0;
+          setState("revealed");
+        }
+        break;
+      }
+      default:
+        break;
+    }
+
+    // CD 转速：随状态平滑过渡
+    const targetSpin = (state === "zoomed" || state === "sheet") ? 2.4
+      : (state === "revealed" || state === "openCase" || state === "zoomIn" || state === "zoomOut") ? 0.9 : 0;
+    spin += (targetSpin - spin) * Math.min(1, dt * 2.5);
+    cd.discRotator.rotation.z -= spin * dt;
+    cd.diffractionShaderMat.uniforms.uBassPulse.value = 0.25 + 0.15 * Math.sin(sec * 2.5);
+
+    // 相机补间
+    if (camTween) {
+      camTween.t += dt;
+      const e = giftEase.inOut(clamp01(camTween.t / camTween.dur));
+      cam.pos.lerpVectors(camTween.fromPos, camTween.toPos, e);
+      cam.look.lerpVectors(camTween.fromLook, camTween.toLook, e);
+      if (camTween.t >= camTween.dur) camTween = null;
+    }
+
+    // 窄屏自动拉远，保证礼盒完整入画
+    const aspect = camera.aspect || 1;
+    const fit = Math.max(1, 1.08 / aspect);
+    camera.position.copy(cam.look).add(cam.pos.clone().sub(cam.look).multiplyScalar(fit));
+    camera.lookAt(cam.look);
+  }
+
+  // ---------- 交互：拾取 / 拖拽 / 单击 / 双击（含移动端双击） ----------
+  const raycaster = new THREE.Raycaster();
+  const ndc = new THREE.Vector2();
+  const isDesc = (obj, root) => {
+    while (obj) {
+      if (obj === root) return true;
+      obj = obj.parent;
+    }
+    return false;
+  };
+  const chainVisible = (obj) => {
+    while (obj) {
+      if (!obj.visible) return false;
+      obj = obj.parent;
+    }
+    return true;
+  };
+  function pick(e) {
+    const r = renderer.domElement.getBoundingClientRect();
+    ndc.set(((e.clientX - r.left) / r.width) * 2 - 1, -((e.clientY - r.top) / r.height) * 2 + 1);
+    raycaster.setFromCamera(ndc, camera);
+    const hits = raycaster.intersectObjects([giftGroup, cdHolder], true)
+      .filter((h) => !h.object.userData.noPick && chainVisible(h.object));
+    return hits[0] || null;
+  }
+
+  function handleTap(e) {
+    const hit = pick(e);
+    const now = performance.now();
+    const onDisc = !!hit && isDesc(hit.object, cd.discRotator);
+    const onCD = !!hit && isDesc(hit.object, cdHolder);
+
+    if (state === "closed" || state === "empty") {
+      if (hit && cb.onRequestOpen) cb.onRequestOpen();
+      return;
+    }
+    if (state === "revealed") {
+      if (onDisc && caseC > 0.6) {
+        lastDiscTap = now;
+        zoomIn();
+      } else if (onCD) {
+        caseTarget = caseTarget > 0.5 ? 0 : 1;
+      }
+      return;
+    }
+    if (state === "zoomIn") {
+      if (onDisc && now - lastDiscTap < 380) pendingListen = true;
+      return;
+    }
+    if (state === "zoomed") {
+      if (onDisc) {
+        if (now - lastDiscTap < 380) {
+          lastDiscTap = 0;
+          openListen();
+        } else {
+          lastDiscTap = now;
+        }
+      } else {
+        zoomOut();
+      }
+    }
+  }
+
+  const el = renderer.domElement;
+  let down = null;
+  el.addEventListener("pointerdown", (e) => {
+    down = { x: e.clientX, y: e.clientY, lx: e.clientX, ly: e.clientY, moved: 0 };
+  });
+  window.addEventListener("pointermove", (e) => {
+    if (down) {
+      const dx = e.clientX - down.lx;
+      const dy = e.clientY - down.ly;
+      down.lx = e.clientX;
+      down.ly = e.clientY;
+      down.moved += Math.abs(dx) + Math.abs(dy);
+      if (down.moved > 6) {
+        if (state === "closed") {
+          giftGroup.rotation.y += dx * 0.01;
+          lastUserSpin = performance.now();
+        } else if (state === "revealed") {
+          dragYaw = Math.max(-1.0, Math.min(1.0, dragYaw + dx * 0.008));
+          dragPitch = Math.max(-0.6, Math.min(0.6, dragPitch + dy * 0.006));
+        } else if (state === "zoomed") {
+          flipY += dx * 0.012;
+          flipX = Math.max(-1.2, Math.min(1.2, flipX + dy * 0.01));
+        }
+      }
+      return;
+    }
+    if (e.target !== el) return;
+    const hit = pick(e);
+    let interactive = false;
+    if (state === "closed" || state === "empty") interactive = !!hit;
+    else if (state === "revealed") interactive = !!hit && isDesc(hit.object, cdHolder);
+    else if (state === "zoomed") interactive = !!hit && isDesc(hit.object, cd.discRotator);
+    hoverTarget = state === "closed" && hit ? 1 : 0;
+    container.classList.toggle("is-pointer", interactive);
+  });
+  el.addEventListener("pointerleave", () => {
+    hoverTarget = 0;
+    container.classList.remove("is-pointer");
+  });
+  window.addEventListener("pointerup", (e) => {
+    if (down && down.moved <= 6 && e.target === el) handleTap(e);
+    down = null;
+  });
+
+  // ---------- 渲染循环（离开视口时暂停，节省 GPU） ----------
+  let inView = true;
+  if ("IntersectionObserver" in window) {
+    new IntersectionObserver(([en]) => { inView = en.isIntersecting; }).observe(container);
+  }
+  if ("ResizeObserver" in window) {
+    new ResizeObserver(() => {
+      const w = container.clientWidth, h = container.clientHeight;
+      if (!w || !h) return;
+      camera.aspect = w / h;
+      camera.updateProjectionMatrix();
+      renderer.setSize(w, h);
+    }).observe(container);
+  }
+
+  let last = performance.now();
+  function loop(now) {
+    requestAnimationFrame(loop);
+    const dt = Math.min(0.05, (now - last) / 1000);
+    last = now;
+    if (!inView) return;
+    update(dt, now);
+    renderer.render(scene, camera);
+  }
+  requestAnimationFrame(loop);
+
+  // ---------- 对外 API ----------
+  return {
+    get state() { return state; },
+    beginUnbox() {
+      if (state === "closed") setState("untie");
+    },
+    resetToClosed(autoOpen) {
+      placeCDInBox();
+      cd.labelMaterial.map = defaultCover;
+      cd.labelMaterial.needsUpdate = true;
+      cd.bookletMaterial.map = defaultCover;
+      cd.bookletMaterial.needsUpdate = true;
+      giftGroup.position.set(0, 0, 0);
+      giftGroup.rotation.set(0, -0.5, 0);
+      lidGroup.visible = true;
+      lidGroup.position.set(0, lidBaseY, 0);
+      lidGroup.rotation.set(0, 0, 0);
+      setLidOpacity(1);
+      bow.scale.setScalar(1);
+      bow.rotation.set(0, 0, 0);
+      baseRibbons.forEach((r) => { r.scale.y = 1; });
+      giftReady = false;
+      isEmpty = false;
+      caseC = 0;
+      caseTarget = 1;
+      dragYaw = dragPitch = flipX = flipY = 0;
+      pendingListen = false;
+      pendingAutoOpen = !!autoOpen;
+      tweenCamera(CAM_CLOSED.pos, CAM_CLOSED.look, 0.8);
+      setState("drop");
+    },
+    setGift(tex) {
+      if (tex) {
+        cd.labelMaterial.map = tex;
+        cd.labelMaterial.needsUpdate = true;
+        cd.bookletMaterial.map = tex;
+        cd.bookletMaterial.needsUpdate = true;
+      }
+      isEmpty = false;
+      giftReady = true;
+    },
+    setEmpty() {
+      isEmpty = true;
+      giftReady = true;
+    },
+    closeSheet() {
+      if (state === "sheet") setState("zoomed");
+    }
+  };
+}
+
+// ========================================================
+// 4c. 音乐礼物盲盒 (立体礼盒拆封 + 30s 试听 + 邮箱回信)
 // ========================================================
 let activeUnpackAudio = null;
 
 function initGiftBox() {
   const btnOpen = document.getElementById("btn-open-random");
-  const btnUnsealHero = document.getElementById("btn-unseal-hero");
   const slot = document.getElementById("gift-display-slot");
   const form = document.getElementById("gift-form");
   const feedback = document.getElementById("form-feedback");
@@ -1743,72 +2476,140 @@ function initGiftBox() {
 
   if (!btnOpen || !slot || !form) return;
 
-  async function playUnsealAnimation() {
-    const sleeveCard = document.getElementById("sealed-sleeve-card");
-    if (!sleeveCard) return;
-    sleeveCard.style.transform = "";
-    sleeveCard.classList.add("is-tearing");
-    await new Promise(r => setTimeout(r, 320));
-    sleeveCard.classList.add("is-opening");
-    await new Promise(r => setTimeout(r, 240));
+  const canvasEl = document.getElementById("gift3d-canvas");
+  const hintEl = document.getElementById("gift3d-hint");
+  const stepEls = document.querySelectorAll(".g-step");
+  const songTag = document.getElementById("gift3d-songtag");
+  const sheet = document.getElementById("gift3d-sheet");
+  const sheetBody = document.getElementById("gift3d-sheet-body");
+  const sheetClose = document.getElementById("gift3d-sheet-close");
+
+  let busy = false;
+  let currentGift = null;
+  let emptyMessage = "";
+
+  const HINTS = {
+    closed: "轻触礼物盒，解开缎带",
+    drop: "新的礼物正在送达",
+    untie: "缎带正在松开",
+    lidOff: "掀开盒盖",
+    waitData: "正在从档案库取出唱片",
+    rise: "一张唱片正从礼盒中升起",
+    openCase: "打开唱片盒",
+    revealed: "轻触 CD 放大端详 · 轻触唱片盒开合 · 拖动转动",
+    zoomIn: "再轻触一次即可直达聆听",
+    zoomed: "双击 CD 选择聆听平台 · 拖动翻转看衍射背面 · 轻触空白返回",
+    zoomOut: "回到唱片盒"
+  };
+  const STEP_OF = {
+    closed: 1, drop: 1, untie: 1, lidOff: 1, waitData: 1, empty: 1,
+    rise: 2, openCase: 2,
+    revealed: 3, zoomIn: 3, zoomed: 3, zoomOut: 3,
+    sheet: 4
+  };
+  const SONGTAG_STATES = ["openCase", "revealed", "zoomIn", "zoomed", "zoomOut"];
+
+  function onStageState(s) {
+    if (hintEl) {
+      hintEl.textContent = s === "empty" ? emptyMessage : (HINTS[s] || "");
+      hintEl.classList.toggle("hidden", s === "sheet");
+      hintEl.classList.remove("pulse");
+      void hintEl.offsetWidth;
+      hintEl.classList.add("pulse");
+    }
+    const step = STEP_OF[s] || 1;
+    stepEls.forEach((el) => {
+      const n = Number(el.dataset.step);
+      el.classList.toggle("active", n === step);
+      el.classList.toggle("done", n < step);
+    });
+    if (songTag) songTag.classList.toggle("hidden", !(currentGift && SONGTAG_STATES.includes(s)));
   }
 
-  async function openRandomGift() {
-    btnOpen.disabled = true;
-    btnOpen.textContent = "启封中...";
-    if (btnUnsealHero) btnUnsealHero.disabled = true;
+  function openListenSheet() {
+    if (!currentGift || !sheet || !sheetBody) return;
+    renderUnpackedCard(currentGift, sheetBody);
+    sheet.classList.remove("hidden");
+    requestAnimationFrame(() => sheet.classList.add("open"));
+  }
 
+  function closeListenSheet(notifyStage) {
+    if (!sheet) return;
+    sheet.classList.remove("open");
+    setTimeout(() => sheet.classList.add("hidden"), 420);
     if (activeUnpackAudio) {
       activeUnpackAudio.pause();
       activeUnpackAudio = null;
     }
+    if (notifyStage && stage) stage.closeSheet();
+  }
+  if (sheetClose) sheetClose.addEventListener("click", () => closeListenSheet(true));
+
+  let stage = null;
+  try {
+    if (canvasEl && typeof THREE !== "undefined") {
+      stage = createGiftBoxStage(canvasEl, {
+        onRequestOpen: () => openRandomGift(),
+        onOpenListen: openListenSheet,
+        onStateChange: onStageState
+      });
+      onStageState("closed");
+    }
+  } catch (e) {
+    stage = null;
+  }
+
+  async function openRandomGift() {
+    if (busy) return;
+    busy = true;
+    btnOpen.disabled = true;
+    btnOpen.textContent = "启封中...";
+    closeListenSheet(false);
+    currentGift = null;
+    if (songTag) songTag.classList.add("hidden");
+
+    if (stage) {
+      if (stage.state === "closed") stage.beginUnbox();
+      else stage.resetToClosed(true);
+    }
 
     try {
-      const fetchPromise = fetch("/api/gifts/random", { cache: "no-store" }).then(async r => ({
-        ok: r.ok,
-        result: await r.json()
-      }));
-      const animPromise = playUnsealAnimation();
-      const [{ ok, result }] = await Promise.all([fetchPromise, animPromise]);
+      const res = await fetch("/api/gifts/random", { cache: "no-store" });
+      const result = await res.json();
 
-      if (ok && result.code === 200 && result.data) {
-        renderUnpackedCard(result.data, slot);
+      if (res.ok && result.code === 200 && result.data) {
+        const gift = result.data;
+        if (songTag) {
+          songTag.innerHTML = `
+            <div class="gs-from">A GIFT FROM ${escapeHtml(gift.nickname || "神秘知音")}</div>
+            <div class="gs-title">${escapeHtml(gift.song_title)}</div>
+            <div class="gs-artist">${escapeHtml(gift.artist || "未知艺术家")}</div>
+          `;
+        }
+        if (stage) {
+          const tex = await loadCoverTexture(gift.album_cover);
+          currentGift = gift;
+          stage.setGift(tex);
+          updateHeroDiscCover(gift.album_cover);
+        } else {
+          currentGift = gift;
+          renderUnpackedCard(gift, slot);
+        }
       } else {
-        slot.innerHTML = `
-          <div class="sealed-sleeve-card">
-            <div class="sleeve-body">
-              <div class="sleeve-catalog-no">EMPTY ARCHIVE</div>
-              <h3 class="sleeve-heading">盲盒暂时空空如也</h3>
-              <p class="sleeve-sub">${escapeHtml(result.message || "来右侧做第一个封存音乐礼物的人吧。")}</p>
-            </div>
-          </div>
-        `;
+        emptyMessage = result.message || "盲盒暂时空空如也，来右侧封存第一份音乐礼物吧。";
+        if (stage) stage.setEmpty();
       }
     } catch (err) {
-      slot.innerHTML = `
-        <div class="sealed-sleeve-card">
-          <div class="sleeve-body">
-            <p style="color:var(--danger);">网络连接不稳定，请稍后刷新重试。</p>
-          </div>
-        </div>
-      `;
+      emptyMessage = "网络连接不稳定，请稍后再拆一次。";
+      if (stage) stage.setEmpty();
     } finally {
+      busy = false;
       btnOpen.disabled = false;
-      btnOpen.textContent = "换一首 / 随机开启";
+      btnOpen.textContent = "换一份 / 再拆一个";
     }
   }
 
   btnOpen.addEventListener("click", openRandomGift);
-  const sleeveCardEl = document.getElementById("sealed-sleeve-card");
-  if (sleeveCardEl) {
-    sleeveCardEl.addEventListener("click", (e) => {
-      if (e.target.closest("#btn-unseal-hero") || !btnOpen.disabled) {
-        openRandomGift();
-      }
-    });
-  } else if (btnUnsealHero) {
-    btnUnsealHero.addEventListener("click", openRandomGift);
-  }
 
   function renderUnpackedCard(gift, container) {
     const title = escapeHtml(gift.song_title);

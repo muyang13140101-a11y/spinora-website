@@ -2166,3 +2166,226 @@ body {
 .download-footnote-bar a:hover {
   text-decoration: underline;
 }
+
+/* ========================================================
+   3D 立体礼物盒拆封舞台 (.gift3d-stage)
+   ======================================================== */
+.gift3d-stage {
+  position: relative;
+  width: 100%;
+  min-height: 500px;
+  height: 100%;
+  border-radius: 14px;
+  background:
+    radial-gradient(circle at 50% 42%, rgba(212, 163, 115, 0.08) 0%, transparent 62%),
+    linear-gradient(180deg, rgba(14, 14, 18, 0.92) 0%, rgba(9, 9, 12, 0.98) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.gift3d-steps {
+  position: absolute;
+  top: 14px;
+  left: 16px;
+  right: 16px;
+  z-index: 4;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.8px;
+  color: var(--ink-dim);
+  pointer-events: none;
+}
+
+.g-step {
+  padding: 3px 9px;
+  border-radius: 999px;
+  transition: all 0.3s var(--ease-spring);
+}
+
+.g-step.active {
+  color: var(--amber-bright);
+  background: rgba(212, 163, 115, 0.14);
+  border: 1px solid rgba(212, 163, 115, 0.38);
+}
+
+.g-step.done {
+  color: var(--ink-muted);
+}
+
+.g-sep {
+  opacity: 0.35;
+}
+
+.gift3d-canvas {
+  width: 100%;
+  flex: 1;
+  min-height: 500px;
+  cursor: grab;
+  touch-action: none;
+}
+
+.gift3d-canvas:active {
+  cursor: grabbing;
+}
+
+.gift3d-canvas.is-pointer {
+  cursor: pointer;
+}
+
+.gift3d-songtag {
+  position: absolute;
+  top: 52px;
+  left: 18px;
+  z-index: 4;
+  max-width: 240px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  background: rgba(12, 12, 16, 0.72);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  pointer-events: none;
+  animation: fadeUp 0.45s var(--ease-spring) both;
+}
+
+.gift3d-songtag.hidden {
+  display: none;
+}
+
+.gs-from {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 1.2px;
+  color: var(--amber);
+  margin-bottom: 3px;
+}
+
+.gs-title {
+  font-size: 0.96rem;
+  font-weight: 600;
+  color: var(--ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.gs-artist {
+  font-size: 0.78rem;
+  color: var(--ink-muted);
+}
+
+.gift3d-hint {
+  position: absolute;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 4;
+  padding: 6px 16px;
+  border-radius: 999px;
+  background: rgba(12, 12, 16, 0.76);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  font-size: 0.76rem;
+  color: var(--ink-muted);
+  white-space: nowrap;
+  max-width: calc(100% - 24px);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  pointer-events: none;
+}
+
+.gift3d-hint.hidden {
+  display: none;
+}
+
+.gift3d-hint.pulse {
+  animation: hintPulse 0.45s var(--ease-spring);
+}
+
+@keyframes hintPulse {
+  0% { opacity: 0.35; transform: translateX(-50%) translateY(6px); }
+  100% { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+/* 双击 CD 弹出聆听与平台选择面板 */
+.gift3d-sheet {
+  position: absolute;
+  inset: 0;
+  z-index: 12;
+  background: rgba(11, 11, 14, 0.92);
+  backdrop-filter: blur(22px);
+  -webkit-backdrop-filter: blur(22px);
+  display: flex;
+  flex-direction: column;
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.38s var(--ease-spring), transform 0.38s var(--ease-spring);
+}
+
+.gift3d-sheet.hidden {
+  display: none;
+}
+
+.gift3d-sheet.open {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.gift3d-sheet-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 18px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.sheet-kicker {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 1.5px;
+  color: var(--amber);
+}
+
+.gift3d-sheet-close {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  color: var(--ink);
+  font-size: 0.76rem;
+  padding: 5px 12px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.gift3d-sheet-close:hover {
+  border-color: var(--amber);
+  color: var(--amber-bright);
+}
+
+.gift3d-sheet-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 14px 16px 18px;
+}
+
+@media (max-width: 600px) {
+  .gift3d-stage,
+  .gift3d-canvas {
+    min-height: 420px;
+  }
+  .gift3d-steps {
+    font-size: 0.6rem;
+    gap: 4px;
+  }
+  .g-step {
+    padding: 2px 6px;
+  }
+}

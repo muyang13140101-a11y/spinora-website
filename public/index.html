@@ -107,33 +107,28 @@
           </div>
 
           <div id="gift-display-slot" class="booth-slot">
-            <div class="sealed-sleeve-stage" id="sealed-sleeve-stage">
-              <div class="sealed-sleeve-card" id="sealed-sleeve-card">
-                <div class="sleeve-foil-sheen" aria-hidden="true"></div>
-                <div class="sleeve-tear-strip" id="sleeve-tear-strip">
-                  <span class="tear-perforation"></span>
-                  <span class="tear-label">PULL TO UNSEAL · 沿虚线启封</span>
-                  <span class="tear-notch"></span>
+            <div class="gift3d-stage" id="gift3d-stage">
+              <div class="gift3d-steps" aria-label="拆盒进度">
+                <span class="g-step active" data-step="1">01 礼盒</span>
+                <span class="g-sep">/</span>
+                <span class="g-step" data-step="2">02 唱片盒</span>
+                <span class="g-sep">/</span>
+                <span class="g-step" data-step="3">03 端详 CD</span>
+                <span class="g-sep">/</span>
+                <span class="g-step" data-step="4">04 聆听</span>
+              </div>
+
+              <div class="gift3d-canvas" id="gift3d-canvas"></div>
+
+              <div class="gift3d-songtag hidden" id="gift3d-songtag"></div>
+              <div class="gift3d-hint" id="gift3d-hint">轻触礼物盒，解开缎带</div>
+
+              <div class="gift3d-sheet hidden" id="gift3d-sheet">
+                <div class="gift3d-sheet-head">
+                  <span class="sheet-kicker">UNSEALED TRACK · 聆听与回响</span>
+                  <button type="button" class="gift3d-sheet-close" id="gift3d-sheet-close" title="返回 CD">返回 CD ✕</button>
                 </div>
-                <div class="sleeve-body">
-                  <div class="sleeve-spine-tag">SPINORA ARCHIVE · VOL.01</div>
-                  <div class="sleeve-wax-seal" id="sleeve-wax-seal">
-                    <div class="wax-seal-inner">
-                      <span class="wax-monogram">S</span>
-                    </div>
-                  </div>
-                  <div class="sleeve-catalog-no">BLIND BOX · 未知曲目</div>
-                  <h3 class="sleeve-heading">一份未拆封的音乐心意</h3>
-                  <p class="sleeve-sub">封套内藏着陌生听友选出的旋律、封面与只属于此刻的留言。</p>
-                  <button type="button" id="btn-unseal-hero" class="btn-unseal-pill">
-                    <span>轻触启封这份礼物</span>
-                    <span class="btn-arrow">→</span>
-                  </button>
-                </div>
-                <div class="sleeve-bottom-stamp">
-                  <span>30S PREVIEW</span>
-                  <span>MULTI-PLATFORM</span>
-                </div>
+                <div class="gift3d-sheet-body" id="gift3d-sheet-body"></div>
               </div>
             </div>
           </div>
