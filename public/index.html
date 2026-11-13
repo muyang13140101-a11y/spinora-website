@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Spinora — 实体音乐视效与动态歌词桌面播放器</title>
-  <meta name="description" content="Spinora 是一款纯公益、完全免费、零商业广告的 Windows 桌面拟真音乐播放器，搭载 3D 实体 CD、留声机、黑胶、磁带与光学景深歌词。">
+  <title>Spinora — 音乐礼物盲盒与实体 3D CD 播放器</title>
+  <meta name="description" content="Spinora 纯公益音乐礼物盲盒与 Windows 桌面 3D 实体 CD/黑胶/留声机播放器。搜一首歌封存心意，或拆开远方听友留下的旋律。">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -13,12 +13,12 @@
   <link rel="icon" type="image/svg+xml" href="assets/logo.svg">
 </head>
 <body>
-  <!-- 胶片颗粒与质感噪点遮罩 -->
+  <!-- 胶片颗粒噪点层 -->
   <div class="film-grain-overlay" aria-hidden="true"></div>
-  <!-- 极克制的暖琥珀与冷银微光环境背光 -->
+  <!-- 克制的棚拍暖琥珀微光 -->
   <div class="ambient-studio-light" aria-hidden="true"></div>
 
-  <!-- 极简编辑风顶部导航 -->
+  <!-- 极简顶部导航 -->
   <header class="navbar">
     <div class="nav-inner">
       <a href="#" class="brand-box">
@@ -27,9 +27,9 @@
         <span class="brand-edition">PUBLIC GOOD · FREE</span>
       </a>
       <nav class="nav-menu">
-        <a href="#formats">载体形态</a>
-        <a href="#download">获取软件</a>
         <a href="#giftbox">音乐礼物盒</a>
+        <a href="#formats">载体形态</a>
+        <a href="download.html">下载客户端</a>
         <a href="javascript:void(0)" id="btn-open-disclaimer">版权与免责</a>
         <a href="https://github.com/muyang13140101-a11y/spinora-website" target="_blank" rel="noopener noreferrer" class="nav-gh-link">
           GitHub ↗
@@ -39,231 +39,60 @@
   </header>
 
   <main>
-    <!-- Hero 首屏：以真实 3D CD 建模作为开放式立体舞台背景 -->
+    <!-- Hero 首屏：直接复用 Spinora 客户端核心 3D CD 与全息衍射 Shader 作为开放背景舞台 -->
     <section class="hero-stage-section">
-      <!-- 开放式无边框 3D CD WebGL 画布（融合为页面空间的一部分） -->
       <div class="hero-three-backdrop" id="three-container">
-        <div class="three-loading-hint">INITIALIZING 3D OPTICS...</div>
+        <div class="three-loading-hint">INITIALIZING SPINORA 3D ENGINE...</div>
       </div>
 
       <div class="hero-content-layer">
         <div class="hero-meta-line">
-          <span>TAURI V2 / RUST</span>
+          <span>MUSIC GIFT ARCHIVE</span>
           <span class="sep">/</span>
-          <span>WINDOWS 10 &amp; 11</span>
+          <span>SPINORA 3D ENGINE</span>
           <span class="sep">/</span>
-          <span>2.44 MB</span>
+          <span>NON-PROFIT</span>
         </div>
 
         <h1 class="hero-headline">
-          重塑数字音乐的<br>
-          <span class="serif-italic">实体质感</span>与声音仪式
+          把一首歌的<span class="serif-italic">实体温度</span><br>
+          封存并寄给远方
         </h1>
 
         <p class="hero-desc">
-          完全开源、永久免费、零商业广告。将看不见的流媒体数据流，凝练为拥有真实物理折射、微米声槽与光学景深的 3D 亚克力 CD、铸铜留声机、黑胶唱盘与动态歌词大屏。
+          这里是 Spinora 公益音乐礼物盲盒与实体视效播放器主页。搜一首触动你的旋律封存入盒，或随机拆开陌生听友的珍藏；也可下载我们的 Windows 原生 3D 播放器。
         </p>
 
         <div class="hero-cta-group">
-          <a href="#download" class="btn btn-solid">
-            免费下载 Windows 版
+          <a href="#giftbox" class="btn btn-solid">
+            进入音乐礼物盲盒
           </a>
-          <a href="#giftbox" class="btn btn-outline">
-            进入音乐礼物盒
+          <a href="download.html" class="btn btn-outline">
+            下载 Windows 客户端
           </a>
         </div>
 
-        <!-- 极简硬件操控条（控制背景 3D CD 实体） -->
+        <!-- 实时操控软件同款 3D CD 实体 -->
         <div class="hero-hardware-bar">
-          <span class="hw-label">3D DISC CONTROLS</span>
+          <span class="hw-label">SPINORA CD ENGINE</span>
           <button id="btn-eject-cd" class="hw-btn active">出舱 / EJECT</button>
-          <button id="btn-speed-cd" class="hw-btn">转速 / 1X</button>
-          <button id="btn-holo-cd" class="hw-btn">镀膜 / HOLO</button>
-          <span class="hw-hint">拖拽画面可 360° 检视光盘折射</span>
+          <button id="btn-flip-cd" class="hw-btn">背面光栅 / FLIP</button>
+          <button id="btn-speed-cd" class="hw-btn">转速 / 25 RPM</button>
+          <span class="hw-hint">按住画面可 360° 拖拽检视</span>
         </div>
       </div>
     </section>
 
-    <!-- 五大多形态：杂志索引式交互切换（无小图标，纯排版与实体视觉） -->
-    <section id="formats" class="editorial-section">
-      <div class="section-header-split">
-        <div>
-          <div class="section-kicker">01 / PHYSICAL FORMATS</div>
-          <h2 class="section-title">五种物理媒介形态</h2>
-        </div>
-        <p class="section-lead">
-          基于物理着色器与微米级几何拓扑，在数字桌面上还原不同时代的听音器物。
-        </p>
-      </div>
-
-      <div class="formats-showcase-grid">
-        <!-- 左侧：纯文字编号索引列表 -->
-        <div class="formats-index-list" role="tablist">
-          <button class="format-index-item active" data-target="fmt-cd" role="tab">
-            <span class="fmt-num">01</span>
-            <span class="fmt-name">亚克力 CD 唱片盒</span>
-            <span class="fmt-spec">ACRYLIC &amp; HOLOGRAM</span>
-          </button>
-          <button class="format-index-item" data-target="fmt-gramophone" role="tab">
-            <span class="fmt-num">02</span>
-            <span class="fmt-name">古典铸铜号角留声机</span>
-            <span class="fmt-spec">BRASS HORN · 78 RPM</span>
-          </button>
-          <button class="format-index-item" data-target="fmt-vinyl" role="tab">
-            <span class="fmt-num">03</span>
-            <span class="fmt-name">现代 Hi-Fi 黑胶唱盘</span>
-            <span class="fmt-spec">CARBON ARM · 33⅓ RPM</span>
-          </button>
-          <button class="format-index-item" data-target="fmt-cassette" role="tab">
-            <span class="fmt-num">04</span>
-            <span class="fmt-name">八零年代透明磁带机</span>
-            <span class="fmt-spec">DUAL REEL · MAGNETIC</span>
-          </button>
-          <button class="format-index-item" data-target="fmt-lyrics" role="tab">
-            <span class="fmt-num">05</span>
-            <span class="fmt-name">极光光学景深歌词</span>
-            <span class="fmt-spec">OPTICAL BLUR · LRC</span>
-          </button>
-        </div>
-
-        <!-- 右侧：实体质感预览舞台 -->
-        <div class="formats-stage-panel">
-          <div id="fmt-cd" class="format-pane active">
-            <div class="pane-visual-box">
-              <div class="real-cd-artifact">
-                <div class="real-cd-rainbow"></div>
-                <div class="real-cd-hub"></div>
-              </div>
-            </div>
-            <div class="pane-copy">
-              <div class="pane-meta">FORMAT 01 — COMPACT DISC</div>
-              <h3>实体亚克力 CD 唱片盒与全息光盘</h3>
-              <p>高透亚克力磨砂外盒配合深银钛铝卡榫。独创三阶段机械防穿模出舱状态机与各向异性全息极坐标光栅，随视角变化折射真实的金属光谱。</p>
-            </div>
-          </div>
-
-          <div id="fmt-gramophone" class="format-pane">
-            <div class="pane-visual-box">
-              <div class="real-brass-artifact">
-                <div class="brass-horn-ring ring-1"></div>
-                <div class="brass-horn-ring ring-2"></div>
-                <div class="brass-horn-ring ring-3"></div>
-                <div class="brass-core"></div>
-              </div>
-            </div>
-            <div class="pane-copy">
-              <div class="pane-meta">FORMAT 02 — GRAMOPHONE</div>
-              <h3>古典重工大铜号角留声机</h3>
-              <p>双壁铸黄铜号角、手工胡桃木机座与云母声盒。号角随音乐低频产生细腻的物理共振，还原十九世纪末机械声学的厚重温度。</p>
-            </div>
-          </div>
-
-          <div id="fmt-vinyl" class="format-pane">
-            <div class="pane-visual-box">
-              <div class="real-vinyl-artifact">
-                <div class="vinyl-label-inner">SPINORA<br>33⅓ RPM</div>
-              </div>
-            </div>
-            <div class="pane-copy">
-              <div class="pane-meta">FORMAT 03 — HI-FI TURNTABLE</div>
-              <h3>现代 Hi-Fi 黑胶唱机与碳纤维唱臂</h3>
-              <p>微米级同心声槽雕刻与阻尼避震唱臂。唱片内圈实时映射当前播放专辑封面，支持悬停落针平滑过渡。</p>
-            </div>
-          </div>
-
-          <div id="fmt-cassette" class="format-pane">
-            <div class="pane-visual-box">
-              <div class="real-cassette-artifact">
-                <div class="cassette-window">
-                  <div class="cassette-spool spool-l"></div>
-                  <div class="cassette-tape-bridge"></div>
-                  <div class="cassette-spool spool-r"></div>
-                </div>
-                <div class="cassette-label-strip">SIDE A · TYPE II CHROME · 60 MIN</div>
-              </div>
-            </div>
-            <div class="pane-copy">
-              <div class="pane-meta">FORMAT 04 — COMPACT CASSETTE</div>
-              <h3>透明卡带与双轴卷带磁带机</h3>
-              <p>左右卷带盘随播放进度实时增减磁带厚度，复刻经典随身听透窗机械结构，留存属于磁带时代的模拟仪式。</p>
-            </div>
-          </div>
-
-          <div id="fmt-lyrics" class="format-pane">
-            <div class="pane-visual-box lyrics-stage">
-              <div class="lyric-sample far">And she says, we are all just prisoners here</div>
-              <div class="lyric-sample focus">Of our own device</div>
-              <div class="lyric-sample far">In the master's chambers, they gathered for the feast</div>
-            </div>
-            <div class="pane-copy">
-              <div class="pane-meta">FORMAT 05 — OPTICAL LYRICS</div>
-              <h3>极光光学景深动态歌词大屏</h3>
-              <p>实时提取专辑主色调渲染流体高斯背光，逐句随节拍平滑缩放与景深虚化，双击任意歌词即可精准跳转播放进度。</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- 下载专区：精密硬件规格表风格 -->
-    <section id="download" class="editorial-section">
-      <div class="section-header-split">
-        <div>
-          <div class="section-kicker">02 / DISTRIBUTION</div>
-          <h2 class="section-title">免费获取桌面客户端</h2>
-        </div>
-        <p class="section-lead">
-          所有构建包均托管于 GitHub Releases，纯本地运行、零广告、零捆绑。
-        </p>
-      </div>
-
-      <div class="download-monolith-grid">
-        <div class="dl-monolith dl-primary-card">
-          <div class="dl-top-meta">
-            <span class="dl-tag">RECOMMENDED</span>
-            <span class="dl-ver">V2.5.0 · 2.44 MB</span>
-          </div>
-          <h3>Windows 安装向导版</h3>
-          <p class="dl-summary">标准桌面安装程序，自动配置系统托盘常驻、开机启动项与高分屏 GPU 硬件加速。</p>
-          <ul class="dl-spec-list">
-            <li><span>架构支持</span><span>Windows 10 / 11 (64-bit)</span></li>
-            <li><span>内存占用</span><span>~40 MB 轻量微内核</span></li>
-            <li><span>文件格式</span><span>Spinora_Windows_x64_Setup.exe</span></li>
-          </ul>
-          <a href="https://github.com/muyang13140101-a11y/spinora-website/releases/download/v2.5.0/Spinora_Windows_x64_Setup.exe" class="btn btn-solid btn-full">
-            下载安装向导 (.exe)
-          </a>
-        </div>
-
-        <div class="dl-monolith">
-          <div class="dl-top-meta">
-            <span class="dl-tag">PORTABLE</span>
-            <span class="dl-ver">V2.5.0 · 9.54 MB</span>
-          </div>
-          <h3>Windows 绿色单文件版</h3>
-          <p class="dl-summary">无需安装、不写入系统注册表，可放入 U 盘随身携带，双击即刻运行。</p>
-          <ul class="dl-spec-list">
-            <li><span>架构支持</span><span>Windows 10 / 11 (64-bit)</span></li>
-            <li><span>配置存储</span><span>跟随程序同级目录留存</span></li>
-            <li><span>文件格式</span><span>Spinora.exe</span></li>
-          </ul>
-          <a href="https://github.com/muyang13140101-a11y/spinora-website/releases/download/v2.5.0/Spinora.exe" class="btn btn-outline btn-full">
-            下载绿色便携版 (.exe)
-          </a>
-        </div>
-      </div>
-    </section>
-
-    <!-- 音乐礼物盒子 2.0：黑胶试听间与盲盒交换台 -->
+    <!-- 01 / 核心功能置顶：音乐礼物盲盒（黑胶试听间与交换台） -->
     <section id="giftbox" class="editorial-section">
       <div class="section-header-split">
         <div>
-          <div class="section-kicker">03 / LISTENING BOOTH &amp; ARCHIVE</div>
+          <div class="section-kicker">01 / LISTENING BOOTH &amp; ARCHIVE</div>
           <h2 class="section-title">音乐礼物盲盒</h2>
         </div>
         <p class="section-lead">
-          搜一首触动你的歌并写下祝福封存入盒；或随机拆开一份远方听友留下的旋律，在自己常用的平台聆听并给 TA 回信。
-          <span class="archive-counter">当前已封存 <strong id="total-gifts-count">1</strong> 份心意</span>
+          搜索选歌并写下祝福封存入盒；或拆开一份远方听友留下的旋律，在线试听 30 秒原声并自由选择你常用的平台聆听全曲。
+          <span class="archive-counter">盒中已凝聚 <strong id="total-gifts-count">1</strong> 份心意</span>
         </p>
       </div>
 
@@ -297,7 +126,6 @@
             <span class="booth-sub-meta">多平台曲库自动对齐</span>
           </div>
 
-          <!-- 曲库源切换 -->
           <div class="source-filter-row" id="search-source-tabs">
             <button type="button" class="source-tab active" data-source="all">全部曲库</button>
             <button type="button" class="source-tab" data-source="qq">QQ音乐</button>
@@ -306,7 +134,6 @@
             <button type="button" class="source-tab" data-source="deezer">全球曲库</button>
           </div>
 
-          <!-- 智能搜索框 -->
           <div class="search-music-wrapper">
             <div class="search-input-box">
               <input type="text" id="music-search-input" placeholder="搜索歌名或歌手，如：周杰伦 晴天 / Hotel California..." autocomplete="off">
@@ -321,7 +148,6 @@
           </div>
 
           <form id="gift-form">
-            <!-- 手动填写兜底 -->
             <div id="manual-entry-box" class="manual-entry-box hidden">
               <div class="form-field-row">
                 <div class="form-field-half">
@@ -335,7 +161,6 @@
               </div>
             </div>
 
-            <!-- 已选歌曲确认卡 -->
             <div id="selected-song-preview" class="selected-song-preview hidden">
               <img id="preview-cover-img" src="assets/logo.svg" alt="" class="preview-cover">
               <div class="preview-details">
@@ -393,9 +218,69 @@
         </div>
       </div>
     </section>
+
+    <!-- 02 / 桌面软件真实 3D 模型展示（直接调用软件同源 Three.js 几何体实时渲染） -->
+    <section id="formats" class="editorial-section">
+      <div class="section-header-split">
+        <div>
+          <div class="section-kicker">02 / DESKTOP VISUALIZER</div>
+          <h2 class="section-title">桌面端五种物理载体</h2>
+        </div>
+        <p class="section-lead">
+          右侧预览框直接运行 Spinora 客户端同源 Three.js 3D 建模代码，点击左侧切换不同载体实时检视。
+          <a href="download.html" class="inline-dl-link">前往下载桌面版 ↗</a>
+        </p>
+      </div>
+
+      <div class="formats-showcase-grid">
+        <div class="formats-index-list" role="tablist">
+          <button class="format-index-item active" data-target="cd" role="tab">
+            <span class="fmt-num">01</span>
+            <span class="fmt-name">亚克力 CD 唱片盒</span>
+            <span class="fmt-spec">JEWEL CASE · GLSL</span>
+          </button>
+          <button class="format-index-item" data-target="gramophone" role="tab">
+            <span class="fmt-num">02</span>
+            <span class="fmt-name">古典铸铜号角留声机</span>
+            <span class="fmt-spec">BRASS HORN · 78 RPM</span>
+          </button>
+          <button class="format-index-item" data-target="vinyl" role="tab">
+            <span class="fmt-num">03</span>
+            <span class="fmt-name">现代 Hi-Fi 黑胶唱盘</span>
+            <span class="fmt-spec">TONEARM · 33⅓ RPM</span>
+          </button>
+          <button class="format-index-item" data-target="cassette" role="tab">
+            <span class="fmt-num">04</span>
+            <span class="fmt-name">八零年代透明磁带机</span>
+            <span class="fmt-spec">DUAL REEL · CHROME</span>
+          </button>
+          <button class="format-index-item" data-target="lyrics" role="tab">
+            <span class="fmt-num">05</span>
+            <span class="fmt-name">极光光学景深歌词</span>
+            <span class="fmt-spec">OPTICAL BLUR · LRC</span>
+          </button>
+        </div>
+
+        <!-- 右侧：真实 Three.js 3D 模型实时渲染视窗 + 歌词展示 -->
+        <div class="formats-stage-panel">
+          <div class="pane-visual-box" id="format-visual-stage">
+            <div id="format-three-canvas" class="format-three-canvas"></div>
+            <div id="format-lyrics-stage" class="lyrics-stage hidden">
+              <div class="lyric-sample far">And she says, we are all just prisoners here</div>
+              <div class="lyric-sample focus">Of our own device</div>
+              <div class="lyric-sample far">In the master's chambers, they gathered for the feast</div>
+            </div>
+          </div>
+          <div class="pane-copy" id="format-copy-box">
+            <div class="pane-meta" id="fmt-copy-meta">FORMAT 01 — COMPACT DISC</div>
+            <h3 id="fmt-copy-title">实体亚克力 CD 唱片盒与全息光盘</h3>
+            <p id="fmt-copy-desc">PMMA 高透亚克力盒盖、磨砂半透底托与四枚画册限位卡扣；光盘采用深银钛铝金属基底，背面搭载 1024px 解析连续极坐标彩虹衍射 Shader。</p>
+          </div>
+        </div>
+      </div>
+    </section>
   </main>
 
-  <!-- 极简页脚 -->
   <footer class="footer">
     <div class="footer-inner">
       <div class="footer-left">
@@ -403,14 +288,14 @@
         <span class="footer-desc">纯公益免费开源项目 · 守护数字时代的实体音乐美学</span>
       </div>
       <div class="footer-links">
+        <a href="download.html">下载桌面客户端</a>
         <a href="javascript:void(0)" id="footer-disclaimer-link">免责声明与 DMCA 通道</a>
         <a href="https://github.com/muyang13140101-a11y/spinora-website" target="_blank" rel="noopener noreferrer">GitHub</a>
-        <a href="mailto:contact@spinora.org">contact@spinora.org</a>
       </div>
     </div>
   </footer>
 
-  <!-- 版权合规与免责声明弹窗 -->
+  <!-- 免责弹窗 -->
   <div id="disclaimer-modal" class="modal-backdrop hidden">
     <div class="modal-card">
       <div class="modal-header">
@@ -423,13 +308,11 @@
         </div>
         <div class="disclaimer-points">
           <h4>1. 零音频托管原则</h4>
-          <p>Spinora 官方网站及边缘服务器绝不托管、储存、盗链或分发任何受版权保护的完整商业音频文件。盲盒中的 30 秒试听片段均调用自公开合法的开发者试听流；所有整曲收听均引导跳转至用户自有的正版授权流媒体平台（Spotify、网易云音乐、QQ音乐、酷狗音乐、Apple Music、Tidal）。</p>
-
+          <p>Spinora 官方网站及边缘服务器绝不托管、储存、盗链或分发任何受版权保护的完整商业音频文件。盲盒中的 30 秒试听片段均调用自公开合法的开发者试听流；所有整曲收听均引导跳转至用户自有的正版授权流媒体平台。</p>
           <h4>2. 本地化客户端架构</h4>
           <p>Spinora Windows 客户端采用 Tauri + Rust 架构，仅作为桌面本地渲染外壳，通过官方开放接口与用户授权服务交互，不破解、不绕过任何流媒体 DRM 防护。</p>
-
           <h4>3. 快速 DMCA 维权与下线通道</h4>
-          <p>若任何版权方、唱片公司或艺术家认为礼物盒子中由用户分享的曲目元数据涉嫌侵犯其合法权益，请发送邮件至 <strong>dmca@spinora.org</strong> 或通过 GitHub Issues 提交下线申请，我们将在 24 小时内核实并下线。</p>
+          <p>若任何版权方、唱片公司或艺术家认为礼物盒子中由用户分享的曲目元数据涉嫌侵犯其合法权益，请发送邮件至 <strong>dmca@spinora.org</strong>，我们将在 24 小时内核实并下线。</p>
         </div>
       </div>
       <div class="modal-footer">

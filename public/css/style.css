@@ -137,8 +137,14 @@ body {
   transition: color 0.2s;
 }
 
-.nav-menu a:hover {
+.nav-menu a:hover,
+.nav-menu a.nav-active {
   color: var(--ink);
+}
+
+.nav-menu a.nav-active {
+  border-bottom: 1px solid var(--amber);
+  padding-bottom: 2px;
 }
 
 .nav-gh-link {
@@ -1723,4 +1729,54 @@ body {
   .form-field-row {
     flex-direction: column;
   }
+}
+
+.format-three-canvas {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  cursor: grab;
+}
+
+.format-three-canvas:active {
+  cursor: grabbing;
+}
+
+.inline-dl-link {
+  display: inline-block;
+  margin-left: 8px;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--amber);
+  text-decoration: none;
+  border-bottom: 1px solid rgba(212, 163, 115, 0.4);
+}
+
+.inline-dl-link:hover {
+  color: var(--amber-bright);
+  border-bottom-color: var(--amber-bright);
+}
+
+.download-page-hero {
+  min-height: 70vh;
+}
+
+.download-footnote-bar {
+  margin-top: 2.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--hairline);
+  font-size: 0.84rem;
+  color: var(--ink-dim);
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.download-footnote-bar a {
+  color: var(--amber);
+  text-decoration: none;
+}
+
+.download-footnote-bar a:hover {
+  text-decoration: underline;
 }

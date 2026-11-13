@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>下载桌面客户端 — Spinora</title>
+  <meta name="description" content="免费下载 Spinora Windows 桌面端（安装向导版 2.44 MB / 绿色单文件便携版 9.54 MB），Tauri v2 + Rust 原生微内核，零广告纯公益。">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" type="image/svg+xml" href="assets/logo.svg">
+</head>
+<body>
+  <div class="film-grain-overlay" aria-hidden="true"></div>
+  <div class="ambient-studio-light" aria-hidden="true"></div>
+
+  <header class="navbar">
+    <div class="nav-inner">
+      <a href="index.html" class="brand-box">
+        <span class="brand-disc-mark" aria-hidden="true"></span>
+        <span class="brand-title">SPINORA</span>
+        <span class="brand-edition">PUBLIC GOOD · FREE</span>
+      </a>
+      <nav class="nav-menu">
+        <a href="index.html#giftbox">音乐礼物盒</a>
+        <a href="index.html#formats">载体形态</a>
+        <a href="download.html" class="nav-active">下载客户端</a>
+        <a href="javascript:void(0)" id="btn-open-disclaimer">版权与免责</a>
+        <a href="https://github.com/muyang13140101-a11y/spinora-website" target="_blank" rel="noopener noreferrer" class="nav-gh-link">
+          GitHub ↗
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="editorial-section download-page-hero">
+      <div class="section-header-split">
+        <div>
+          <div class="section-kicker">DISTRIBUTION / WINDOWS X64</div>
+          <h1 class="section-title" style="font-size: clamp(2.1rem, 3.6vw, 3rem);">获取 Spinora 桌面客户端</h1>
+        </div>
+        <p class="section-lead">
+          基于 Tauri v2 与 Rust 原生微内核构建，纯本地运行、零商业广告、零捆绑软件。所有安装包均托管于 GitHub Releases，点击即可直接下载。
+        </p>
+      </div>
+
+      <div class="download-monolith-grid">
+        <div class="dl-monolith dl-primary-card">
+          <div class="dl-top-meta">
+            <span class="dl-tag">RECOMMENDED / 推荐</span>
+            <span class="dl-ver">V2.5.0 · 2.44 MB</span>
+          </div>
+          <h3>Windows 安装向导版</h3>
+          <p class="dl-summary">标准桌面安装程序，自动配置桌面快捷方式、系统托盘常驻控制与高分屏 GPU 硬件加速。</p>
+          <ul class="dl-spec-list">
+            <li><span>系统要求</span><span>Windows 10 / 11 (64-bit)</span></li>
+            <li><span>内存占用</span><span>~40 MB 轻量微内核</span></li>
+            <li><span>程序文件</span><span>Spinora_Windows_x64_Setup.exe</span></li>
+            <li><span>渲染引擎</span><span>Three.js PBR + GLSL 全息光栅</span></li>
+          </ul>
+          <a href="https://github.com/muyang13140101-a11y/spinora-website/releases/download/v2.5.0/Spinora_Windows_x64_Setup.exe" class="btn btn-solid btn-full">
+            下载安装向导 (.exe)
+          </a>
+        </div>
+
+        <div class="dl-monolith">
+          <div class="dl-top-meta">
+            <span class="dl-tag">PORTABLE / 便携</span>
+            <span class="dl-ver">V2.5.0 · 9.54 MB</span>
+          </div>
+          <h3>Windows 绿色单文件版</h3>
+          <p class="dl-summary">免安装绿色便携程序，不写入系统注册表，可放入 U 盘随身携带，在任何电脑上双击即运行。</p>
+          <ul class="dl-spec-list">
+            <li><span>系统要求</span><span>Windows 10 / 11 (64-bit)</span></li>
+            <li><span>配置存储</span><span>跟随程序同级目录留存</span></li>
+            <li><span>程序文件</span><span>Spinora.exe</span></li>
+            <li><span>适用场景</span><span>临时体验 / 办公电脑 / 移动携带</span></li>
+          </ul>
+          <a href="https://github.com/muyang13140101-a11y/spinora-website/releases/download/v2.5.0/Spinora.exe" class="btn btn-outline btn-full">
+            下载绿色便携版 (.exe)
+          </a>
+        </div>
+      </div>
+
+      <div class="download-footnote-bar">
+        <span>历史版本与校验信息：</span>
+        <a href="https://github.com/muyang13140101-a11y/spinora-website/releases" target="_blank" rel="noopener noreferrer">前往 GitHub Releases 归档库查看全部构建 ↗</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-left">
+        <span class="footer-brand">SPINORA PROJECT</span>
+        <span class="footer-desc">纯公益免费开源项目 · 守护数字时代的实体音乐美学</span>
+      </div>
+      <div class="footer-links">
+        <a href="index.html">返回首页礼物盒</a>
+        <a href="javascript:void(0)" id="footer-disclaimer-link">免责声明与 DMCA 通道</a>
+        <a href="https://github.com/muyang13140101-a11y/spinora-website" target="_blank" rel="noopener noreferrer">GitHub</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- 免责弹窗 -->
+  <div id="disclaimer-modal" class="modal-backdrop hidden">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>纯公益合规宗旨与法律免责声明</h3>
+        <button id="btn-close-modal" class="modal-close-btn">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="disclaimer-alert">
+          <strong>非商业与零侵权声明：</strong> Spinora 官方网站与客户端均为完全开源、非盈利的纯公益项目。绝不销售任何软件、不收取会员费、不设付费墙、亦不投放任何商业广告。
+        </div>
+        <div class="disclaimer-points">
+          <h4>1. 零音频托管原则</h4>
+          <p>Spinora 官方网站及边缘服务器绝不托管、储存、盗链或分发任何受版权保护的完整商业音频文件。</p>
+          <h4>2. 本地化客户端架构</h4>
+          <p>Spinora Windows 客户端采用 Tauri + Rust 架构，仅作为桌面本地渲染外壳，通过官方开放接口与用户授权服务交互，不破解、不绕过任何流媒体 DRM 防护。</p>
+          <h4>3. 快速 DMCA 维权与下线通道</h4>
+          <p>如有版权方认为网站内用户分享的曲目元数据涉嫌侵权，请发送邮件至 <strong>dmca@spinora.org</strong>，我们将在 24 小时内核实并下线。</p>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button id="btn-modal-confirm" class="btn btn-solid">我已了解并同意</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>
