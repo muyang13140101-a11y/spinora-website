@@ -1,9 +1,0 @@
-name = "spinora-website"
-compatibility_date = "2026-11-13"
-pages_build_output_dir = "./public"
-
-# D1 数据库绑定声明
-[[d1_databases]]
-binding = "DB"
-database_name = "spinora-db"
-database_id = "your-d1-database-id-here"
