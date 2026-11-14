@@ -1,31 +1,44 @@
 // functions/api/gifts/random.js
 // GET /api/gifts/random - 随机抽取一条有效的音乐礼物
 
-export async function onRequestGet({ env }) {
+export async function onRequestGet({ request, env }) {
   try {
+    const url = new URL(request.url);
+    const targetId = parseInt(url.searchParams.get("id") || "", 10);
+    const excludeId = parseInt(url.searchParams.get("exclude") || "", 10);
+
     let gift;
-    try {
-      gift = await env.DB.prepare(
-        `SELECT id, song_title, artist, message, song_url, nickname, created_at,
-                COALESCE(album_cover, '') as album_cover,
-                COALESCE(preview_url, '') as preview_url,
-                COALESCE(platform_links, '{}') as platform_links,
-                COALESCE(likes_count, 0) as likes_count,
-                COALESCE(reply_message, '') as reply_message
-         FROM gifts 
-         WHERE status = 'active' 
-         ORDER BY RANDOM() 
-         LIMIT 1`
+    const cols = `id, song_title, artist, message, song_url, nickname, created_at,
+                  COALESCE(album_cover, '') as album_cover,
+                  COALESCE(preview_url, '') as preview_url,
+                  COALESCE(platform_links, '{}') as platform_links,
+                  COALESCE(likes_count, 0) as likes_count,
+                  COALESCE(reply_message, '') as reply_message`;
+    const fallbackCols = `id, song_title, artist, message, song_url, nickname, created_at`;
+
+    async function queryGift(selectCols) {
+      if (Number.isInteger(targetId) && targetId > 0) {
+        const byId = await env.DB.prepare(
+          `SELECT ${selectCols} FROM gifts WHERE status = 'active' AND id = ? LIMIT 1`
+        ).bind(targetId).first();
+        if (byId) return byId;
+      }
+      if (Number.isInteger(excludeId) && excludeId > 0) {
+        const nonRepeat = await env.DB.prepare(
+          `SELECT ${selectCols} FROM gifts WHERE status = 'active' AND id != ? ORDER BY RANDOM() LIMIT 1`
+        ).bind(excludeId).first();
+        if (nonRepeat) return nonRepeat;
+      }
+      return await env.DB.prepare(
+        `SELECT ${selectCols} FROM gifts WHERE status = 'active' ORDER BY RANDOM() LIMIT 1`
       ).first();
+    }
+
+    try {
+      gift = await queryGift(cols);
     } catch (e) {
       // 容错降级读取老表
-      gift = await env.DB.prepare(
-        `SELECT id, song_title, artist, message, song_url, nickname, created_at
-         FROM gifts 
-         WHERE status = 'active' 
-         ORDER BY RANDOM() 
-         LIMIT 1`
-      ).first();
+      gift = await queryGift(fallbackCols);
     }
 
     if (!gift) {

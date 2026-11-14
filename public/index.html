@@ -121,6 +121,10 @@
               <div class="gift3d-canvas" id="gift3d-canvas"></div>
 
               <div class="gift3d-songtag hidden" id="gift3d-songtag"></div>
+              <div class="gift3d-zoom-actions hidden" id="gift3d-zoom-actions">
+                <button type="button" class="gift3d-action-btn primary" id="btn-zoom-listen">聆听与查看祝福</button>
+                <button type="button" class="gift3d-action-btn" id="btn-zoom-back">放回唱片盒</button>
+              </div>
               <div class="gift3d-hint" id="gift3d-hint">轻触礼物盒，解开缎带</div>
 
               <div class="gift3d-sheet hidden" id="gift3d-sheet">
@@ -143,7 +147,10 @@
             </div>
             <h3 class="ceremony-title">心意已封存入盒</h3>
             <p class="ceremony-desc">这首歌正静静躺在盲盒中，等待远方的有缘人将它拆开。</p>
-            <button type="button" id="btn-seal-another" class="btn-unseal-pill">再封存一首</button>
+            <div class="ceremony-actions">
+              <button type="button" id="btn-copy-gift-link" class="btn-unseal-pill hidden">复制专属礼物链接</button>
+              <button type="button" id="btn-seal-another" class="btn-text-action">再封存一首</button>
+            </div>
           </div>
 
           <div class="booth-panel-head">
@@ -291,9 +298,12 @@
           <div class="pane-visual-box" id="format-visual-stage">
             <div id="format-three-canvas" class="format-three-canvas"></div>
             <div id="format-lyrics-stage" class="lyrics-stage hidden">
-              <div class="lyric-sample far">And she says, we are all just prisoners here</div>
-              <div class="lyric-sample focus">Of our own device</div>
-              <div class="lyric-sample far">In the master's chambers, they gathered for the feast</div>
+              <div class="lyrics-aurora-glow" aria-hidden="true"></div>
+              <div class="lyric-sample far" data-idx="0">Mirrors on the ceiling, the pink champagne on ice</div>
+              <div class="lyric-sample near" data-idx="1">And she said, we are all just prisoners here</div>
+              <div class="lyric-sample focus" data-idx="2">Of our own device</div>
+              <div class="lyric-sample near" data-idx="3">And in the master's chambers, they gathered for the feast</div>
+              <div class="lyric-sample far" data-idx="4">They stab it with their steely knives, but they just can't kill the beast</div>
             </div>
           </div>
           <div class="pane-copy" id="format-copy-box">

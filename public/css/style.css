@@ -677,26 +677,69 @@ body {
 }
 
 .lyrics-stage {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
   flex-direction: column;
-  gap: 12px;
-  padding: 1.5rem;
+  align-items: center;
+  justify-content: center;
+  gap: 11px;
+  padding: 1.5rem 2rem;
+  overflow: hidden;
+}
+
+.lyrics-stage.hidden {
+  display: none;
+}
+
+.lyrics-aurora-glow {
+  position: absolute;
+  inset: -25%;
+  background:
+    radial-gradient(circle at 30% 40%, rgba(212, 163, 115, 0.22), transparent 55%),
+    radial-gradient(circle at 72% 62%, rgba(96, 165, 250, 0.16), transparent 52%);
+  filter: blur(36px);
+  animation: auroraDrift 9s ease-in-out infinite alternate;
+  pointer-events: none;
+}
+
+@keyframes auroraDrift {
+  0% { transform: translate(-4%, -3%) scale(1); }
+  100% { transform: translate(5%, 4%) scale(1.08); }
 }
 
 .lyric-sample {
+  position: relative;
+  z-index: 1;
   font-family: var(--font-serif);
   text-align: center;
+  cursor: pointer;
+  transition: all 0.55s var(--ease-spring);
+  user-select: none;
 }
 
 .lyric-sample.far {
-  font-size: 1.05rem;
-  color: var(--ink-dim);
-  filter: blur(1.2px);
+  font-size: 0.92rem;
+  color: rgba(161, 161, 170, 0.45);
+  filter: blur(2.2px);
+  transform: scale(0.92);
+}
+
+.lyric-sample.near {
+  font-size: 1.12rem;
+  color: rgba(244, 244, 240, 0.68);
+  filter: blur(0.8px);
+  transform: scale(0.96);
 }
 
 .lyric-sample.focus {
-  font-size: 1.8rem;
+  font-size: 1.72rem;
   color: var(--ink);
   font-style: italic;
+  filter: blur(0);
+  transform: scale(1.04);
+  text-shadow: 0 0 26px rgba(212, 163, 115, 0.35);
 }
 
 @keyframes slowSpin {
@@ -2388,4 +2431,61 @@ body {
   .g-step {
     padding: 2px 6px;
   }
+}
+
+/* 端详 CD 时的快捷操作胶囊 */
+.gift3d-zoom-actions {
+  position: absolute;
+  bottom: 54px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  animation: fadeUp 0.4s var(--ease-spring) both;
+}
+
+.gift3d-zoom-actions.hidden {
+  display: none;
+}
+
+.gift3d-action-btn {
+  padding: 8px 16px;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 500;
+  cursor: pointer;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: rgba(14, 14, 18, 0.84);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  color: var(--ink);
+  transition: all 0.25s var(--ease-spring);
+  white-space: nowrap;
+}
+
+.gift3d-action-btn:hover {
+  border-color: var(--amber);
+  color: var(--amber-bright);
+  transform: translateY(-1px);
+}
+
+.gift3d-action-btn.primary {
+  background: var(--ink);
+  color: #0a0a0c;
+  border-color: transparent;
+  font-weight: 600;
+}
+
+.gift3d-action-btn.primary:hover {
+  background: var(--amber-bright);
+  color: #0a0a0c;
+}
+
+.ceremony-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
 }

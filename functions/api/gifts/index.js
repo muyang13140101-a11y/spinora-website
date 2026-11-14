@@ -3,13 +3,7 @@
 
 function sanitize(str) {
   if (!str) return '';
-  return str.replace(/[&<>"']/g, (m) => ({
-    '&': '&amp;',
-    '<': '&lt;',
-    '>': '&gt;',
-    '"': '&quot;',
-    "'": '&#039;'
-  })[m]).trim();
+  return String(str).replace(/[\u0000-\u001F\u007F]/g, '').trim();
 }
 
 async function sha256(str) {

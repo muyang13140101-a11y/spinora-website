@@ -751,8 +751,8 @@ function createVinylGrooveTexture() {
 
 function buildAuthenticTurntable(coverTex) {
   const group = new THREE.Group();
-  group.scale.set(0.76, 0.76, 0.76);
-  group.rotation.set(-0.55, 0.25, 0.12);
+  group.scale.set(0.68, 0.68, 0.68);
+  group.rotation.set(-0.48, 0.22, 0.08);
 
   const plinthW = 4.50, plinthH = 3.85, plinthD = 0.26;
   const plinthMat = new THREE.MeshStandardMaterial({ color: 0x9c9992, roughness: 0.34, metalness: 0.58 });
@@ -849,9 +849,19 @@ function buildAuthenticTurntable(coverTex) {
   antiSkateBase.position.set(1.66, 0.64, 0.06);
   group.add(antiSkateBase);
 
+  const antiSkateCap = new THREE.Mesh(new THREE.CylinderGeometry(0.085, 0.085, 0.08, 20), chromeMat);
+  antiSkateCap.rotation.x = Math.PI / 2;
+  antiSkateCap.position.set(1.66, 0.64, 0.07);
+  group.add(antiSkateCap);
+
   const cueBox = new THREE.Mesh(new THREE.BoxGeometry(0.32, 0.24, 0.12), matteBlackMat);
   cueBox.position.set(1.56, 0.18, 0.08);
   group.add(cueBox);
+
+  const cueLever = new THREE.Mesh(new THREE.CylinderGeometry(0.016, 0.016, 0.24, 12), chromeMat);
+  cueLever.position.set(1.68, 0.06, 0.12);
+  cueLever.rotation.z = -0.15;
+  group.add(cueLever);
 
   const tonearmGroup = new THREE.Group();
   tonearmGroup.position.set(armPivotX, armPivotY, 0.22);
@@ -862,6 +872,10 @@ function buildAuthenticTurntable(coverTex) {
   const rearShaft = new THREE.Mesh(new THREE.CylinderGeometry(0.055, 0.055, 0.50, 16), chromeMat);
   rearShaft.position.y = 0.35;
   tonearmGroup.add(rearShaft);
+
+  const cwCone = new THREE.Mesh(new THREE.CylinderGeometry(0.16, 0.10, 0.16, 24), chromeMat);
+  cwCone.position.y = 0.26;
+  tonearmGroup.add(cwCone);
 
   const cwBody = new THREE.Mesh(new THREE.CylinderGeometry(0.165, 0.165, 0.24, 28), matteBlackMat);
   cwBody.position.y = 0.46;
@@ -875,11 +889,19 @@ function buildAuthenticTurntable(coverTex) {
     tonearmGroup.add(rib);
   }
 
+  const frontTaper = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.038, 0.28, 18), chromeMat);
+  frontTaper.position.y = -0.14;
+  tonearmGroup.add(frontTaper);
+
   const armWand = new THREE.Mesh(new THREE.CylinderGeometry(0.032, 0.030, 1.68, 20), chromeMat);
   armWand.position.y = -1.12;
   tonearmGroup.add(armWand);
 
-  const midCollar = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.05, 0.12, 16), matteBlackMat);
+  const midCollarSilver = new THREE.Mesh(new THREE.CylinderGeometry(0.048, 0.048, 0.12, 16), chromeMat);
+  midCollarSilver.position.y = -1.05;
+  tonearmGroup.add(midCollarSilver);
+
+  const midCollar = new THREE.Mesh(new THREE.CylinderGeometry(0.052, 0.052, 0.05, 16), matteBlackMat);
   midCollar.position.y = -1.05;
   tonearmGroup.add(midCollar);
 
@@ -922,6 +944,10 @@ function buildAuthenticTurntable(coverTex) {
   const btn45 = new THREE.Mesh(new THREE.BoxGeometry(0.24, 0.14, 0.045), brushedSilverMat);
   btn45.position.set(-1.02, -1.58, 0.036);
   group.add(btn45);
+
+  const led45 = new THREE.Mesh(new THREE.CircleGeometry(0.025, 12), new THREE.MeshBasicMaterial({ color: 0x3a2020 }));
+  led45.position.set(-1.02, -1.46, 0.022);
+  group.add(led45);
 
   const stylusTower = new THREE.Mesh(new THREE.CylinderGeometry(0.055, 0.055, 0.16, 20), chromeMat);
   stylusTower.rotation.x = Math.PI / 2;
@@ -992,6 +1018,21 @@ function buildAuthenticCassette() {
     group.add(holeCyl);
   });
 
+  // 侧面防滑凹槽与顶部防抹片
+  for (let g = 0; g < 5; g++) {
+    const gy = -0.95 + g * 0.14;
+    [-1, 1].forEach((s) => {
+      const grip = new THREE.Mesh(new THREE.BoxGeometry(0.18, 0.04, cD + 0.01), absDarkMat);
+      grip.position.set(s * (cW / 2 - 0.08), gy, 0);
+      group.add(grip);
+    });
+  }
+  [-1.42, 1.42].forEach((tx) => {
+    const notch = new THREE.Mesh(new THREE.BoxGeometry(0.28, 0.08, cD - 0.04), absDarkMat);
+    notch.position.set(tx, cH / 2 - 0.03, 0);
+    group.add(notch);
+  });
+
   [
     [-cW / 2 + 0.20, cH / 2 - 0.20, cD / 2 + 0.003],
     [cW / 2 - 0.20, cH / 2 - 0.20, cD / 2 + 0.003],
@@ -1045,6 +1086,22 @@ function buildAuthenticCassette() {
   const spoolR = createSpool(0.46);
   spoolR.position.set(0.66, 0.02, 0.02);
   group.add(spoolR);
+
+  const tapeBridge = new THREE.Mesh(new THREE.BoxGeometry(0.95, 0.03, 0.11), tapePancakeMat);
+  tapeBridge.position.set(0, -0.26, 0);
+  tapeBridge.rotation.z = 0.08;
+  group.add(tapeBridge);
+
+  [-1.52, 1.52].forEach((gx) => {
+    const pin = new THREE.Mesh(new THREE.CylinderGeometry(0.065, 0.065, 0.14, 16), metalScrewMat);
+    pin.rotation.x = Math.PI / 2;
+    pin.position.set(gx, -cH / 2 + 0.32, 0);
+    group.add(pin);
+  });
+
+  const runningRibbon = new THREE.Mesh(new THREE.BoxGeometry(2.80, 0.045, 0.10), tapePancakeMat);
+  runningRibbon.position.set(0, -cH / 2 + 0.16, 0);
+  group.add(runningRibbon);
 
   const bronzePad = new THREE.Mesh(
     new THREE.BoxGeometry(0.32, 0.035, 0.08),
@@ -1200,13 +1257,14 @@ function createMorningGloryHornGeometry() {
 
 function buildAuthenticGramophone(coverTex) {
   const group = new THREE.Group();
-  group.position.set(-0.04, -0.72, 0);
-  group.scale.set(0.64, 0.64, 0.64);
+  group.position.set(0, -0.78, 0);
+  group.scale.set(0.56, 0.56, 0.56);
   group.rotation.set(0.14, 0.28, 0);
 
   const creamMat = new THREE.MeshPhysicalMaterial({ color: 0xf2e9d6, roughness: 0.30, metalness: 0.04, clearcoat: 0.35 });
   const goldMat = new THREE.MeshStandardMaterial({ color: 0xe5bc5a, roughness: 0.22, metalness: 0.86, emissive: 0x332205, emissiveIntensity: 0.18 });
   const pewterMat = new THREE.MeshStandardMaterial({ color: 0xa8a094, roughness: 0.24, metalness: 0.84 });
+  const darkPewterMat = new THREE.MeshStandardMaterial({ color: 0x45413c, roughness: 0.32, metalness: 0.82 });
   const brassMat = new THREE.MeshPhysicalMaterial({
     color: 0xf5c366, roughness: 0.26, metalness: 0.82, clearcoat: 0.35,
     emissive: 0x3d2806, emissiveIntensity: 0.12, side: THREE.DoubleSide
@@ -1215,6 +1273,52 @@ function buildAuthenticGramophone(coverTex) {
 
   const boxW = 3.28, boxH = 1.12, boxD = 2.82;
   group.add(new THREE.Mesh(new THREE.BoxGeometry(boxW, boxH, boxD), creamMat));
+
+  // 正面复古音箱网布格栅 + 铜调谐表盘与旋钮
+  const frontCloth = new THREE.Mesh(
+    new THREE.PlaneGeometry(1.74, 0.78),
+    new THREE.MeshStandardMaterial({ color: 0x2a231c, roughness: 0.88 })
+  );
+  frontCloth.position.set(-0.62, 0.0, boxD / 2 + 0.008);
+  group.add(frontCloth);
+
+  [-1.24, -0.83, -0.41, 0.0].forEach((px) => {
+    const pillar = new THREE.Mesh(new THREE.BoxGeometry(0.055, 0.78, 0.03), creamMat);
+    pillar.position.set(px, 0, boxD / 2 + 0.018);
+    group.add(pillar);
+  });
+
+  const dialBezel = new THREE.Mesh(new THREE.TorusGeometry(0.24, 0.024, 12, 32), goldMat);
+  dialBezel.position.set(0.86, 0.14, boxD / 2 + 0.02);
+  group.add(dialBezel);
+
+  const dialFace = new THREE.Mesh(
+    new THREE.CircleGeometry(0.22, 32),
+    new THREE.MeshStandardMaterial({ color: 0xf5ebd6, roughness: 0.4 })
+  );
+  dialFace.position.set(0.86, 0.14, boxD / 2 + 0.016);
+  group.add(dialFace);
+
+  const mainKnob = new THREE.Mesh(new THREE.CylinderGeometry(0.09, 0.10, 0.06, 20), pewterMat);
+  mainKnob.rotation.x = Math.PI / 2;
+  mainKnob.position.set(0.86, -0.24, boxD / 2 + 0.03);
+  group.add(mainKnob);
+
+  // 右侧手摇曲柄
+  const crankGroup = new THREE.Group();
+  crankGroup.position.set(boxW / 2 + 0.02, 0, 0.25);
+  group.add(crankGroup);
+  const crankShaft = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 0.45, 14), goldMat);
+  crankShaft.rotation.z = Math.PI / 2;
+  crankShaft.position.x = 0.22;
+  crankGroup.add(crankShaft);
+  const crankArm = new THREE.Mesh(new THREE.BoxGeometry(0.06, 0.48, 0.06), goldMat);
+  crankArm.position.set(0.45, -0.22, 0);
+  crankGroup.add(crankArm);
+  const crankGrip = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.045, 0.28, 16), new THREE.MeshStandardMaterial({ color: 0x5c361c, roughness: 0.5 }));
+  crankGrip.rotation.z = Math.PI / 2;
+  crankGrip.position.set(0.58, -0.44, 0);
+  crankGroup.add(crankGrip);
 
   const topM1 = new THREE.Mesh(new THREE.BoxGeometry(boxW + 0.22, 0.09, boxD + 0.22), creamMat);
   topM1.position.y = boxH / 2 + 0.045;
@@ -1303,7 +1407,17 @@ function buildAuthenticGramophone(coverTex) {
   hornLight.position.copy(hornSpine.getPointAt(0.70));
   hornGroup.add(hornLight);
 
-  return { group, discRotator };
+  for (let r = 0.40; r <= 0.93; r += 0.065) {
+    const grv = new THREE.Mesh(
+      new THREE.RingGeometry(r, r + 0.006, 48),
+      new THREE.MeshStandardMaterial({ color: 0x282220, roughness: 0.14, metalness: 0.65, side: THREE.DoubleSide })
+    );
+    grv.rotation.x = -Math.PI / 2;
+    grv.position.y = 0.015;
+    discRotator.add(grv);
+  }
+
+  return { group, discRotator, crankGroup };
 }
 
 function initFormatIndex() {
@@ -1406,6 +1520,28 @@ function initFormatIndex() {
     });
   });
 
+  // 05 / 极光光学景深歌词交互 (点击任一句或自动推进)
+  const lyricLines = lyricsStage ? lyricsStage.querySelectorAll(".lyric-sample") : [];
+  let activeLyricIdx = 2;
+  function setActiveLyric(idx) {
+    activeLyricIdx = idx;
+    lyricLines.forEach((el, i) => {
+      const dist = Math.abs(i - idx);
+      el.classList.remove("focus", "near", "far");
+      if (dist === 0) el.classList.add("focus");
+      else if (dist === 1) el.classList.add("near");
+      else el.classList.add("far");
+    });
+  }
+  lyricLines.forEach((el, i) => {
+    el.addEventListener("click", () => setActiveLyric(i));
+  });
+  setInterval(() => {
+    if (activeMode === "lyrics" && lyricLines.length) {
+      setActiveLyric((activeLyricIdx + 1) % lyricLines.length);
+    }
+  }, 3200);
+
   function renderLoop() {
     requestAnimationFrame(renderLoop);
     if (activeMode === "lyrics") return;
@@ -1414,6 +1550,7 @@ function initFormatIndex() {
       if (!drag) cdModel.stageGroup.rotation.y += 0.004;
     } else if (activeMode === "gramophone") {
       gramModel.discRotator.rotation.y -= 0.025;
+      if (gramModel.crankGroup) gramModel.crankGroup.rotation.x += 0.015;
       if (!drag) gramModel.group.rotation.y += 0.003;
     } else if (activeMode === "vinyl") {
       vinylModel.vinylRotator.rotation.z -= 0.018;
@@ -1748,6 +1885,55 @@ function loadCoverTexture(url) {
   });
 }
 
+function createPersonalizedGiftCover(gift) {
+  const c = document.createElement("canvas");
+  c.width = 512;
+  c.height = 512;
+  const ctx = c.getContext("2d");
+
+  const grad = ctx.createRadialGradient(256, 180, 20, 256, 256, 360);
+  grad.addColorStop(0, "#2b2117");
+  grad.addColorStop(0.55, "#15151a");
+  grad.addColorStop(1, "#09090c");
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, 512, 512);
+
+  ctx.strokeStyle = "rgba(212, 163, 115, 0.35)";
+  ctx.lineWidth = 2;
+  ctx.strokeRect(24, 24, 464, 464);
+
+  ctx.strokeStyle = "rgba(212, 163, 115, 0.16)";
+  ctx.lineWidth = 1;
+  for (let r = 84; r <= 190; r += 18) {
+    ctx.beginPath();
+    ctx.arc(256, 256, r, 0, Math.PI * 2);
+    ctx.stroke();
+  }
+
+  ctx.fillStyle = "#d4a373";
+  ctx.font = '500 16px "JetBrains Mono", monospace';
+  ctx.textAlign = "center";
+  ctx.fillText(`SPINORA ARCHIVE · NO.${String(gift?.id || 1).padStart(3, "0")}`, 256, 72);
+
+  const title = (gift?.song_title || "Untitled Track").slice(0, 22);
+  ctx.fillStyle = "#f4f4f0";
+  ctx.font = '600 34px "Noto Sans SC", sans-serif';
+  ctx.fillText(title, 256, 248);
+
+  const artist = (gift?.artist || "Unknown Artist").slice(0, 28);
+  ctx.fillStyle = "#e6be94";
+  ctx.font = '400 20px "Noto Sans SC", sans-serif';
+  ctx.fillText(artist, 256, 290);
+
+  ctx.fillStyle = "rgba(244, 244, 240, 0.55)";
+  ctx.font = '400 15px "Noto Sans SC", sans-serif';
+  ctx.fillText(`FROM ${gift?.nickname || "神秘知音"}`, 256, 446);
+
+  const tex = new THREE.CanvasTexture(c);
+  tex.anisotropy = 8;
+  return tex;
+}
+
 // ========================================================
 // 4b. 立体实体礼物盒舞台：礼盒 → 缎带 → 盒盖 → CD 唱片盒 → CD → 聆听
 // ========================================================
@@ -2046,6 +2232,59 @@ function createGiftBoxStage(container, cb) {
   knot.position.y = 0.13;
   bow.add(knot);
 
+  // 礼物吊牌 (FOR YOU)
+  const tagCanvas = document.createElement("canvas");
+  tagCanvas.width = 256; tagCanvas.height = 128;
+  const tctx = tagCanvas.getContext("2d");
+  tctx.fillStyle = "#efe3cb";
+  tctx.fillRect(0, 0, 256, 128);
+  tctx.strokeStyle = "#b88750";
+  tctx.lineWidth = 4;
+  tctx.strokeRect(8, 8, 240, 112);
+  tctx.fillStyle = "#2b1d0e";
+  tctx.font = 'italic 34px "Instrument Serif", Georgia, serif';
+  tctx.textAlign = "center";
+  tctx.fillText("For You", 128, 66);
+  tctx.font = '500 14px "JetBrains Mono", monospace';
+  tctx.fillStyle = "#7a522c";
+  tctx.fillText("SPINORA GIFT", 128, 98);
+  const tagMat = new THREE.MeshStandardMaterial({
+    map: new THREE.CanvasTexture(tagCanvas),
+    roughness: 0.7,
+    transparent: true,
+    side: THREE.DoubleSide
+  });
+  const giftTag = new THREE.Mesh(new THREE.PlaneGeometry(0.76, 0.38), tagMat);
+  giftTag.position.set(0.65, 0.06, 0.72);
+  giftTag.rotation.set(-Math.PI / 2 + 0.08, 0, -0.28);
+  bow.add(giftTag);
+
+  // 开盒金色星尘粒子
+  const dustCount = 42;
+  const dustPositions = new Float32Array(dustCount * 3);
+  const dustSeeds = [];
+  for (let i = 0; i < dustCount; i++) {
+    const a = Math.random() * Math.PI * 2;
+    const r = Math.random() * 1.4;
+    dustPositions[i * 3] = Math.cos(a) * r;
+    dustPositions[i * 3 + 1] = 1.15 + Math.random() * 0.4;
+    dustPositions[i * 3 + 2] = Math.sin(a) * r;
+    dustSeeds.push({ vx: Math.cos(a) * (0.2 + Math.random() * 0.4), vy: 0.9 + Math.random() * 1.1, vz: Math.sin(a) * (0.2 + Math.random() * 0.4) });
+  }
+  const dustGeo = new THREE.BufferGeometry();
+  dustGeo.setAttribute("position", new THREE.BufferAttribute(dustPositions, 3));
+  const dustMat = new THREE.PointsMaterial({
+    color: 0xf0cca3,
+    size: 0.09,
+    transparent: true,
+    opacity: 0,
+    blending: THREE.AdditiveBlending,
+    depthWrite: false
+  });
+  const stardust = new THREE.Points(dustGeo, dustMat);
+  stardust.userData.noPick = true;
+  scene.add(stardust);
+
   // ---------- 盒中的 Spinora 实体 CD 唱片盒（与软件同源建模） ----------
   const rainbowTex = createRadialRainbowTexture();
   const defaultCover = createDefaultSpinoraCoverTexture();
@@ -2086,6 +2325,7 @@ function createGiftBoxStage(container, cb) {
   let caseC = 0, caseTarget = 1;
   let hoverLift = 0, hoverTarget = 0;
   let spin = 0;
+  let isAudioPlaying = false;
   let dragYaw = 0, dragPitch = 0;
   let flipX = 0, flipY = 0;
   let lastDiscTap = 0;
@@ -2255,12 +2495,29 @@ function createGiftBoxStage(container, cb) {
         break;
     }
 
-    // CD 转速：随状态平滑过渡
-    const targetSpin = (state === "zoomed" || state === "sheet") ? 2.4
+    // CD 转速：播放试听时更快，且随状态平滑过渡
+    const targetSpin = isAudioPlaying ? 3.2
+      : (state === "zoomed" || state === "sheet") ? 2.4
       : (state === "revealed" || state === "openCase" || state === "zoomIn" || state === "zoomOut") ? 0.9 : 0;
     spin += (targetSpin - spin) * Math.min(1, dt * 2.5);
     cd.discRotator.rotation.z -= spin * dt;
-    cd.diffractionShaderMat.uniforms.uBassPulse.value = 0.25 + 0.15 * Math.sin(sec * 2.5);
+    cd.diffractionShaderMat.uniforms.uBassPulse.value = isAudioPlaying
+      ? (0.45 + 0.35 * Math.sin(sec * 7.5))
+      : (0.25 + 0.15 * Math.sin(sec * 2.5));
+
+    // 开盒金色星尘粒子飘散
+    if (state === "lidOff" || state === "rise" || state === "openCase") {
+      dustMat.opacity = Math.min(0.85, dustMat.opacity + dt * 1.4);
+      const posArr = dustGeo.attributes.position.array;
+      for (let i = 0; i < dustCount; i++) {
+        posArr[i * 3] += dustSeeds[i].vx * dt * 0.4;
+        posArr[i * 3 + 1] += dustSeeds[i].vy * dt;
+        posArr[i * 3 + 2] += dustSeeds[i].vz * dt * 0.4;
+      }
+      dustGeo.attributes.position.needsUpdate = true;
+    } else if (dustMat.opacity > 0.01) {
+      dustMat.opacity = Math.max(0, dustMat.opacity - dt * 0.8);
+    }
 
     // 相机补间
     if (camTween) {
@@ -2438,7 +2695,18 @@ function createGiftBoxStage(container, cb) {
       caseTarget = 1;
       dragYaw = dragPitch = flipX = flipY = 0;
       pendingListen = false;
+      isAudioPlaying = false;
       pendingAutoOpen = !!autoOpen;
+      dustMat.opacity = 0;
+      const posArr = dustGeo.attributes.position.array;
+      for (let i = 0; i < dustCount; i++) {
+        const a = (i / dustCount) * Math.PI * 2;
+        const r = (i % 5) * 0.28;
+        posArr[i * 3] = Math.cos(a) * r;
+        posArr[i * 3 + 1] = 1.15 + (i % 3) * 0.12;
+        posArr[i * 3 + 2] = Math.sin(a) * r;
+      }
+      dustGeo.attributes.position.needsUpdate = true;
       tweenCamera(CAM_CLOSED.pos, CAM_CLOSED.look, 0.8);
       setState("drop");
     },
@@ -2455,6 +2723,12 @@ function createGiftBoxStage(container, cb) {
     setEmpty() {
       isEmpty = true;
       giftReady = true;
+    },
+    zoomIn,
+    zoomOut,
+    openListen,
+    setPlaying(playing) {
+      isAudioPlaying = !!playing;
     },
     closeSheet() {
       if (state === "sheet") setState("zoomed");
@@ -2483,13 +2757,21 @@ function initGiftBox() {
   const sheet = document.getElementById("gift3d-sheet");
   const sheetBody = document.getElementById("gift3d-sheet-body");
   const sheetClose = document.getElementById("gift3d-sheet-close");
+  const zoomActions = document.getElementById("gift3d-zoom-actions");
+  const btnZoomListen = document.getElementById("btn-zoom-listen");
+  const btnZoomBack = document.getElementById("btn-zoom-back");
+
+  const urlParams = new URLSearchParams(window.location.search);
+  let pendingSharedGiftId = parseInt(urlParams.get("gift") || "", 10);
+  if (!Number.isInteger(pendingSharedGiftId) || pendingSharedGiftId <= 0) pendingSharedGiftId = null;
 
   let busy = false;
   let currentGift = null;
+  let lastGiftId = null;
   let emptyMessage = "";
 
   const HINTS = {
-    closed: "轻触礼物盒，解开缎带",
+    closed: pendingSharedGiftId ? "有人为你寄来一份专属音乐礼物 · 轻触礼盒拆开" : "轻触礼物盒，解开缎带",
     drop: "新的礼物正在送达",
     untie: "缎带正在松开",
     lidOff: "掀开盒盖",
@@ -2497,8 +2779,8 @@ function initGiftBox() {
     rise: "一张唱片正从礼盒中升起",
     openCase: "打开唱片盒",
     revealed: "轻触 CD 放大端详 · 轻触唱片盒开合 · 拖动转动",
-    zoomIn: "再轻触一次即可直达聆听",
-    zoomed: "双击 CD 选择聆听平台 · 拖动翻转看衍射背面 · 轻触空白返回",
+    zoomIn: "正在拉近端详",
+    zoomed: "双击 CD 或点击下方按钮聆听 · 拖动翻转看背面光栅",
     zoomOut: "回到唱片盒"
   };
   const STEP_OF = {
@@ -2516,6 +2798,9 @@ function initGiftBox() {
       hintEl.classList.remove("pulse");
       void hintEl.offsetWidth;
       hintEl.classList.add("pulse");
+    }
+    if (zoomActions) {
+      zoomActions.classList.toggle("hidden", s !== "zoomed");
     }
     const step = STEP_OF[s] || 1;
     stepEls.forEach((el) => {
@@ -2541,6 +2826,7 @@ function initGiftBox() {
       activeUnpackAudio.pause();
       activeUnpackAudio = null;
     }
+    if (stage) stage.setPlaying(false);
     if (notifyStage && stage) stage.closeSheet();
   }
   if (sheetClose) sheetClose.addEventListener("click", () => closeListenSheet(true));
@@ -2559,6 +2845,15 @@ function initGiftBox() {
     stage = null;
   }
 
+  if (btnZoomListen) btnZoomListen.addEventListener("click", () => stage?.openListen());
+  if (btnZoomBack) btnZoomBack.addEventListener("click", () => stage?.zoomOut());
+
+  if (pendingSharedGiftId) {
+    setTimeout(() => {
+      document.getElementById("giftbox")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 350);
+  }
+
   async function openRandomGift() {
     if (busy) return;
     busy = true;
@@ -2574,11 +2869,20 @@ function initGiftBox() {
     }
 
     try {
-      const res = await fetch("/api/gifts/random", { cache: "no-store" });
+      let apiUrl = "/api/gifts/random";
+      if (pendingSharedGiftId) {
+        apiUrl += `?id=${pendingSharedGiftId}`;
+        pendingSharedGiftId = null;
+      } else if (lastGiftId) {
+        apiUrl += `?exclude=${lastGiftId}`;
+      }
+
+      const res = await fetch(apiUrl, { cache: "no-store" });
       const result = await res.json();
 
       if (res.ok && result.code === 200 && result.data) {
         const gift = result.data;
+        lastGiftId = gift.id;
         if (songTag) {
           songTag.innerHTML = `
             <div class="gs-from">A GIFT FROM ${escapeHtml(gift.nickname || "神秘知音")}</div>
@@ -2587,7 +2891,8 @@ function initGiftBox() {
           `;
         }
         if (stage) {
-          const tex = await loadCoverTexture(gift.album_cover);
+          const remoteTex = await loadCoverTexture(gift.album_cover);
+          const tex = remoteTex || createPersonalizedGiftCover(gift);
           currentGift = gift;
           stage.setGift(tex);
           updateHeroDiscCover(gift.album_cover);
@@ -2733,6 +3038,7 @@ function initGiftBox() {
       activeUnpackAudio = new Audio(previewUrl);
 
       const setPlayingUI = (playing) => {
+        if (stage) stage.setPlaying(playing);
         if (playing) {
           playSvg.innerHTML = '<rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/>';
           vinylDisc.classList.remove("paused");
@@ -2929,6 +3235,25 @@ function initGiftBox() {
         const ceremonyOverlay = document.getElementById("seal-ceremony-overlay");
         if (ceremonyOverlay) {
           ceremonyOverlay.classList.remove("hidden");
+          const btnCopyLink = document.getElementById("btn-copy-gift-link");
+          const giftId = result.data?.id;
+          if (btnCopyLink) {
+            if (giftId) {
+              btnCopyLink.classList.remove("hidden");
+              btnCopyLink.textContent = "复制专属礼物链接";
+              btnCopyLink.onclick = async () => {
+                const shareUrl = `${window.location.origin}/?gift=${giftId}`;
+                try {
+                  await navigator.clipboard.writeText(shareUrl);
+                  btnCopyLink.textContent = "已复制链接 ✓";
+                } catch {
+                  btnCopyLink.textContent = shareUrl;
+                }
+              };
+            } else {
+              btnCopyLink.classList.add("hidden");
+            }
+          }
           const btnAnother = document.getElementById("btn-seal-another");
           if (btnAnother) {
             btnAnother.onclick = () => ceremonyOverlay.classList.add("hidden");
