@@ -1,8 +1,8 @@
 {
-  "version": "2.6.0",
-  "tag": "v2.6.0",
-  "publishedAt": "2026-11-14T17:57:00Z",
-  "notes": "1. 全面适配主流音乐 App（网易云音乐、QQ 音乐、酷狗音乐、Apple Music、Spotify、TIDAL 等原生 Windows SMTC 实时捕获与播控）。\n2. 新增桌面端「音乐礼物盒」：支持随机拆盲盒、输入礼物链接/编号直达、单击放大 CD、双击唤起本地音乐 App 播整曲、主舞台 3D 载体同步与一键封存当前歌曲。",
-  "downloadUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v2.6.0/Spinora_Windows_x64_Setup.exe",
-  "sha256": "CF05F035E90977716B6F54C1677BB8D91D7FE97FCE760C2D1E047D2D318F7204"
+  "version": "2.6.1",
+  "tag": "v2.6.1",
+  "publishedAt": "2026-11-15T15:50:00Z",
+  "notes": "1. 新增客户端内置在线更新（启动静默检测 + 设置内手动检测，支持实时进度条、SHA256 校验与一键安装）。\n2. 新增轮转文件日志（7天/2MB）与 Rust Panic / 前端全局异常兜底。\n3. 全面适配网易云音乐、QQ 音乐、酷狗音乐、Apple Music、Spotify、TIDAL 等主流播放器与桌面端音乐礼物盒。",
+  "downloadUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v2.6.1/Spinora_Windows_x64_Setup.exe",
+  "sha256": "925E30FCBDB7BC6D9AAE0E3C46F746108585DD5FC87982B0A8876E32798585EF"
 }
