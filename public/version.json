@@ -1,8 +1,8 @@
 {
-  "version": "2.6.6",
-  "tag": "v2.6.6",
-  "publishedAt": "2026-11-15T15:12:15Z",
-  "notes": "1. 动态封面模式下歌词板块整体右移，避免遮挡专辑封面主体。\n2. 音乐播放控制组件升级为「中心淡淡透出封面主色 → 向边缘逐渐加深至封面主色」的径向液态玻璃渐变，告别发黑底色。",
-  "downloadUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v2.6.6/Spinora_Windows_x64_Setup.exe",
-  "sha256": "BF5D73D24FAC163C77ADF03C846975CCDBD213299E1B3E5D12C40FBEE9151B60"
+  "version": "2.6.7",
+  "tag": "v2.6.7",
+  "publishedAt": "2026-11-15T16:18:00Z",
+  "notes": "1. 修复红/蓝等高饱和专辑封面提取偏黄/偏棕的问题，完整保留封面真实主色调。\n2. 极简播控栏仅保留「上一曲 / 播放暂停 / 下一曲」，全软件按钮、进度条、滑块与开关统一采用当前背景提取色的深色部分（彻底移除 Spotify 绿）。\n3. 礼物盒弹窗全面升级为液态玻璃材质，移除冗余小图标，并屏蔽浏览器默认右键菜单与快捷键。",
+  "downloadUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v2.6.7/Spinora_Windows_x64_Setup.exe",
+  "sha256": "0A58345C4C1728360D8303E011510B4463F66D5F2389C7EF6385384AE3173B06"
 }
