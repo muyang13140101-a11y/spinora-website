@@ -1,8 +1,8 @@
 {
-  "version": "2.6.4",
-  "tag": "v2.6.4",
-  "publishedAt": "2026-11-15T13:06:16Z",
-  "notes": "1. 修复在设置界面点击「检查更新」时，更新弹窗被设置弹窗层级遮挡的问题（提升至顶层显示）。\n2. 在线更新检测增加防缓存机制与 GitHub Raw 自动备用源，确保第一时间发现最新版本。\n3. 包含 v2.6.3 全部新特性：Windows 桌面灵动岛悬浮胶囊、Apple Liquid Glass 四分栏设置中心、Spinora 全息唱片图标与 450ms 低延迟 SMTC 同步。",
-  "downloadUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v2.6.4/Spinora_Windows_x64_Setup.exe",
-  "sha256": "BE1ECBFCA55217C9B88A294D1CCA1B772733F5BD923D0E3B92C04584565BC456"
+  "version": "2.6.5",
+  "tag": "v2.6.5",
+  "publishedAt": "2026-11-15T14:29:06Z",
+  "notes": "1. 性能流畅度大幅优化：移除触发 Chromium 逐帧回读的 SVG backdrop-filter 滤镜，SMTC 封面缩略图增加差异缓存（IPC 体积降低 99.9%）。\n2. 修复长歌名在底部控制栏右侧溢出截断的问题，并新增 TIDAL 官方动态封面流支持。\n3. 修复动态封面模式下部分封面提前变模糊及低清 SMTC 缩略图糊感问题（自动补全 1000x1000 高清封面，左侧 0~62% 保持原画锐利）。\n4. 新增全链路 Bug 与崩溃诊断日志持久化（diagnostics.log），设置内支持一键复制日志与打开日志目录。\n5. 接入单实例唤醒与短时间异常超阈值主动退出兜底。",
+  "downloadUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v2.6.5/Spinora_Windows_x64_Setup.exe",
+  "sha256": "4B8FA62932B20A05F871933B01C9F5A6919BA71F3358678477AC7D3E526ED45F"
 }
