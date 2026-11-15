@@ -1,8 +1,8 @@
 {
-  "version": "2.6.1",
-  "tag": "v2.6.1",
-  "publishedAt": "2026-11-15T15:50:00Z",
-  "notes": "1. 新增客户端内置在线更新（启动静默检测 + 设置内手动检测，支持实时进度条、SHA256 校验与一键安装）。\n2. 新增轮转文件日志（7天/2MB）与 Rust Panic / 前端全局异常兜底。\n3. 全面适配网易云音乐、QQ 音乐、酷狗音乐、Apple Music、Spotify、TIDAL 等主流播放器与桌面端音乐礼物盒。",
-  "downloadUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v2.6.1/Spinora_Windows_x64_Setup.exe",
-  "sha256": "925E30FCBDB7BC6D9AAE0E3C46F746108585DD5FC87982B0A8876E32798585EF"
+  "version": "2.6.2",
+  "tag": "v2.6.2",
+  "publishedAt": "2026-11-15T16:04:00Z",
+  "notes": "1. 修复 v2.6.1 启动未响应/闪退问题（Windows SMTC 全部迁移至后台异步线程，彻底消除 UI 死锁）。\n2. 新增客户端内置在线更新（启动静默检测 + 设置内手动检测，支持实时进度条、SHA256 校验与一键安装）。\n3. 全面适配网易云音乐、QQ 音乐、酷狗音乐、Apple Music、Spotify、TIDAL 等主流播放器与桌面端音乐礼物盒。",
+  "downloadUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v2.6.2/Spinora_Windows_x64_Setup.exe",
+  "sha256": "E1E220D56A582F7D2DF92DFD46EDBE56DA77931E111D2E48CA93BB6006C6DFE4"
 }
