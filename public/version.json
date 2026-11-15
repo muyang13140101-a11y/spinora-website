@@ -4,5 +4,5 @@
   "publishedAt": "2026-11-15T13:06:16Z",
   "notes": "1. 修复在设置界面点击「检查更新」时，更新弹窗被设置弹窗层级遮挡的问题（提升至顶层显示）。\n2. 在线更新检测增加防缓存机制与 GitHub Raw 自动备用源，确保第一时间发现最新版本。\n3. 包含 v2.6.3 全部新特性：Windows 桌面灵动岛悬浮胶囊、Apple Liquid Glass 四分栏设置中心、Spinora 全息唱片图标与 450ms 低延迟 SMTC 同步。",
   "downloadUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v2.6.4/Spinora_Windows_x64_Setup.exe",
-  "sha256": "8939DE83BF1EE52246BE3578E042ADCA0AA45BA5C2F1C5CC57A348573ACDFCC7"
+  "sha256": "BE1ECBFCA55217C9B88A294D1CCA1B772733F5BD923D0E3B92C04584565BC456"
 }
