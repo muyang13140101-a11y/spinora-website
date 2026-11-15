@@ -1,8 +1,8 @@
 {
-  "version": "2.6.5",
-  "tag": "v2.6.5",
-  "publishedAt": "2026-11-15T14:29:06Z",
-  "notes": "1. 性能流畅度大幅优化：移除触发 Chromium 逐帧回读的 SVG backdrop-filter 滤镜，SMTC 封面缩略图增加差异缓存（IPC 体积降低 99.9%）。\n2. 修复长歌名在底部控制栏右侧溢出截断的问题，并新增 TIDAL 官方动态封面流支持。\n3. 修复动态封面模式下部分封面提前变模糊及低清 SMTC 缩略图糊感问题（自动补全 1000x1000 高清封面，左侧 0~62% 保持原画锐利）。\n4. 新增全链路 Bug 与崩溃诊断日志持久化（diagnostics.log），设置内支持一键复制日志与打开日志目录。\n5. 接入单实例唤醒与短时间异常超阈值主动退出兜底。",
-  "downloadUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v2.6.5/Spinora_Windows_x64_Setup.exe",
-  "sha256": "4B8FA62932B20A05F871933B01C9F5A6919BA71F3358678477AC7D3E526ED45F"
+  "version": "2.6.6",
+  "tag": "v2.6.6",
+  "publishedAt": "2026-11-15T15:12:15Z",
+  "notes": "1. 动态封面模式下歌词板块整体右移，避免遮挡专辑封面主体。\n2. 音乐播放控制组件升级为「中心淡淡透出封面主色 → 向边缘逐渐加深至封面主色」的径向液态玻璃渐变，告别发黑底色。",
+  "downloadUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v2.6.6/Spinora_Windows_x64_Setup.exe",
+  "sha256": "BF5D73D24FAC163C77ADF03C846975CCDBD213299E1B3E5D12C40FBEE9151B60"
 }
