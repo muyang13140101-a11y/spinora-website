@@ -1,8 +1,8 @@
 {
-  "version": "2.6.2",
-  "tag": "v2.6.2",
-  "publishedAt": "2026-11-15T16:04:00Z",
-  "notes": "1. 修复 v2.6.1 启动未响应/闪退问题（Windows SMTC 全部迁移至后台异步线程，彻底消除 UI 死锁）。\n2. 新增客户端内置在线更新（启动静默检测 + 设置内手动检测，支持实时进度条、SHA256 校验与一键安装）。\n3. 全面适配网易云音乐、QQ 音乐、酷狗音乐、Apple Music、Spotify、TIDAL 等主流播放器与桌面端音乐礼物盒。",
-  "downloadUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v2.6.2/Spinora_Windows_x64_Setup.exe",
-  "sha256": "E1E220D56A582F7D2DF92DFD46EDBE56DA77931E111D2E48CA93BB6006C6DFE4"
+  "version": "2.6.3",
+  "tag": "v2.6.3",
+  "publishedAt": "2026-11-15T12:58:33Z",
+  "notes": "1. 新增 Windows 桌面灵动岛悬浮胶囊（顶部居中常驻，展示旋转封面与实时歌词，鼠标悬停展开切歌控台与一键回主窗口）。\n2. 全新 Apple Liquid Glass 四分栏设置中心。\n3. 修复桌面与快捷方式图标为 Spinora 全息唱片图标。\n4. 本地 Windows SMTC 轮询提速至 450ms（尾段 280ms），零延迟且不干扰原版音乐客户端播放。\n5. 正式版移除所有 Demo 模式文案与入口。",
+  "downloadUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v2.6.3/Spinora_Windows_x64_Setup.exe",
+  "sha256": "4904AEBA3A1BD17AD989EF9E081C694E77F1196A783B41A37AD687AD03D12FCD"
 }
