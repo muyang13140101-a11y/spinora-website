@@ -1,8 +1,8 @@
 {
-  "version": "2.7.0",
-  "tag": "v2.7.0",
-  "publishedAt": "2026-11-16T11:04:00Z",
-  "notes": "1. 礼物盒全面重构：扇形叠卡盲盒滚轮、悬停避让动效、景深明信片滑入及隐藏式编号查找，全界面统一采用提取色液态玻璃。\n2. 新增独立「歌曲分享」工坊：提供 CD 透明盒 / 黑胶封套 / 怀旧磁带 / 极简流光 4 套载体卡片模板、听歌二维码与一键装入礼物盒。\n3. 修复应用内更新下载进度条一直显示 0% 的问题，并内置国内多高速镜像回退，无需加速器即可完成在线更新。",
-  "downloadUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v2.7.0/Spinora_Windows_x64_Setup.exe",
-  "sha256": "71166BD0B68052DF69290A237CF0B6D512152EF3A9340695CD1849B81E7E74AE"
+  "version": "2.7.1",
+  "tag": "v2.7.1",
+  "publishedAt": "2026-11-16T11:39:00Z",
+  "notes": "1. 歌词分享沉浸模式进一步右移歌词区；英文歌名与歌手固定于右下角，中文歌名与歌手自动置于歌词左上角。\n2. 歌词分享全画幅（含 9:16 竖屏）升级自适应字号与行距算法，消除单句或 5 句时的多余留白，并新增 7 款免费版权安全的中英文字体。\n3. 修复灵动岛无法接收播放状态与无法展开窗口尺寸的 Bug（启用 withGlobalTauri 并解除窗口不可缩放限制）。",
+  "downloadUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v2.7.1/Spinora_Windows_x64_Setup.exe",
+  "sha256": "0943942247D2691EEFF3C1E4DB185C07BBAE3D2C5D69AC60DDD7798A91DBD9C8"
 }
