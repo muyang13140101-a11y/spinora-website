@@ -1,8 +1,8 @@
 {
-  "version": "2.7.1",
-  "tag": "v2.7.1",
-  "publishedAt": "2026-11-16T11:39:00Z",
-  "notes": "1. 歌词分享沉浸模式进一步右移歌词区；英文歌名与歌手固定于右下角，中文歌名与歌手自动置于歌词左上角。\n2. 歌词分享全画幅（含 9:16 竖屏）升级自适应字号与行距算法，消除单句或 5 句时的多余留白，并新增 7 款免费版权安全的中英文字体。\n3. 修复灵动岛无法接收播放状态与无法展开窗口尺寸的 Bug（启用 withGlobalTauri 并解除窗口不可缩放限制）。",
-  "downloadUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v2.7.1/Spinora_Windows_x64_Setup.exe",
-  "sha256": "0943942247D2691EEFF3C1E4DB185C07BBAE3D2C5D69AC60DDD7798A91DBD9C8"
+  "version": "2.7.2",
+  "tag": "v2.7.2",
+  "publishedAt": "2026-11-16T16:14:00Z",
+  "notes": "1. 礼物盒升级为「真实唱片拆封体验」：直接采用 1:1 亚克力 CD 盒（含磨砂塑封膜、易拉金线与日版侧封腰带 Obi），支持横向滑动手撕塑封、翻开盒盖检视内衬手札与按扣取盘。\n2. 歌曲分享全新上线「复古火漆牛皮信封 / 实体透明 CD 盒 / 半露黑胶内袋 / 胶片留白画框」4 款高定极简模板，支持 60FPS Live Photo 实况直出，以及酷狗/QQ/网易云/微信朋友圈音乐卡片解析链接。\n3. 歌词分享升级余弦曲线（Cosine Feathering）无痕边缘羽化、焦点歌词底层环境色透射与 9:16 黄金分割构图。",
+  "downloadUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v2.7.2/Spinora_Windows_x64_Setup.exe",
+  "sha256": "EB88D9406C89D256E966CD88544A7C7B5C5203D2240B327EB03DD3FB3FFB1CF4"
 }
