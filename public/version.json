@@ -1,8 +1,8 @@
 {
-  "version": "2.6.7",
-  "tag": "v2.6.7",
-  "publishedAt": "2026-11-15T16:18:00Z",
-  "notes": "1. 修复红/蓝等高饱和专辑封面提取偏黄/偏棕的问题，完整保留封面真实主色调。\n2. 极简播控栏仅保留「上一曲 / 播放暂停 / 下一曲」，全软件按钮、进度条、滑块与开关统一采用当前背景提取色的深色部分（彻底移除 Spotify 绿）。\n3. 礼物盒弹窗全面升级为液态玻璃材质，移除冗余小图标，并屏蔽浏览器默认右键菜单与快捷键。",
-  "downloadUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v2.6.7/Spinora_Windows_x64_Setup.exe",
-  "sha256": "0A58345C4C1728360D8303E011510B4463F66D5F2389C7EF6385384AE3173B06"
+  "version": "2.6.8",
+  "tag": "v2.6.8",
+  "publishedAt": "2026-11-16T03:15:00Z",
+  "notes": "1. 礼物盒全新升级为「叠卡盲盒滚轮 + 液态玻璃陈列台 + 底部 Dock 菜单栏」融合设计，打开自动盲抽并支持最多 5 份卡片自由切换。\n2. 拆开后平滑展开双栏明信片与回响留言板，全界面统一采用当前背景提取色的深色液态玻璃质感。",
+  "downloadUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v2.6.8/Spinora_Windows_x64_Setup.exe",
+  "sha256": "A711D7E65E1E571CF532A6A797531BA9027D744A76995674C880791A8AE1E66F"
 }
