@@ -1,8 +1,8 @@
 {
-  "version": "2.6.8",
-  "tag": "v2.6.8",
-  "publishedAt": "2026-11-16T03:15:00Z",
-  "notes": "1. 礼物盒全新升级为「叠卡盲盒滚轮 + 液态玻璃陈列台 + 底部 Dock 菜单栏」融合设计，打开自动盲抽并支持最多 5 份卡片自由切换。\n2. 拆开后平滑展开双栏明信片与回响留言板，全界面统一采用当前背景提取色的深色液态玻璃质感。",
-  "downloadUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v2.6.8/Spinora_Windows_x64_Setup.exe",
-  "sha256": "A711D7E65E1E571CF532A6A797531BA9027D744A76995674C880791A8AE1E66F"
+  "version": "2.6.9",
+  "tag": "v2.6.9",
+  "publishedAt": "2026-11-16T07:36:00Z",
+  "notes": "1. 歌词分享弹窗适配 Windows 原生保存位置对话框，移除分享图片右上角多余按钮并将歌名/歌手移至右下角，清理多余文字与徽章。\n2. 多角色独立取色机制上线：背景、按键深色、次级点缀色与非歌词文字各自独立提取，全面清除残留绿色与紫色。\n3. 灵动岛升级为异步无锁创建 + 点击弹性变形的 macOS 风格液态玻璃胶囊，彻底解决点击卡顿/未响应/闪退问题，色彩与主界面实时同步。",
+  "downloadUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v2.6.9/Spinora_Windows_x64_Setup.exe",
+  "sha256": "7137BE101C4BE3CCFBB0A628E290F83AF7A522D9EFB71A9C3755C6A2214DD4A5"
 }
