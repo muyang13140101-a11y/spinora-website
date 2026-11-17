@@ -1,8 +1,8 @@
 {
-  "version": "2.7.2",
-  "tag": "v2.7.2",
-  "publishedAt": "2026-11-16T16:14:00Z",
-  "notes": "1. 礼物盒升级为「真实唱片拆封体验」：直接采用 1:1 亚克力 CD 盒（含磨砂塑封膜、易拉金线与日版侧封腰带 Obi），支持横向滑动手撕塑封、翻开盒盖检视内衬手札与按扣取盘。\n2. 歌曲分享全新上线「复古火漆牛皮信封 / 实体透明 CD 盒 / 半露黑胶内袋 / 胶片留白画框」4 款高定极简模板，支持 60FPS Live Photo 实况直出，以及酷狗/QQ/网易云/微信朋友圈音乐卡片解析链接。\n3. 歌词分享升级余弦曲线（Cosine Feathering）无痕边缘羽化、焦点歌词底层环境色透射与 9:16 黄金分割构图。",
-  "downloadUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v2.7.2/Spinora_Windows_x64_Setup.exe",
-  "sha256": "EB88D9406C89D256E966CD88544A7C7B5C5203D2240B327EB03DD3FB3FFB1CF4"
+  "version": "2.7.3",
+  "tag": "v2.7.3",
+  "publishedAt": "2026-11-17T04:42:00Z",
+  "notes": "1. 修复礼物盒「一键填入当前播放」在 Windows SMTC 本地音源下丢失 `data:` 专辑封面并错误回退成默认黑胶图的问题。\n2. 全面移除主界面、歌词分享及曲库兜底中的错配 Unsplash 默认图（统一改用 Spinora 唱片图标作为缺省占位），并补充歌词分享封面 CORS 加载失败自动回退机制。",
+  "downloadUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v2.7.3/Spinora_Windows_x64_Setup.exe",
+  "sha256": "AAEF976F33E872CBED5A26CED05A85ABBB54A9619D7DAA7DC78E88C9D9F23141"
 }
