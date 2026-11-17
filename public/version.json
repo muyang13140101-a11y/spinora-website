@@ -1,8 +1,8 @@
 {
-  "version": "2.8.2",
-  "tag": "v2.8.2",
-  "publishedAt": "2026-11-17T16:46:00Z",
-  "notes": "1. 移除歌单卡片外层圆角矩形框框，仅保留 3D 立体唱片文件夹与悬浮文字，呈现更纯粹的悬浮玻璃 CD 视觉效果。",
-  "downloadUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v2.8.2/Spinora_Windows_x64_Setup.exe",
-  "sha256": "33F02CD01610A78769C5D793B3EA4BA29B927D1A4384E24486DE04B6691CE8F6"
+  "version": "2.8.3",
+  "tag": "v2.8.3",
+  "publishedAt": "2026-11-17T17:28:00Z",
+  "notes": "1. 重构安装更新引擎：支持多节点下载 + SHA256 校验失败自动切换下一节点、PE 安装包有效性校验（防劫持/截断）、重试更新自动刷新远端清单与「打开下载页」兜底入口。\n2. 统一更新弹窗按钮与 Spinora 液态玻璃主色调。",
+  "downloadUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v2.8.3/Spinora_Windows_x64_Setup.exe",
+  "sha256": "FF1091C3B079D3A3BB5C846E6F8C0C31357E1978C6B4CE399B2A98E6B385C34B"
 }
