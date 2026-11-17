@@ -1,8 +1,8 @@
 {
-  "version": "2.7.5",
-  "tag": "v2.7.5",
-  "publishedAt": "2026-11-17T06:10:00Z",
-  "notes": "1. 优化桌面灵动岛：支持按住任意位置自由拖拽移动（展开/收起不再强制回弹居中），并修复 `pushIslandState` 属性名错误导致展开后不显示实时歌词的 Bug。\n2. 全面升级歌词检索引擎：新增 Rust 原生无 CORS 限制多源歌词通道（LRCLib 精确/模糊搜索 → 网易云音乐 → 酷狗音乐 → Lyrics.ovh），支持无时间轴纯文本歌词兜底展示，大幅提升热门与华语歌曲歌词命中率。",
-  "downloadUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v2.7.5/Spinora_Windows_x64_Setup.exe",
-  "sha256": "19887BE51D2C4324A25B37267BB7AA20B5C7B8D0139E97DBDAE83775C6C7B463"
+  "version": "2.7.6",
+  "tag": "v2.7.6",
+  "publishedAt": "2026-11-17T08:09:00Z",
+  "notes": "1. 补全 Tauri v2 原生拖拽权限与 `start_window_drag` 命令，彻底解决主窗口边缘、顶栏及灵动岛无法拖动的问题。\n2. 清除灵动岛外层被 HWND 裁切产生的矩形阴影框，并加入展开/收起果冻弹性变形。\n3. 新增主窗口自由缩放的果冻弹性流体物理动效（随缩放速度微幅形变并在松手后弹性回弹归位）。",
+  "downloadUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v2.7.6/Spinora_Windows_x64_Setup.exe",
+  "sha256": "8587B061A449A0E370358CD7276D4D8F41D345A3EC0F6E60A6ACA452F5CAA7D9"
 }
