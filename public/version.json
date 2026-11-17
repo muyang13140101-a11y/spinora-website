@@ -4,5 +4,5 @@
   "publishedAt": "2026-11-17T15:54:00Z",
   "notes": "1. 玻璃盒 3D 物理开盖与抽碟弹簧动画：悬停/选中时亚克力盖板沿左侧铰链掀开，3 张全息 CD 按 0ms/60ms/120ms 错峰弹簧抽出。\n2. 歌单独立队列引擎：支持本地歌单内顺序/随机/单曲循环及上下曲闭环切换。\n3. 单盒独立动态取色光晕：为每个歌单盒封面独立提取主色调（带缓存），透出专属底部漫反射底光与书脊色调。\n4. 歌单 JSON 导出备份与导入恢复、抽屉曲目拖拽排序、内联液态玻璃新建与二次确认删除。",
   "downloadUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v2.8.1/Spinora_Windows_x64_Setup.exe",
-  "sha256": "89396523CE40D43AA70D5C13066D12A99D7051D27E0436BAEC6575C3B6783F91"
+  "sha256": "5C264BA5E25E072EA737428DC21562D536D0521E79EE4A1B27A2DB30B9A77BB8"
 }
