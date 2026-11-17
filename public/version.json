@@ -1,8 +1,8 @@
 {
-  "version": "2.7.3",
-  "tag": "v2.7.3",
-  "publishedAt": "2026-11-17T04:42:00Z",
-  "notes": "1. 修复礼物盒「一键填入当前播放」在 Windows SMTC 本地音源下丢失 `data:` 专辑封面并错误回退成默认黑胶图的问题。\n2. 全面移除主界面、歌词分享及曲库兜底中的错配 Unsplash 默认图（统一改用 Spinora 唱片图标作为缺省占位），并补充歌词分享封面 CORS 加载失败自动回退机制。",
-  "downloadUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v2.7.3/Spinora_Windows_x64_Setup.exe",
-  "sha256": "AAEF976F33E872CBED5A26CED05A85ABBB54A9619D7DAA7DC78E88C9D9F23141"
+  "version": "2.7.4",
+  "tag": "v2.7.4",
+  "publishedAt": "2026-11-17T05:12:00Z",
+  "notes": "1. 修复「流体极光」与「冰晶毛玻璃」歌词分享主题背景及内框底色发灰、未充分呈现专辑提取色的问题，全面接入封面主色/邻近色/深暗色阶。\n2. 内框边框与卡片玻璃底色同步随当前封面主色调动态染色。",
+  "downloadUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v2.7.4/Spinora_Windows_x64_Setup.exe",
+  "sha256": "0812184F9BC6BFDBF8D7EA09FCABF4A912B899B46E29A48252952C89314CB2C8"
 }
