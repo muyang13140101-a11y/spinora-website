@@ -1,8 +1,8 @@
 {
-  "version": "2.7.6",
-  "tag": "v2.7.6",
-  "publishedAt": "2026-11-17T08:09:00Z",
-  "notes": "1. 补全 Tauri v2 原生拖拽权限与 `start_window_drag` 命令，彻底解决主窗口边缘、顶栏及灵动岛无法拖动的问题。\n2. 清除灵动岛外层被 HWND 裁切产生的矩形阴影框，并加入展开/收起果冻弹性变形。\n3. 新增主窗口自由缩放的果冻弹性流体物理动效（随缩放速度微幅形变并在松手后弹性回弹归位）。",
-  "downloadUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v2.7.6/Spinora_Windows_x64_Setup.exe",
-  "sha256": "8587B061A449A0E370358CD7276D4D8F41D345A3EC0F6E60A6ACA452F5CAA7D9"
+  "version": "2.8.0",
+  "tag": "v2.8.0",
+  "publishedAt": "2026-11-17T14:25:00Z",
+  "notes": "1. 全新本地用户歌单库：默认内置「我的喜欢」「我收到的礼物」「我送出的礼物」，支持自定义新建/删除歌单，拆封或封存音乐礼物盒自动同步收录。\n2. 播放控制栏左右两侧新增「打开歌单」与「加入歌单（收藏）」按钮，弹出与当前专辑色调统一的液态玻璃收藏菜单。\n3. 歌单画廊全面重构为 85% 透明液态玻璃收藏盒，每个玻璃盒内叠放最多 3 张实体 3D 全息光盘，支持鼠标悬停 3D 视差倾斜与单曲播放/移除。",
+  "downloadUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v2.8.0/Spinora_Windows_x64_Setup.exe",
+  "sha256": "4864F4EC7FABE290D2FCEFEB9A1F2120DD9BD88BF7D8B916420B0234243E42F7"
 }
