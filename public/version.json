@@ -1,8 +1,8 @@
 {
-  "version": "2.9.3",
-  "tag": "v2.9.3",
-  "publishedAt": "2026-11-18T13:28:00Z",
-  "notes": "1. 修复静默更新脚本 `timeout` 在无控制台环境下提前退出导致未覆盖即重启的问题，改为 `ping` + `start /wait` 严格等待覆盖完成再自动重启。\n2. 包含动态封面「完全沉浸式模式」（放大进入/双击退出）、任务栏图标强制刷新与 9 节点容灾更新器。",
-  "downloadUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v2.9.3/Spinora_Windows_x64_Setup.exe",
-  "sha256": "BB4E15725C99BE0FBB4B093860D2853F6BA934F97352256E52908C53615693F2"
+  "version": "3.0.0",
+  "tag": "v3.0.0",
+  "publishedAt": "2026-11-18T16:15:00Z",
+  "notes": "1. 全新「Spinora · 旋光」本地四大 AI 语义视觉引擎（DBNet / BiRefNet-lite / SkyWater-Seg / CLIPSeg，ONNX + DirectML 按需下载）：精准锁定主体与文字，驱动天空、水面、雾气与星光独立动态。\n2. 彻底解决动态封面左半区模糊与缩放冲突：HiDPI 动态画布 + 2048px 纹理采样 + Unsharp 锐化 + 0~74% 无遮挡清晰区，修复纯沉浸模式放大失效。\n3. 修复左下角缩略图与大屏封面不一致问题，新增「原图 AI 语义动态」与「Apple Music 官方视频」双模式切换，并完成去 Spotify 化品牌升级。",
+  "downloadUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v3.0.0/Spinora_Windows_x64_Setup.exe",
+  "sha256": "EC20C5B89E9C20DD95BFBC99C418F84B8A983BFFA3E8140CB24CF1147D5D0E90"
 }
