@@ -1,8 +1,8 @@
 {
-  "version": "2.8.3",
-  "tag": "v2.8.3",
-  "publishedAt": "2026-11-17T17:28:00Z",
-  "notes": "1. 重构安装更新引擎：支持多节点下载 + SHA256 校验失败自动切换下一节点、PE 安装包有效性校验（防劫持/截断）、重试更新自动刷新远端清单与「打开下载页」兜底入口。\n2. 统一更新弹窗按钮与 Spinora 液态玻璃主色调。",
-  "downloadUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v2.8.3/Spinora_Windows_x64_Setup.exe",
-  "sha256": "FF1091C3B079D3A3BB5C846E6F8C0C31357E1978C6B4CE399B2A98E6B385C34B"
+  "version": "2.8.4",
+  "tag": "v2.8.4",
+  "publishedAt": "2026-11-18T01:30:00Z",
+  "notes": "1. 全面换新 Spinora 全息光盘品牌图标（桌面应用/任务栏/托盘/多分辨率 ICO/ICNS/移动端及官网全部同步更新，已透明抠图处理）。",
+  "downloadUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v2.8.4/Spinora_Windows_x64_Setup.exe",
+  "sha256": "33F69FE1FF26D3D88E389B7EB9D3EE8C2526B314E706AA167B882A4F90F1EC3DC"
 }
