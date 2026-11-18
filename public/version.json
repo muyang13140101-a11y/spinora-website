@@ -1,8 +1,8 @@
 {
-  "version": "2.9.1",
-  "tag": "v2.9.1",
-  "publishedAt": "2026-11-18T06:52:00Z",
-  "notes": "1. 动态封面模式下点击或滚轮向上放大进入「完全沉浸式模式」，隐藏顶栏、播放组件与所有按钮，仅保留动态封面与歌词，双击任意位置退出。\n2. 显式写入主窗口任务栏图标并刷新 Windows 图标缓存，解决任务栏仍显示旧图标的问题。",
-  "downloadUrl": "https://spinora.pages.dev/downloads/Spinora_Windows_x64_Setup.exe",
+  "version": "2.9.2",
+  "tag": "v2.9.2",
+  "publishedAt": "2026-11-18T07:56:00Z",
+  "notes": "1. 彻底修复国内更新卡顿与 403/404 失败：剔除对 .exe 拦截 403 的 jsDelivr，打通官网直连 + 3 个国内免梯高速镜像（ghfast.top / gh-proxy.com / ghproxy.net）+ GitHub 官方共 9 条容灾线路，4 秒超时秒切。\n2. 保留微信/QQ 同款无感静默覆盖安装并自动重启。",
+  "downloadUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v2.9.2/Spinora_Windows_x64_Setup.exe",
   "sha256": "BB4699CC17E662E300AC21EC98A69923D344DE7FDE44D9287CE279FF200E93B4"
 }
