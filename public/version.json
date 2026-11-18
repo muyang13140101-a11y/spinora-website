@@ -4,5 +4,5 @@
   "publishedAt": "2026-11-18T05:32:00Z",
   "notes": "1. 全新官网第一方 CDN 原子分发 + jsDelivr 双高速节点，彻底告别第三方代理 404 与哈希不同步。\n2. 微信/QQ 同款无感静默覆盖安装并自动重启新版本，告别繁琐手动点击。",
   "downloadUrl": "https://spinora.pages.dev/downloads/Spinora_Windows_x64_Setup.exe",
-  "sha256": "BB46C325782FE5E44B274115C1B592E289F2F7BFA413B939D463AC1929B0D06B"
+  "sha256": "EC9A8602607D0C444D3677CE51748D1586F23CC29E1C710C876AD953087D0E45"
 }
