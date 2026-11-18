@@ -1,8 +1,8 @@
 {
-  "version": "2.9.2",
-  "tag": "v2.9.2",
-  "publishedAt": "2026-11-18T07:56:00Z",
-  "notes": "1. 彻底修复国内更新卡顿与 403/404 失败：剔除对 .exe 拦截 403 的 jsDelivr，打通官网直连 + 3 个国内免梯高速镜像（ghfast.top / gh-proxy.com / ghproxy.net）+ GitHub 官方共 9 条容灾线路，4 秒超时秒切。\n2. 保留微信/QQ 同款无感静默覆盖安装并自动重启。",
-  "downloadUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v2.9.2/Spinora_Windows_x64_Setup.exe",
-  "sha256": "21D9CBF630681C5DDD8361D4939ACF6B9A2605C35068F955D9F88BA1BFBDAEAD"
+  "version": "2.9.3",
+  "tag": "v2.9.3",
+  "publishedAt": "2026-11-18T13:28:00Z",
+  "notes": "1. 修复静默更新脚本 `timeout` 在无控制台环境下提前退出导致未覆盖即重启的问题，改为 `ping` + `start /wait` 严格等待覆盖完成再自动重启。\n2. 包含动态封面「完全沉浸式模式」（放大进入/双击退出）、任务栏图标强制刷新与 9 节点容灾更新器。",
+  "downloadUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v2.9.3/Spinora_Windows_x64_Setup.exe",
+  "sha256": "BB4E15725C99BE0FBB4B093860D2853F6BA934F97352256E52908C53615693F2"
 }
