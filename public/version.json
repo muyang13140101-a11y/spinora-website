@@ -1,8 +1,8 @@
 {
-  "version": "2.8.5",
-  "tag": "v2.8.5",
-  "publishedAt": "2026-11-18T02:32:00Z",
-  "notes": "1. 全屏模式下双击屏幕空白处快速退出全屏。\n2. 歌单内置 IndexedDB 本地数据库 + 多网盘 WebDAV 云同步（阿里云盘/夸克/百度/坚果云/OneDrive）+ JSON 导出备份。\n3. 支持多音源同时连接探测，点击歌单曲目弹出已连接音源选择与搜索播放。\n4. 统一「我的喜欢」与所有歌单盒初始视觉、背板采用封面取色渐变、CD 盘面全面改为无银圈全封面+中心小孔。\n5. 安装向导全中文界面并附带《安全隐私协议》，应用内更新界面升级为 QQ 同款轮播特性画廊。",
-  "downloadUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v2.8.5/Spinora_Windows_x64_Setup.exe",
-  "sha256": "3BB24A9E7D7019D6A9C721258CEB32DF8C14998BA52CDAA3EE5C2CE60D00BE5C"
+  "version": "2.9.0",
+  "tag": "v2.9.0",
+  "publishedAt": "2026-11-18T05:32:00Z",
+  "notes": "1. 全新官网第一方 CDN 原子分发 + jsDelivr 双高速节点，彻底告别第三方代理 404 与哈希不同步。\n2. 微信/QQ 同款无感静默覆盖安装并自动重启新版本，告别繁琐手动点击。",
+  "downloadUrl": "https://spinora.pages.dev/downloads/Spinora_Windows_x64_Setup.exe",
+  "sha256": "BB46C325782FE5E44B274115C1B592E289F2F7BFA413B939D463AC1929B0D06B"
 }
