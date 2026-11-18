@@ -1,8 +1,8 @@
 {
-  "version": "2.8.4",
-  "tag": "v2.8.4",
-  "publishedAt": "2026-11-18T01:30:00Z",
-  "notes": "1. 全面换新 Spinora 全息光盘品牌图标（桌面应用/任务栏/托盘/多分辨率 ICO/ICNS/移动端及官网全部同步更新，已透明抠图处理）。",
-  "downloadUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v2.8.4/Spinora_Windows_x64_Setup.exe",
-  "sha256": "E5013ED66C271BBD8889DDDE8D6A42BCBAD1E272A9577EF57F45956D18E78EE1"
+  "version": "2.8.5",
+  "tag": "v2.8.5",
+  "publishedAt": "2026-11-18T02:32:00Z",
+  "notes": "1. 全屏模式下双击屏幕空白处快速退出全屏。\n2. 歌单内置 IndexedDB 本地数据库 + 多网盘 WebDAV 云同步（阿里云盘/夸克/百度/坚果云/OneDrive）+ JSON 导出备份。\n3. 支持多音源同时连接探测，点击歌单曲目弹出已连接音源选择与搜索播放。\n4. 统一「我的喜欢」与所有歌单盒初始视觉、背板采用封面取色渐变、CD 盘面全面改为无银圈全封面+中心小孔。\n5. 安装向导全中文界面并附带《安全隐私协议》，应用内更新界面升级为 QQ 同款轮播特性画廊。",
+  "downloadUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v2.8.5/Spinora_Windows_x64_Setup.exe",
+  "sha256": "3BB24A9E7D7019D6A9C721258CEB32DF8C14998BA52CDAA3EE5C2CE60D00BE5C"
 }
