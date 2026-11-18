@@ -1,8 +1,10 @@
 {
-  "version": "3.0.1",
-  "tag": "v3.0.1",
-  "publishedAt": "2026-11-18T17:25:00Z",
-  "notes": "1. 内置打包四大本地 AI 视觉模型（DBNet / BiRefNet-lite / SkyWater-Seg / CLIPSeg + DirectML），开箱即用无需额外手动下载。\n2. 新增「智能默认（Apple Music / Tidal 官方视频优先 → AI 原图兜底）」「AI 原图 100% 一致」「官方动态视频增强」三模式切换，并在加载官方视频时同步首帧至左下角缩略图。\n3. 升级 Windows 任务栏 AppUserModelID 强制刷新任务栏图标，同时优化 3D CD 光盘外缘聚碳酸酯材质与去白边抗锯齿。",
-  "downloadUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v3.0.1/Spinora_Windows_x64_Setup.exe",
-  "sha256": "92B4BADD7A1B68715F2E7E61D7F4ACFC22B326F1D3EE9DC8759B1D3EB96D7A02"
+  "version": "3.0.2",
+  "tag": "v3.0.2",
+  "publishedAt": "2026-11-18T18:00:00Z",
+  "notes": "1. 彻底消除动态封面右侧过渡带的两次颜色突变与竖线断层：移除独立中景条带，改用 9 阶 S 曲线超宽遮罩与 WebGL 广域渐进高斯模糊。\n2. 修复本地四大 AI 模型检测一直卡在「正在检查」的问题，新增 DirectML 实时推理状态、耗时与「🟢 运行中」动态提示，并完善 CLIPSeg 多输入推理兼容。\n3. 升级为差量/增量热更新引擎：后续版本只需下载约 4.82 MB 的增量补丁即可完成升级，无需重复下载 300 MB 内置模型。",
+  "downloadUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v3.0.2/Spinora_Windows_x64_Setup.exe",
+  "sha256": "13DDD1247FECD5DBD9427777CC0EA2C39EF603595EFC4800E7D973A1E9AF609C",
+  "patchUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v3.0.2/Spinora_Patch_Win64.zip",
+  "patchSha256": "471D903C67555781024A05FD7D36EC6B2A684EA3CEF779A5BCC3B38D6AD7F1E0"
 }
