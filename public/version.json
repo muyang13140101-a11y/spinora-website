@@ -4,5 +4,5 @@
   "publishedAt": "2026-11-18T07:56:00Z",
   "notes": "1. 彻底修复国内更新卡顿与 403/404 失败：剔除对 .exe 拦截 403 的 jsDelivr，打通官网直连 + 3 个国内免梯高速镜像（ghfast.top / gh-proxy.com / ghproxy.net）+ GitHub 官方共 9 条容灾线路，4 秒超时秒切。\n2. 保留微信/QQ 同款无感静默覆盖安装并自动重启。",
   "downloadUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v2.9.2/Spinora_Windows_x64_Setup.exe",
-  "sha256": "BB4699CC17E662E300AC21EC98A69923D344DE7FDE44D9287CE279FF200E93B4"
+  "sha256": "21D9CBF630681C5DDD8361D4939ACF6B9A2605C35068F955D9F88BA1BFBDAEAD"
 }
