@@ -1,10 +1,10 @@
 {
-  "version": "3.0.2",
-  "tag": "v3.0.2",
-  "publishedAt": "2026-11-18T18:00:00Z",
-  "notes": "1. 彻底消除动态封面右侧过渡带的两次颜色突变与竖线断层：移除独立中景条带，改用 9 阶 S 曲线超宽遮罩与 WebGL 广域渐进高斯模糊。\n2. 修复本地四大 AI 模型检测一直卡在「正在检查」的问题，新增 DirectML 实时推理状态、耗时与「🟢 运行中」动态提示，并完善 CLIPSeg 多输入推理兼容。\n3. 升级为差量/增量热更新引擎：后续版本只需下载约 4.82 MB 的增量补丁即可完成升级，无需重复下载 300 MB 内置模型。",
-  "downloadUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v3.0.2/Spinora_Windows_x64_Setup.exe",
-  "sha256": "13DDD1247FECD5DBD9427777CC0EA2C39EF603595EFC4800E7D973A1E9AF609C",
-  "patchUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v3.0.2/Spinora_Patch_Win64.zip",
-  "patchSha256": "471D903C67555781024A05FD7D36EC6B2A684EA3CEF779A5BCC3B38D6AD7F1E0"
+  "version": "3.0.3",
+  "tag": "v3.0.3",
+  "publishedAt": "2026-11-19T02:48:00Z",
+  "notes": "1. 全新独立模块 `src/shaders/elementAnimations.glsl.js`：为专辑封面 10 类常见元素（人物轮廓、文字扫光、天空流云、水面涟漪波光、雾气湍流、星空闪烁、霓虹节拍呼吸、火焰热浪、花草微风、极简兜底）编写一对一专属动画。\n2. 新增双层保护与精简仲裁机制：同一封面检出 >= 3 类元素时自动聚焦保留「文字 / 人物 / 雾气」，并强制屏蔽对人物五官与文字笔画的位移扰动。\n3. 升级后端 AI 引擎支持 SkyWater 双通道与 CLIPSeg 5 提示词多语义提取，v3.0.2 用户可仅用 4.85 MB 增量补丁秒级升级。",
+  "downloadUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v3.0.3/Spinora_Windows_x64_Setup.exe",
+  "sha256": "1FF90E463F0C4E6DFF32E799E8436BFD3673B607A10B3F34000DC2A7E0B124E2",
+  "patchUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v3.0.3/Spinora_Patch_Win64.zip",
+  "patchSha256": "66834EDE3EA2C8F622C36662D500C5AD9CF00687A5330F3D985E71ACA9E9EE73"
 }
