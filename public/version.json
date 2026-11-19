@@ -1,10 +1,10 @@
 {
-  "version": "3.0.3",
-  "tag": "v3.0.3",
-  "publishedAt": "2026-11-19T02:48:00Z",
-  "notes": "1. 全新独立模块 `src/shaders/elementAnimations.glsl.js`：为专辑封面 10 类常见元素（人物轮廓、文字扫光、天空流云、水面涟漪波光、雾气湍流、星空闪烁、霓虹节拍呼吸、火焰热浪、花草微风、极简兜底）编写一对一专属动画。\n2. 新增双层保护与精简仲裁机制：同一封面检出 >= 3 类元素时自动聚焦保留「文字 / 人物 / 雾气」，并强制屏蔽对人物五官与文字笔画的位移扰动。\n3. 升级后端 AI 引擎支持 SkyWater 双通道与 CLIPSeg 5 提示词多语义提取，v3.0.2 用户可仅用 4.85 MB 增量补丁秒级升级。",
-  "downloadUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v3.0.3/Spinora_Windows_x64_Setup.exe",
-  "sha256": "1FF90E463F0C4E6DFF32E799E8436BFD3673B607A10B3F34000DC2A7E0B124E2",
-  "patchUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v3.0.3/Spinora_Patch_Win64.zip",
-  "patchSha256": "66834EDE3EA2C8F622C36662D500C5AD9CF00687A5330F3D985E71ACA9E9EE73"
+  "version": "3.0.4",
+  "tag": "v3.0.4",
+  "publishedAt": "2026-11-19T16:42:00Z",
+  "notes": "1. 修复 BiRefNet-lite 输入尺寸（1024x1024）并启用 DirectML GPU 硬件加速与 Session 内存常驻缓存，四大本地 AI 模型全部正常激活、推理提速数十倍。\n2. 彻底取消整张封面无差别放大动效：人物与文字像素 100% 锁定不晃动，文字扫光、雾气湍流、轮廓光与舞台光源呼吸动效清晰可辨。\n3. 新增基于当前歌曲最长单行歌词的自适应右靠布局：右栏自动紧缩靠右，大幅减少左侧高清封面的模糊遮挡区域。",
+  "downloadUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v3.0.4/Spinora_Windows_x64_Setup.exe",
+  "sha256": "BEAC30235F6B5D60F58D4D7064A69FF8B6CAEF933F8FB812F7FC7F87856C8547",
+  "patchUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v3.0.4/Spinora_Patch_Win64.zip",
+  "patchSha256": "A31AF4EA0B9779559A5B1876C2F9C37886CEB8BE703B5122D1AABDBF1644E4A9"
 }
