@@ -1,10 +1,10 @@
 {
-  "version": "3.0.4",
-  "tag": "v3.0.4",
-  "publishedAt": "2026-11-19T16:42:00Z",
-  "notes": "1. 修复 BiRefNet-lite 输入尺寸（1024x1024）并启用 DirectML GPU 硬件加速与 Session 内存常驻缓存，四大本地 AI 模型全部正常激活、推理提速数十倍。\n2. 彻底取消整张封面无差别放大动效：人物与文字像素 100% 锁定不晃动，文字扫光、雾气湍流、轮廓光与舞台光源呼吸动效清晰可辨。\n3. 新增基于当前歌曲最长单行歌词的自适应右靠布局：右栏自动紧缩靠右，大幅减少左侧高清封面的模糊遮挡区域。",
-  "downloadUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v3.0.4/Spinora_Windows_x64_Setup.exe",
-  "sha256": "BEAC30235F6B5D60F58D4D7064A69FF8B6CAEF933F8FB812F7FC7F87856C8547",
-  "patchUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v3.0.4/Spinora_Patch_Win64.zip",
-  "patchSha256": "A31AF4EA0B9779559A5B1876C2F9C37886CEB8BE703B5122D1AABDBF1644E4A9"
+  "version": "3.0.5",
+  "tag": "v3.0.5",
+  "publishedAt": "2026-11-19T17:25:00Z",
+  "notes": "1. 全面模块化重构项目目录：将颜色数学核心（src/color/paletteCore.js）、官方动态视频检索（src/dynamicCover/officialStreamResolver.js）、AI 模型管理面板（src/ai/aiModelsPanel.js）与元素动效库（src/shaders/elementAnimations.glsl.js）完全独立拆出。\n2. 四大本地 AI 模型深度自检修正：核验并替换为 CLIPSeg 官方 tokenizer.json 精确 BPE Token ID，新增 SkyWater-Seg 4 通道 Softmax 归一化与 BiRefNet-lite 整张量概率判定，彻底解决复杂封面语义误判与漏提问题。",
+  "downloadUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v3.0.5/Spinora_Windows_x64_Setup.exe",
+  "sha256": "8A625924A368AF193FB0A9FFF91B498B3211965B88B91E5BF2158D0B3E090D07",
+  "patchUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v3.0.5/Spinora_Patch_Win64.zip",
+  "patchSha256": "921FFB036C9925209BD6899D25FE890A52EBD86F8D4596966BBD26553D584330"
 }
