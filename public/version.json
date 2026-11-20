@@ -1,10 +1,10 @@
 {
-  "version": "3.0.6",
-  "tag": "v3.0.6",
-  "publishedAt": "2026-11-19T18:15:00Z",
-  "notes": "1. 彻底修复设置弹窗切换板块卡顿与掉帧问题：移除 WebGL 渲染循环中每帧同步调用的 `getBoundingClientRect()` 布局回流，改用 `ResizeObserver` 异步监听。\n2. 打开设置/登录/分享等弹窗时自动暂停底层重度 3D/WebGL 渲染，并降低弹窗双层高斯模糊半径、为 Tab 面板启用 `contain: layout style`，交互切换瞬时丝滑 60 FPS。",
-  "downloadUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v3.0.6/Spinora_Windows_x64_Setup.exe",
-  "sha256": "60EDA3E84C1C62A179D9627861F9F6CEE78499A6D9B9FDBEEAB2D18920A6EDF5",
-  "patchUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v3.0.6/Spinora_Patch_Win64.zip",
-  "patchSha256": "2F87918852FB20C10233346950FD55AE8A10336E14708E0FCA0FB27C5E15D051"
+  "version": "3.0.7",
+  "tag": "v3.0.7",
+  "publishedAt": "2026-11-20T02:38:00Z",
+  "notes": "1. 全面升级为 22 类专辑封面元素物理级开源动效库（5 张语义纹理 SemA~SemE）：引入 Stefan Gustavson 梯度噪声、Inigo Quilez 双层域扭曲（雾气湍流升腾 / 焦散水光网 / Gerstner 波浪）与 2.5D 前景抠图悬浮分层。\n2. 文字新增 10 种专属动效（含大字抠图悬浮鼓点呼吸放大、空间投影、金属扫光、霓虹泛光、烫金描边与雾气前层穿梭）；人物新增 12 种专属动效（含“人脸+头发”专项发丝微风飘动而五官 0 变形、舞台轮廓光与胸腔微呼吸）。\n3. 扩充雨滴、雪花、晚霞积雨云、日月天体、闪电、飞鸟蝴蝶、城市建筑灯火、汽车车灯、玻璃棱镜、金属雕塑与海浪瀑布共 22 类元素，并保持多元素数量熔断保护。",
+  "downloadUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v3.0.7/Spinora_Windows_x64_Setup.exe",
+  "sha256": "90235F0CEB6663405D96CA2B0E1A749D10D90FE09141EFA2E71B409BECB5557A",
+  "patchUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v3.0.7/Spinora_Patch_Win64.zip",
+  "patchSha256": "170B2CD415CAE6201293E726D3011ABAEFCE7BE49493C1A6BF4023643E9DB015"
 }
