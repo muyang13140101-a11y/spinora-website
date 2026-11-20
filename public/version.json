@@ -1,10 +1,10 @@
 {
-  "version": "3.1.1",
-  "tag": "v3.1.1",
-  "publishedAt": "2026-11-20T05:30:00Z",
-  "notes": "1. 彻底修复单曲封面仍被专辑官方视频流/专辑大图替换的 Bug：在 Apple Music 视频流检索与低清封面补全时严格校验专辑/单曲名称一致（例如单曲《Dracula (with JENNIE)》不再误匹配到专辑《Deadbeat》的视频流），并升级视频缓存至 v5 自动清理旧错误匹配。\n2. 彻底修复播放与界面卡顿、影响音乐 APP 播放的性能问题：\n   - 将 CLIPSeg 的 17 组推理拆分为 4/4/4/5 微批次并在批次间让出 GPU 时间片，消除单次 batch=17 占满 DirectML 显存与算力导致的桌面/播放器掉帧卡顿。\n   - 仅在处于「动态封面」模式时按需触发 AI 语义分析并按曲目去重。\n   - 将 SMTC 轮询间隔从 450ms 优化至 1000ms（临近切歌 500ms），并在 Rust 侧缓存 SMTC SessionManager，大幅降低跨进程 COM/WinRT 通信对音乐 APP 的干扰。",
-  "downloadUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v3.1.1/Spinora_Windows_x64_Setup.exe",
-  "sha256": "7B550C9A0FB018B4BCF8F7A14E0C3CA718E5D5EADA31DFDFC196571930341569",
-  "patchUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v3.1.1/Spinora_Patch_Win64.zip",
-  "patchSha256": "324F436B1CC058144383625B1FD1DA8E9416B7248BAC55E59E4A2B293B034B72"
+  "version": "3.1.2",
+  "tag": "v3.1.2",
+  "publishedAt": "2026-11-20T06:01:00Z",
+  "notes": "1. 彻底释放 AI 动态封面动效：\n   - 修复 AI 语义就绪后仍被中心高斯先验 cluster.r 误锁背景的问题，现在仅由真实检出的人物/文字屏蔽位移，水波、雾气、云流、星空、霓虹、火焰等环境动效可在画面中心正常呼吸与流动。\n   - 修复切换模式/重绘封面时语义状态被竞态重置的问题，缓存并瞬时恢复当前曲目的 AI 语义纹理。\n   - 优化多元素仲裁机制，保留「人物/文字」与占比最高的前 3 项主导环境元素，同时适度提升流体、水波、云雾与文字/人物悬浮鼓点动效幅度。\n2. 修复历史日志中的两处运行时异常：CDVisualizer3D.resetCameraView 误调用与 LyricsShareManager 跨曲目歌词索引越界。",
+  "downloadUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v3.1.2/Spinora_Windows_x64_Setup.exe",
+  "sha256": "9F531F72AADDE2DDAB52007EBDA3132FF9484A0F6A43A95EDAD29243CED482D3",
+  "patchUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v3.1.2/Spinora_Patch_Win64.zip",
+  "patchSha256": "3612C4974A6A973BB2463EA261F8FD289C950CA6CEEDDCB249DF0A3A863CB8EC"
 }
