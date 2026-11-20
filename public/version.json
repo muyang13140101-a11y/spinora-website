@@ -1,10 +1,10 @@
 {
-  "version": "3.1.3",
-  "tag": "v3.1.3",
-  "publishedAt": "2026-11-20T06:37:00Z",
-  "notes": "1. 全面激活软件诊断与 Bug 日志系统（告别空白摆设）：\n   - 前端自动捕获全局 error、unhandledrejection、console.error / console.warn 以及主线程卡顿告警（帧耗时 >180ms）并去重写入 diagnostics.log。\n   - Rust 后端统一接入启动记录、SMTC 跨进程慢调用告警（>180ms）以及 AI 视觉模型推理耗时/报错日志，支持展示最近 200 行与日志文件路径。\n2. 深度优化 Apple Music 适配与播放流畅度：\n   - 为 Apple Music WinRT SMTC 采用 1.6s 低干扰轮询（临近切歌 800ms），大幅减轻对 Apple Music 媒体线程的占用。\n   - 在「官方流优先」模式下，仅当未命中官方动态视频时才按需触发 AI 语义分析，避免播放 Apple Music 视频流时后台同时跑 4 个 ONNX 模型抢占 GPU。\n   - 限制动态封面 WebGL 渲染为 ~40fps，且仅在视频帧时间戳推进时上传 texImage2D，消除高刷屏下的重复纹理上传卡顿。",
-  "downloadUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v3.1.3/Spinora_Windows_x64_Setup.exe",
-  "sha256": "957524D30BD176CF18070225D93446CB5A730235CA85141CECD0F985BE5EE206",
-  "patchUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v3.1.3/Spinora_Patch_Win64.zip",
-  "patchSha256": "5B2856F8A39E685F0B1442D26CE16EFF0BABE0702C567DEBE6FED43DFEC3046D"
+  "version": "3.1.4",
+  "tag": "v3.1.4",
+  "publishedAt": "2026-11-20T07:22:00Z",
+  "notes": "1. 精简并统合顶栏窗口控制按钮：\n   - 取消冗余的画中画（左数第3个）与独立全屏屏保（左数第5个）按钮，消除与全屏按钮的功能冲突。\n   - 保留倒数第二个按钮为统一全屏开关：非全屏时点击进入全屏；全屏时点击退出全屏并自动恢复默认窗口大小（1240×780 居中）。\n2. 全面完善顶栏第一个「刷新同步」按钮：\n   - 彻底告别摆设，点击后清空当前曲目元数据与 AI 语义缓存，强制重新拉取 SMTC/Spotify 播放状态、高清封面、歌词与动态封面，并弹出同步完成提示。",
+  "downloadUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v3.1.4/Spinora_Windows_x64_Setup.exe",
+  "sha256": "6A7EB85CDCA78AF024F22058C7D4CABD9138358FB693A2C93B8A1D1348F873F3",
+  "patchUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v3.1.4/Spinora_Patch_Win64.zip",
+  "patchSha256": "CBFB1FA9D6E021EA3D528345039A00AF2332F02D5F72C3F8577AEE1AEAA63667"
 }
