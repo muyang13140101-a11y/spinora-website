@@ -1,10 +1,10 @@
 {
-  "version": "3.1.2",
-  "tag": "v3.1.2",
-  "publishedAt": "2026-11-20T06:01:00Z",
-  "notes": "1. 彻底释放 AI 动态封面动效：\n   - 修复 AI 语义就绪后仍被中心高斯先验 cluster.r 误锁背景的问题，现在仅由真实检出的人物/文字屏蔽位移，水波、雾气、云流、星空、霓虹、火焰等环境动效可在画面中心正常呼吸与流动。\n   - 修复切换模式/重绘封面时语义状态被竞态重置的问题，缓存并瞬时恢复当前曲目的 AI 语义纹理。\n   - 优化多元素仲裁机制，保留「人物/文字」与占比最高的前 3 项主导环境元素，同时适度提升流体、水波、云雾与文字/人物悬浮鼓点动效幅度。\n2. 修复历史日志中的两处运行时异常：CDVisualizer3D.resetCameraView 误调用与 LyricsShareManager 跨曲目歌词索引越界。",
-  "downloadUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v3.1.2/Spinora_Windows_x64_Setup.exe",
-  "sha256": "9F531F72AADDE2DDAB52007EBDA3132FF9484A0F6A43A95EDAD29243CED482D3",
-  "patchUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v3.1.2/Spinora_Patch_Win64.zip",
-  "patchSha256": "3612C4974A6A973BB2463EA261F8FD289C950CA6CEEDDCB249DF0A3A863CB8EC"
+  "version": "3.1.3",
+  "tag": "v3.1.3",
+  "publishedAt": "2026-11-20T06:37:00Z",
+  "notes": "1. 全面激活软件诊断与 Bug 日志系统（告别空白摆设）：\n   - 前端自动捕获全局 error、unhandledrejection、console.error / console.warn 以及主线程卡顿告警（帧耗时 >180ms）并去重写入 diagnostics.log。\n   - Rust 后端统一接入启动记录、SMTC 跨进程慢调用告警（>180ms）以及 AI 视觉模型推理耗时/报错日志，支持展示最近 200 行与日志文件路径。\n2. 深度优化 Apple Music 适配与播放流畅度：\n   - 为 Apple Music WinRT SMTC 采用 1.6s 低干扰轮询（临近切歌 800ms），大幅减轻对 Apple Music 媒体线程的占用。\n   - 在「官方流优先」模式下，仅当未命中官方动态视频时才按需触发 AI 语义分析，避免播放 Apple Music 视频流时后台同时跑 4 个 ONNX 模型抢占 GPU。\n   - 限制动态封面 WebGL 渲染为 ~40fps，且仅在视频帧时间戳推进时上传 texImage2D，消除高刷屏下的重复纹理上传卡顿。",
+  "downloadUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v3.1.3/Spinora_Windows_x64_Setup.exe",
+  "sha256": "957524D30BD176CF18070225D93446CB5A730235CA85141CECD0F985BE5EE206",
+  "patchUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v3.1.3/Spinora_Patch_Win64.zip",
+  "patchSha256": "5B2856F8A39E685F0B1442D26CE16EFF0BABE0702C567DEBE6FED43DFEC3046D"
 }
