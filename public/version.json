@@ -1,10 +1,10 @@
 {
-  "version": "3.1.0",
-  "tag": "v3.1.0",
-  "publishedAt": "2026-11-20T04:16:00Z",
-  "notes": "1. 彻底修复单曲封面被专辑大图覆盖的 Bug：在 spotifyService.js 中优先使用当前播放歌曲的真实单曲封面（SMTC 缩略图），不再在已有单曲封面时被 iTunes 专辑检索覆盖。\n2. 彻底修复 AI 视觉模型静默失效问题：替换损坏的 CLIPSeg 模型为 clipseg_rd64_quantized.onnx，并将 17 个语义提示词合并为单次 GPU 批量推理（batch=17），同时为 DirectML 会话禁用内存模式与并行执行以消除推理卡顿。\n3. 升级语义缓存键至 v310_，确保更新后自动重新提取封面元素与动效。",
-  "downloadUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v3.1.0/Spinora_Windows_x64_Setup.exe",
-  "sha256": "9F297647CEFD06AF883CE1B5319219CB2BFFA2494CCF48B8189403C1C2191D02",
-  "patchUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v3.1.0/Spinora_Patch_Win64.zip",
-  "patchSha256": "F0CEA0E0DDB81603F1B663601E161FE6103F39F128C8BAB2E52C8B1710692EB6"
+  "version": "3.1.1",
+  "tag": "v3.1.1",
+  "publishedAt": "2026-11-20T05:30:00Z",
+  "notes": "1. 彻底修复单曲封面仍被专辑官方视频流/专辑大图替换的 Bug：在 Apple Music 视频流检索与低清封面补全时严格校验专辑/单曲名称一致（例如单曲《Dracula (with JENNIE)》不再误匹配到专辑《Deadbeat》的视频流），并升级视频缓存至 v5 自动清理旧错误匹配。\n2. 彻底修复播放与界面卡顿、影响音乐 APP 播放的性能问题：\n   - 将 CLIPSeg 的 17 组推理拆分为 4/4/4/5 微批次并在批次间让出 GPU 时间片，消除单次 batch=17 占满 DirectML 显存与算力导致的桌面/播放器掉帧卡顿。\n   - 仅在处于「动态封面」模式时按需触发 AI 语义分析并按曲目去重。\n   - 将 SMTC 轮询间隔从 450ms 优化至 1000ms（临近切歌 500ms），并在 Rust 侧缓存 SMTC SessionManager，大幅降低跨进程 COM/WinRT 通信对音乐 APP 的干扰。",
+  "downloadUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v3.1.1/Spinora_Windows_x64_Setup.exe",
+  "sha256": "7B550C9A0FB018B4BCF8F7A14E0C3CA718E5D5EADA31DFDFC196571930341569",
+  "patchUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v3.1.1/Spinora_Patch_Win64.zip",
+  "patchSha256": "324F436B1CC058144383625B1FD1DA8E9416B7248BAC55E59E4A2B293B034B72"
 }
