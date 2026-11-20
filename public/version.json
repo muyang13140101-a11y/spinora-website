@@ -1,10 +1,10 @@
 {
-  "version": "3.1.4",
-  "tag": "v3.1.4",
-  "publishedAt": "2026-11-20T07:22:00Z",
-  "notes": "1. 精简并统合顶栏窗口控制按钮：\n   - 取消冗余的画中画（左数第3个）与独立全屏屏保（左数第5个）按钮，消除与全屏按钮的功能冲突。\n   - 保留倒数第二个按钮为统一全屏开关：非全屏时点击进入全屏；全屏时点击退出全屏并自动恢复默认窗口大小（1240×780 居中）。\n2. 全面完善顶栏第一个「刷新同步」按钮：\n   - 彻底告别摆设，点击后清空当前曲目元数据与 AI 语义缓存，强制重新拉取 SMTC/Spotify 播放状态、高清封面、歌词与动态封面，并弹出同步完成提示。",
-  "downloadUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v3.1.4/Spinora_Windows_x64_Setup.exe",
-  "sha256": "6A7EB85CDCA78AF024F22058C7D4CABD9138358FB693A2C93B8A1D1348F873F3",
-  "patchUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v3.1.4/Spinora_Patch_Win64.zip",
-  "patchSha256": "CBFB1FA9D6E021EA3D528345039A00AF2332F02D5F72C3F8577AEE1AEAA63667"
+  "version": "3.1.5",
+  "tag": "v3.1.5",
+  "publishedAt": "2026-11-20T07:40:00Z",
+  "notes": "1. 优化自由窗口流式自适应模块：\n   - 引入 CSS clamp() 流式缩放（边距、间距、播放控台宽高、圆角与液态水滴播放键随窗口平滑无级缩放，兼顾小窗与 2K/4K 大屏）。\n   - 在主舞台 #app-container 引入 CSS Container Queries（@container app-stage），支持按容器宽度与高度自适应切换单列布局与紧凑控台（矮窗口自动收起次要控件，避免遮挡 3D 唱机与动态封面）。",
+  "downloadUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v3.1.5/Spinora_Windows_x64_Setup.exe",
+  "sha256": "F3FA681803F038CAD88BCA27E1D5BF66382F71DE504C2BB89F385BC3BD1D11DF",
+  "patchUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v3.1.5/Spinora_Patch_Win64.zip",
+  "patchSha256": "FC52926B823A2CB9B94B8DA71687CB4DD97C2C471E14085B3745B4C0DE597855"
 }
