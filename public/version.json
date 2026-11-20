@@ -1,10 +1,10 @@
 {
-  "version": "3.0.8",
-  "tag": "v3.0.8",
-  "publishedAt": "2026-11-20T03:02:00Z",
-  "notes": "1. 彻底修复「AI 模型 -> 动态封面 -> Shader 动画」三方断联 Bug：修复低清封面异步升级高清时误将 `hasAiSemantics = false` 清空已推理语义图的问题，并补全 `semTexA~E` 1x1 初始纹理防止 WebGL 采样失效。\n2. 修复 `ai_vision.rs` DirectML 执行器加载部分量化模型失败时未自动回退 CPU 的问题，确保 4 个本地 AI 模型 100% 稳定运行。\n3. 增强文字/人物悬浮鼓点放大与全局节拍律动幅度，动效切换后即刻可见。",
-  "downloadUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v3.0.8/Spinora_Windows_x64_Setup.exe",
-  "sha256": "D6ED8D74A2D30A92C086C1D71B04AA0CA5EF4A1787661A30F24CAD2AD17DDFD4",
-  "patchUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v3.0.8/Spinora_Patch_Win64.zip",
-  "patchSha256": "8EA4F66763245DB354141A5224D75AA5F8B51AD5139FDB69FCBB1CFFAEA89FCB"
+  "version": "3.0.9",
+  "tag": "v3.0.9",
+  "publishedAt": "2026-11-20T03:32:00Z",
+  "notes": "1. 优化「单曲封面优先」策略：默认先展示单曲原图 + AI 动效，优先检索单曲对应的 Apple Music / Tidal 官方视频流（无官方流则始终保留单曲封面），不再用专辑大图直接覆盖独立单曲封面。\n2. 彻底解决艺术大字/3D Logo 提取不到的问题：将 DBNet（小字 OCR）与 CLIPSeg 艺术字通道（text/title/logo/letters）融合，兼顾大小字样精准识别。\n3. 彻底消除抠图边缘裂痕：改用真实双层色彩分离合成 + 周围 14px 背景柔和扩展补全，确保前景悬浮鼓点呼吸时边缘平滑自然无撕裂。",
+  "downloadUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v3.0.9/Spinora_Windows_x64_Setup.exe",
+  "sha256": "6896543150DA0175E03BB2C9B45E979566F0877377D21A56931282B69AA0DA95",
+  "patchUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v3.0.9/Spinora_Patch_Win64.zip",
+  "patchSha256": "F54D3F45681AE56EC974ADDECC88C62232112B9141C1C306E4B562E302852F7C"
 }
