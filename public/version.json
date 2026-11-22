@@ -4,7 +4,7 @@
   "publishedAt": "2026-11-22T08:33:00Z",
   "notes": "1. 修复歌词分享按钮定位偏移：恢复固定在右上角并精简为纯分享圆形图标。\n2. 全面移除残留的 Spotify 绿色按钮（设置内检查更新按钮、随机/循环激活态等），统一改为自适应液态玻璃色调。\n3. 提升播放组件与全站按钮透明度，并解除 CSS transform 过渡冲突，让所有按钮具备与设置切换一致的 Q 弹欠阻尼点击回弹手感。\n4. 优化自动更新与系统浏览器跳转：点击「打开下载页」改为调用系统默认浏览器打开；增量补丁条件放宽至仅检测安装目录 resources 存在即可走极速补丁更新。\n5. 优化留声机/黑胶与 CD 底座色彩提取对比度：留声机正方体底座保持温润高光瓷白并融入 26% 浅调主题色，黑胶金属底座采用提亮钛灰融入 30% 主题色，既呼应封面又绝不与深色背景混色。",
   "downloadUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v3.2.4/Spinora_Windows_x64_Setup.exe",
-  "sha256": "B16DB535208BF586F2522C42466F2BA09565E6F64974D7E911C77D2F5512D58B",
+  "sha256": "CECE2F575D7F4AD66FB3A4991D1A45E6C93280B759F3654463C7E0B83CE01D2D",
   "patchUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v3.2.4/Spinora_Patch_Win64.zip",
   "patchSha256": "FA9AA12B9AD4528EB6B73938D744FE24B423D544AD71F89D5F7D3E78AC94C643"
 }
