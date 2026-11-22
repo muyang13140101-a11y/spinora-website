@@ -1,10 +1,10 @@
 {
-  "version": "3.2.7",
-  "tag": "v3.2.7",
-  "publishedAt": "2026-11-22T15:19:00Z",
-  "notes": "1. 设置面板全面接入 Motion 弹簧动力学动画：新增设置分栏滑动液态玻璃胶囊 #settings-active-pill、标签页弹性缩放淡入过渡，以及设置弹窗开启弹簧动画。\n2. 为设置分栏按钮与字体预设按钮同步接入欠阻尼按压回弹手感，彻底告别生硬切换。",
-  "downloadUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v3.2.7/Spinora_Windows_x64_Setup.exe",
-  "sha256": "C075BD5DCBB4FA59141B228036819D3E6481C95F095B387AEADE3D103282A6A3",
-  "patchUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v3.2.7/Spinora_Patch_Win64.zip",
-  "patchSha256": "2ACA386FE31C371D89632A5C1CA89E8C20CE53B171DD817482B1E2751D035635"
+  "version": "3.2.8",
+  "tag": "v3.2.8",
+  "publishedAt": "2026-11-22T15:43:00Z",
+  "notes": "1. 修复桌面灵动岛颜色提取不一致问题：改为直接沿用封面深色调提取值，彻底解决纯黑封面下灵动岛发灰的缺陷。\n2. 重构灵动岛展开/收起物理形变动画：展开前先对齐中心位置再扩大透明画布，胶囊由中心向两侧对称弹性伸缩（中间拉长/缩短），全程保持圆角曲率，彻底消除先变直角长方形再变圆角的僵硬闪烁。\n3. 移除登录弹窗中已废弃的「刷新歌单权限」残留卡片，明确 Spotify 授权仅用于跨设备云端播放同步与高清封面补全。",
+  "downloadUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v3.2.8/Spinora_Windows_x64_Setup.exe",
+  "sha256": "FEA5F4C2C046F66B0C37B73D387AB95FA3F47443492BA8098A4A4A2BEBE1FDD2",
+  "patchUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v3.2.8/Spinora_Patch_Win64.zip",
+  "patchSha256": "95D432B216DDBF96F1C50786683A8C72D7D4CEACAA36C7CF9C70D0B0BE933E9F"
 }
