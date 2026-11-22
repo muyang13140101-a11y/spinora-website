@@ -1,10 +1,10 @@
 {
-  "version": "3.2.6",
-  "tag": "v3.2.6",
-  "publishedAt": "2026-11-22T14:17:00Z",
-  "notes": "1. 高通透光学液态玻璃重构：彻底消除播放组件左下/右下角黑影及顶栏按钮暗影，提升主控台玻璃通透度与高光质感。\n2. 接入开源 Motion 弹簧动力学库：顶栏「CD / 留声机 / 黑胶 / 磁带 / 动态封面」切换新增滑动液态玻璃胶囊与舞台弹性过渡动画。\n3. 精简顶栏布局：将「账号登录」移入「设置 → 音源与灵动岛」内，保留日常 SMTC 免登录听歌体验。\n4. 全面升级矢量 SVG 图标：依据全息光盘图标重绘高精矢量版 assets/icon.svg 并完成软件内全量替换。",
-  "downloadUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v3.2.6/Spinora_Windows_x64_Setup.exe",
-  "sha256": "E44F746F55A0C403114C4A3CCD96E25EA9CDB3028D5313429D3CEDFAA8CB49FF",
-  "patchUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v3.2.6/Spinora_Patch_Win64.zip",
-  "patchSha256": "4EBE9247BADAC1F644599DE30B117E5D96C2F2FB3AD68A6A897BAB0AD4324883"
+  "version": "3.2.7",
+  "tag": "v3.2.7",
+  "publishedAt": "2026-11-22T15:19:00Z",
+  "notes": "1. 设置面板全面接入 Motion 弹簧动力学动画：新增设置分栏滑动液态玻璃胶囊 #settings-active-pill、标签页弹性缩放淡入过渡，以及设置弹窗开启弹簧动画。\n2. 为设置分栏按钮与字体预设按钮同步接入欠阻尼按压回弹手感，彻底告别生硬切换。",
+  "downloadUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v3.2.7/Spinora_Windows_x64_Setup.exe",
+  "sha256": "C075BD5DCBB4FA59141B228036819D3E6481C95F095B387AEADE3D103282A6A3",
+  "patchUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v3.2.7/Spinora_Patch_Win64.zip",
+  "patchSha256": "2ACA386FE31C371D89632A5C1CA89E8C20CE53B171DD817482B1E2751D035635"
 }
