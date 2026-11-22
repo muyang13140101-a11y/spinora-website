@@ -1,10 +1,10 @@
 {
-  "version": "3.2.9",
-  "tag": "v3.2.9",
-  "publishedAt": "2026-11-22T16:16:00Z",
-  "notes": "1. 灵动岛 60/120Hz 逐帧弹簧物理引擎重构：在 Rust 层改用 Win32 SetWindowPos 单次原子更新窗口坐标与尺寸，彻底消除缩放瞬间的 1 帧横向跳动；前端以 requestAnimationFrame 逐帧求解弹簧力学（stiffness: 340, damping: 27），驱动胶囊宽度、高度、圆角与内部视图交叉淡入及按钮按压回弹。\n2. 全新矢量 SVG「CD 实体盒 + 正圆全息光盘」图标：移除扭曲手写字，采用纯几何磨砂亚克力 CD 盒与绝对正圆全息衍射光盘重绘 assets/icon.svg。",
-  "downloadUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v3.2.9/Spinora_Windows_x64_Setup.exe",
-  "sha256": "1EAE680773BA6315579CBC6D904FF6690F4C1071835BCE52704CBD8C57287D9A",
-  "patchUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v3.2.9/Spinora_Patch_Win64.zip",
-  "patchSha256": "A11A0B6798C28AEDE6ADF4A5757E70A4E4BC2E9415EA2202B99C6DAAD2049AD9"
+  "version": "3.2.10",
+  "tag": "v3.2.10",
+  "publishedAt": "2026-11-22T16:30:00Z",
+  "notes": "1. 优化重绘原版全息 CD 光盘矢量 SVG 图标（assets/icon.svg）：完整保留紫蓝→青绿→暖金全息光盘、洋红流光弧、八分音符、右下均衡器徽章与中心镂空内芯原内容，重构为绝对正圆比例、清晰规整的 spinora 圆润字体与平滑正弦声波曲线。",
+  "downloadUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v3.2.10/Spinora_Windows_x64_Setup.exe",
+  "sha256": "790992D47B623B90C9BD8E186A76A7B4016F92946136A894FA80BF552187C621",
+  "patchUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v3.2.10/Spinora_Patch_Win64.zip",
+  "patchSha256": "567592B23EEB3056196AC22A569D41BD9E4C3CDF29C07D96A286BA3A8E530538"
 }
