@@ -1,10 +1,10 @@
 {
-  "version": "3.2.11",
-  "tag": "v3.2.11",
-  "publishedAt": "2026-11-22T17:27:00Z",
-  "notes": "1. 灵动岛极简按钮重构：移除右上角 × 关闭按钮，将「主窗口」汉字替换为无圆圈边框的像素 CD 图标，并去除底部上一曲/下一曲外框。\n2. 修复未连接/待机状态下透明 SVG 图标导致 CD 盒及沉浸模式出现黑色块的缺陷：为透明默认封面单独铺设淡淡的粉紫色柔光渐变底（#ead8f7 → #f5dced → #e1daf8），CD 盒与沉浸动态封面均不再出现黑色。",
-  "downloadUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v3.2.11/Spinora_Windows_x64_Setup.exe",
-  "sha256": "1EE67FB88C9522076DF7DA266F35903296764D25E42AD9417EEB6A8719322B55",
-  "patchUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v3.2.11/Spinora_Patch_Win64.zip",
-  "patchSha256": "CCB0403282B5ED2FB47DF836084053257A43C53F75B2A54161C859FF5F446AEE"
+  "version": "3.2.12",
+  "tag": "v3.2.12",
+  "publishedAt": "2026-11-22T17:52:00Z",
+  "notes": "1. 紧急修复 CD 盒封面与黑胶中心贴纸被待机缓存纹理锁死的 Bug：切歌后立即恢复真实歌曲专辑封面，不再停留在默认图标。\n2. 移除生硬粉紫色背景，改为自动提取图标自身不透明像素平均色并做柔和淡化处理，确保待机/未连接状态下 CD 银色边缘清晰自然。",
+  "downloadUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v3.2.12/Spinora_Windows_x64_Setup.exe",
+  "sha256": "27D339878E998B57B947CD27C8DF8BA20E11E66378F50F1CA0CB2D2778E86FE4",
+  "patchUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v3.2.12/Spinora_Patch_Win64.zip",
+  "patchSha256": "017651909F120789415E515223B82F7067A1C2C5B1F5888EE55625216DFD4C31"
 }
