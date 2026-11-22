@@ -4,7 +4,7 @@
   "publishedAt": "2026-11-22T06:57:00Z",
   "notes": "1. 彻底修复歌词与歌曲播放进度不同步问题，并为各官方音乐软件建立独立 SMTC 时间线适配器：\n   - 根据 Windows SMTC 规范，tl.Position 仅为 LastUpdatedTime 时刻的静态快照；在 smtc.rs 中按 Spotify / Apple Music / 网易云 / QQ 音乐 / 酷狗 / TIDAL 分别建立独立适配器，动态补偿 (Now - LastUpdatedTime) 实时进度并做 650ms 漂移防抖校准。\n2. 独立模块化全软件 UI 液态玻璃与动力学引擎 (src/ui/liquidGlassEngine.js)：\n   - 统一覆盖所有顶栏按钮、功能开关、播放控台与弹窗：按钮与开关绑定欠阻尼弹簧 ODE（ζ ≈ 0.73~0.74）与果冻横向/纵向联动形变；弹窗与控台通过 ResizeObserver 应用 Apple 连续曲率圆角（1.528665r 缓入 SVG clip-path）。\n3. 黑胶与留声机 3D 模型主题色联动与正方体留声机重构：\n   - 黑胶金属底座、副底盘与留声机木箱/金边自动融入封面提取调色板；留声机木箱重构为经典正方体比例（2.86 × 2.48 × 2.86）并升级清漆与缎面质感。",
   "downloadUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v3.2.2/Spinora_Windows_x64_Setup.exe",
-  "sha256": "B3259D2B38674011DEEA14F67E314A05C1F42B6E03A334DF8D0840F73BF30E9D",
+  "sha256": "59B087A79DF4CAB99D6D0B4407D7AB9088F248F05964B5236245330AFD0CAC32",
   "patchUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v3.2.2/Spinora_Patch_Win64.zip",
-  "patchSha256": "C2AA7C0EB4201BF403F65BF6650934ED75534BB376028F89D5F7D3E78AC94C643"
+  "patchSha256": "8B257C8F376AD29628F87DD9811FFF7B4D6943E0B6B67EB770108F41A5956CB8"
 }
