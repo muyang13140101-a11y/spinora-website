@@ -1,10 +1,10 @@
 {
-  "version": "3.2.8",
-  "tag": "v3.2.8",
-  "publishedAt": "2026-11-22T15:43:00Z",
-  "notes": "1. 修复桌面灵动岛颜色提取不一致问题：改为直接沿用封面深色调提取值，彻底解决纯黑封面下灵动岛发灰的缺陷。\n2. 重构灵动岛展开/收起物理形变动画：展开前先对齐中心位置再扩大透明画布，胶囊由中心向两侧对称弹性伸缩（中间拉长/缩短），全程保持圆角曲率，彻底消除先变直角长方形再变圆角的僵硬闪烁。\n3. 移除登录弹窗中已废弃的「刷新歌单权限」残留卡片，明确 Spotify 授权仅用于跨设备云端播放同步与高清封面补全。",
-  "downloadUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v3.2.8/Spinora_Windows_x64_Setup.exe",
-  "sha256": "FEA5F4C2C046F66B0C37B73D387AB95FA3F47443492BA8098A4A4A2BEBE1FDD2",
-  "patchUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v3.2.8/Spinora_Patch_Win64.zip",
-  "patchSha256": "95D432B216DDBF96F1C50786683A8C72D7D4CEACAA36C7CF9C70D0B0BE933E9F"
+  "version": "3.2.9",
+  "tag": "v3.2.9",
+  "publishedAt": "2026-11-22T16:16:00Z",
+  "notes": "1. 灵动岛 60/120Hz 逐帧弹簧物理引擎重构：在 Rust 层改用 Win32 SetWindowPos 单次原子更新窗口坐标与尺寸，彻底消除缩放瞬间的 1 帧横向跳动；前端以 requestAnimationFrame 逐帧求解弹簧力学（stiffness: 340, damping: 27），驱动胶囊宽度、高度、圆角与内部视图交叉淡入及按钮按压回弹。\n2. 全新矢量 SVG「CD 实体盒 + 正圆全息光盘」图标：移除扭曲手写字，采用纯几何磨砂亚克力 CD 盒与绝对正圆全息衍射光盘重绘 assets/icon.svg。",
+  "downloadUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v3.2.9/Spinora_Windows_x64_Setup.exe",
+  "sha256": "1EAE680773BA6315579CBC6D904FF6690F4C1071835BCE52704CBD8C57287D9A",
+  "patchUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v3.2.9/Spinora_Patch_Win64.zip",
+  "patchSha256": "A11A0B6798C28AEDE6ADF4A5757E70A4E4BC2E9415EA2202B99C6DAAD2049AD9"
 }
