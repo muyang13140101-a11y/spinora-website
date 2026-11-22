@@ -1,10 +1,10 @@
 {
-  "version": "3.2.10",
-  "tag": "v3.2.10",
-  "publishedAt": "2026-11-22T16:30:00Z",
-  "notes": "1. 优化重绘原版全息 CD 光盘矢量 SVG 图标（assets/icon.svg）：完整保留紫蓝→青绿→暖金全息光盘、洋红流光弧、八分音符、右下均衡器徽章与中心镂空内芯原内容，重构为绝对正圆比例、清晰规整的 spinora 圆润字体与平滑正弦声波曲线。",
-  "downloadUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v3.2.10/Spinora_Windows_x64_Setup.exe",
-  "sha256": "790992D47B623B90C9BD8E186A76A7B4016F92946136A894FA80BF552187C621",
-  "patchUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v3.2.10/Spinora_Patch_Win64.zip",
-  "patchSha256": "567592B23EEB3056196AC22A569D41BD9E4C3CDF29C07D96A286BA3A8E530538"
+  "version": "3.2.11",
+  "tag": "v3.2.11",
+  "publishedAt": "2026-11-22T17:27:00Z",
+  "notes": "1. 灵动岛极简按钮重构：移除右上角 × 关闭按钮，将「主窗口」汉字替换为无圆圈边框的像素 CD 图标，并去除底部上一曲/下一曲外框。\n2. 修复未连接/待机状态下透明 SVG 图标导致 CD 盒及沉浸模式出现黑色块的缺陷：为透明默认封面单独铺设淡淡的粉紫色柔光渐变底（#ead8f7 → #f5dced → #e1daf8），CD 盒与沉浸动态封面均不再出现黑色。",
+  "downloadUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v3.2.11/Spinora_Windows_x64_Setup.exe",
+  "sha256": "1EE67FB88C9522076DF7DA266F35903296764D25E42AD9417EEB6A8719322B55",
+  "patchUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v3.2.11/Spinora_Patch_Win64.zip",
+  "patchSha256": "CCB0403282B5ED2FB47DF836084053257A43C53F75B2A54161C859FF5F446AEE"
 }
