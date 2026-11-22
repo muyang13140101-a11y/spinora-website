@@ -1,10 +1,10 @@
 {
-  "version": "3.2.4",
-  "tag": "v3.2.4",
-  "publishedAt": "2026-11-22T08:33:00Z",
-  "notes": "1. 修复歌词分享按钮定位偏移：恢复固定在右上角并精简为纯分享圆形图标。\n2. 全面移除残留的 Spotify 绿色按钮（设置内检查更新按钮、随机/循环激活态等），统一改为自适应液态玻璃色调。\n3. 提升播放组件与全站按钮透明度，并解除 CSS transform 过渡冲突，让所有按钮具备与设置切换一致的 Q 弹欠阻尼点击回弹手感。\n4. 优化自动更新与系统浏览器跳转：点击「打开下载页」改为调用系统默认浏览器打开；增量补丁条件放宽至仅检测安装目录 resources 存在即可走极速补丁更新。\n5. 优化留声机/黑胶与 CD 底座色彩提取对比度：留声机正方体底座保持温润高光瓷白并融入 26% 浅调主题色，黑胶金属底座采用提亮钛灰融入 30% 主题色，既呼应封面又绝不与深色背景混色。",
-  "downloadUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v3.2.4/Spinora_Windows_x64_Setup.exe",
-  "sha256": "CECE2F575D7F4AD66FB3A4991D1A45E6C93280B759F3654463C7E0B83CE01D2D",
-  "patchUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v3.2.4/Spinora_Patch_Win64.zip",
-  "patchSha256": "FA9AA12B9AD4528EB6B73938D744FE24B423D544AD71F89D5F7D3E78AC94C643"
+  "version": "3.2.5",
+  "tag": "v3.2.5",
+  "publishedAt": "2026-11-22T12:07:00Z",
+  "notes": "1. 彻底重构自动更新与增量热补丁管线：移除增量补丁对安装目录 resources 的前置限制，无论安装版还是绿色便携版均优先走 ~4.86 MB 极速增量更新。\n2. 拆分补丁探针客户端（45s 超时）与全量安装包客户端（900s 超时），彻底解决 297 MB 大安装包在较慢网络下于 180 秒被强行中断导致反复重下各节点的问题。\n3. 增强增量补丁校验与提权逻辑：补全流完整性校验与诊断日志，采用当前进程 PID 精准退出替换，并在 UAC 提权取消时明确提示而不静默闪退。\n4. 修正未知总大小时的进度条分母计算，避免进度条虚高卡死。",
+  "downloadUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v3.2.5/Spinora_Windows_x64_Setup.exe",
+  "sha256": "A0807313B7AAC136DC3872AE7C9EF8744340076F42DB1291D35CE1673E04E1F3",
+  "patchUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v3.2.5/Spinora_Patch_Win64.zip",
+  "patchSha256": "3EB8910A4443A65FA464880711C0A32E4FE7DE86EC492A20460CDCC99A5EB115"
 }
