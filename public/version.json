@@ -1,10 +1,10 @@
 {
-  "version": "3.2.3",
-  "tag": "v3.2.3",
-  "publishedAt": "2026-11-22T07:38:00Z",
-  "notes": "1. 彻底修复增量更新到 99% 后闪退且未升级的问题：\n   - 自动检测安装目录写入权限，若安装在 C:\\Program Files 下则通过 UAC 提权执行热替换脚本；改用带 8 次重试的 copy /Y 与 explorer.exe 重启，彻底解决无权限拒绝访问或文件锁导致的闪退未更新问题。\n   - 同步修复 has_local_ai_models() 模型路径校验与移除历史旧包回退地址，保障 v3.2.3+ 增量补丁稳定直达。",
-  "downloadUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v3.2.3/Spinora_Windows_x64_Setup.exe",
-  "sha256": "B3A3548970A43E04E317BE811F39E96146BBBD1C750492B4457F81174E71B468",
-  "patchUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v3.2.3/Spinora_Patch_Win64.zip",
+  "version": "3.2.4",
+  "tag": "v3.2.4",
+  "publishedAt": "2026-11-22T08:33:00Z",
+  "notes": "1. 修复歌词分享按钮定位偏移：恢复固定在右上角并精简为纯分享圆形图标。\n2. 全面移除残留的 Spotify 绿色按钮（设置内检查更新按钮、随机/循环激活态等），统一改为自适应液态玻璃色调。\n3. 提升播放组件与全站按钮透明度，并解除 CSS transform 过渡冲突，让所有按钮具备与设置切换一致的 Q 弹欠阻尼点击回弹手感。\n4. 优化自动更新与系统浏览器跳转：点击「打开下载页」改为调用系统默认浏览器打开；增量补丁条件放宽至仅检测安装目录 resources 存在即可走极速补丁更新。\n5. 优化留声机/黑胶与 CD 底座色彩提取对比度：留声机正方体底座保持温润高光瓷白并融入 26% 浅调主题色，黑胶金属底座采用提亮钛灰融入 30% 主题色，既呼应封面又绝不与深色背景混色。",
+  "downloadUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v3.2.4/Spinora_Windows_x64_Setup.exe",
+  "sha256": "B16DB535208BF586F2522C42466F2BA09565E6F64974D7E911C77D2F5512D58B",
+  "patchUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v3.2.4/Spinora_Patch_Win64.zip",
   "patchSha256": "FA9AA12B9AD4528EB6B73938D744FE24B423D544AD71F89D5F7D3E78AC94C643"
 }
