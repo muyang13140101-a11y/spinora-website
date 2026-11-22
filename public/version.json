@@ -1,10 +1,10 @@
 {
-  "version": "3.1.5",
-  "tag": "v3.1.5",
-  "publishedAt": "2026-11-20T07:40:00Z",
-  "notes": "1. 优化自由窗口流式自适应模块：\n   - 引入 CSS clamp() 流式缩放（边距、间距、播放控台宽高、圆角与液态水滴播放键随窗口平滑无级缩放，兼顾小窗与 2K/4K 大屏）。\n   - 在主舞台 #app-container 引入 CSS Container Queries（@container app-stage），支持按容器宽度与高度自适应切换单列布局与紧凑控台（矮窗口自动收起次要控件，避免遮挡 3D 唱机与动态封面）。",
-  "downloadUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v3.1.5/Spinora_Windows_x64_Setup.exe",
-  "sha256": "F3FA681803F038CAD88BCA27E1D5BF66382F71DE504C2BB89F385BC3BD1D11DF",
-  "patchUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v3.1.5/Spinora_Patch_Win64.zip",
-  "patchSha256": "FC52926B823A2CB9B94B8DA71687CB4DD97C2C471E14085B3745B4C0DE597855"
+  "version": "3.2.0",
+  "tag": "v3.2.0",
+  "publishedAt": "2026-11-22T05:32:00Z",
+  "notes": "1. 全新「双引擎 AI 动态封面」架构：\n   - 默认优先展示当前单曲对应的 Apple Music / Tidal 官方动态视频流；若无官方流，由「无官方动态流时启用 AI 动态处理」开关控制：开启则用 AI 处理当前单曲封面，关闭则直接展示当前单曲原图。\n   - 新增「云端大模型 API」引擎（支持阿里通义千问 Qwen-VL、OpenAI GPT-4o、DeepSeek、百度千帆 ERNIE-Vision 及自定义兼容接口），与本地四大 AI 模型并存供自由切换，内置一键连通性测试。\n2. 彻底修复动态封面三大视觉问题：\n   - 修复高占比歌词下右侧羽化遮罩百分比越界导致的「歌词衔接处硬竖线」问题，改为按剩余空间等比平滑渐隐至 98% 完全透明。\n   - 修复切歌时备用静态图与 WebGL 画布上下层叠错位问题。\n   - 为节拍包络引入指数平滑阻尼，消除文字与人物悬浮动画的生硬跳变。",
+  "downloadUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v3.2.0/Spinora_Windows_x64_Setup.exe",
+  "sha256": "780C518B6A06B9D29C23E6271E2924EDDE5135C6C0062A423F1C6591444CD8E3",
+  "patchUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v3.2.0/Spinora_Patch_Win64.zip",
+  "patchSha256": "BA186DA2342954DCF7D05C8239FF78CC05701FEA976CD29E9C90BD890B9D31AA"
 }
