@@ -1,10 +1,10 @@
 {
-  "version": "3.2.0",
-  "tag": "v3.2.0",
-  "publishedAt": "2026-11-22T05:32:00Z",
-  "notes": "1. 全新「双引擎 AI 动态封面」架构：\n   - 默认优先展示当前单曲对应的 Apple Music / Tidal 官方动态视频流；若无官方流，由「无官方动态流时启用 AI 动态处理」开关控制：开启则用 AI 处理当前单曲封面，关闭则直接展示当前单曲原图。\n   - 新增「云端大模型 API」引擎（支持阿里通义千问 Qwen-VL、OpenAI GPT-4o、DeepSeek、百度千帆 ERNIE-Vision 及自定义兼容接口），与本地四大 AI 模型并存供自由切换，内置一键连通性测试。\n2. 彻底修复动态封面三大视觉问题：\n   - 修复高占比歌词下右侧羽化遮罩百分比越界导致的「歌词衔接处硬竖线」问题，改为按剩余空间等比平滑渐隐至 98% 完全透明。\n   - 修复切歌时备用静态图与 WebGL 画布上下层叠错位问题。\n   - 为节拍包络引入指数平滑阻尼，消除文字与人物悬浮动画的生硬跳变。",
-  "downloadUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v3.2.0/Spinora_Windows_x64_Setup.exe",
-  "sha256": "780C518B6A06B9D29C23E6271E2924EDDE5135C6C0062A423F1C6591444CD8E3",
-  "patchUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v3.2.0/Spinora_Patch_Win64.zip",
-  "patchSha256": "BA186DA2342954DCF7D05C8239FF78CC05701FEA976CD29E9C90BD890B9D31AA"
+  "version": "3.2.1",
+  "tag": "v3.2.1",
+  "publishedAt": "2026-11-22T06:18:00Z",
+  "notes": "1. 五层光学级液态玻璃 UI 升级：\n   - 引入超椭圆 (Squircle) SDF 位移贴图 + SVG feDisplacementMap，为播放控制面板增加真实边缘透镜折射与柔和过渡。\n   - 升级第 3 层为非均匀各向异性 Fresnel 边缘高光，并去除容易使玻璃显得发脏的外圈暗阴影带；同时完整支持 prefers-reduced-transparency 无障碍降级。\n2. 修复普通全屏模式错误隐藏顶部栏的 Bug：\n   - 全屏模式（fullscreen-mode）现在仅负责窗口全屏，完整保留顶部功能按钮与控制栏；仅在动态封面点击/滚轮放大进入「完全沉浸模式（pure-immersive-mode）」时才隐藏全部界面控件。",
+  "downloadUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v3.2.1/Spinora_Windows_x64_Setup.exe",
+  "sha256": "E37640747AA2EF07B6D8F1DFD016F556815582C670F067611029F0D2300E9B81",
+  "patchUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v3.2.1/Spinora_Patch_Win64.zip",
+  "patchSha256": "8B257C8F376AD29628F87DD9811FFF7B4D6943E0B6B67EB770108F41A5956CB8"
 }
