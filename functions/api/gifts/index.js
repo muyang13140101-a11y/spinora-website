@@ -48,6 +48,12 @@ export async function onRequestPost({ request, env }) {
     nickname = sanitize(nickname || '神秘访客').slice(0, 30);
     song_url = (song_url || '').trim().slice(0, 500);
     sender_email = sanitize(sender_email || '').slice(0, 100);
+    if (sender_email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(sender_email)) {
+      return new Response(JSON.stringify({ code: 422, message: "邮箱格式不正确，请检查后重试" }), {
+        status: 422,
+        headers: { "Content-Type": "application/json; charset=utf-8" }
+      });
+    }
     album_cover = (album_cover || '').trim().slice(0, 500);
     preview_url = (preview_url || '').trim().slice(0, 500);
 

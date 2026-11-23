@@ -1,10 +1,10 @@
 {
-  "version": "3.2.14",
-  "tag": "v3.2.14",
-  "publishedAt": "2026-11-23T02:59:00Z",
-  "notes": "1. 全面升级 CD 矢量图标物理光学质感（assets/icon.svg）：移除此前生硬的直线反光多边形，新增多层金属倒角外沿与凹槽、物理光栅径向衍射光束、17 圈密布微米音轨刻痕、压盘防滑虚线卡槽以及烫箔立体丝印阴影，彻底消除塑料感。",
-  "downloadUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v3.2.14/Spinora_Windows_x64_Setup.exe",
-  "sha256": "F5BEACCB755093146FB72B0DE6F476EB36C7A05F2B3CCCF691F2B803E3967361",
-  "patchUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v3.2.14/Spinora_Patch_Win64.zip",
-  "patchSha256": "14B9D36BA9B9AA3CBC590DA02D6C1939EE28CE4F6272AC8794ECC71BD7B1E5B9"
+  "version": "3.2.15",
+  "tag": "v3.2.15",
+  "publishedAt": "2026-11-23T06:03:00Z",
+  "notes": "1. 黑胶底座 HSL 差异化提色与经典外置喇叭留声机重构：黑胶金属底座随封面主色实时改变并保持独立饱和度反差；留声机木箱重构为经典 2.6:1 低矮稳重比例与极简阶梯线脚造型。\n2. 3D 音乐礼物盒重大更新：接入 Motion 弹簧动力学滑动 Dock 胶囊（#gift-dock-active-pill）、面板弹性切换与按钮回弹手感；新增邮箱格式实时校验、本机自动记住邮箱、回信留邮箱以及「我封存的礼物」历史记录；后端接入 Resend / MailChannels API Key 双路邮件通知。",
+  "downloadUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v3.2.15/Spinora_Windows_x64_Setup.exe",
+  "sha256": "1DC6879415872AD8F3D5E6F7DF692205505B7179A6CB1C6697E6A54E1EFF2017",
+  "patchUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v3.2.15/Spinora_Patch_Win64.zip",
+  "patchSha256": "5A17D0EFAC8BCD11C44BDEF841697F1FB1BD58C1C7EABE03BCF4C2DEB33957C9"
 }
