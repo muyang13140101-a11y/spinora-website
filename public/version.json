@@ -1,10 +1,10 @@
 {
-  "version": "3.3.0",
-  "tag": "v3.3.0",
-  "publishedAt": "2026-11-23T09:36:00Z",
-  "notes": "1. 灵动岛纯 GPU 合成层逐帧动画升级：固定 420×140 容器，以 clip-path 与矢量高光框替代 CSS 宽高重排，彻底消除毛玻璃纹理每帧重建与点击延迟，实现 60/120Hz 原生丝滑伸缩。\n2. 3D 礼物盒重大重构：引入高精亚克力 CD 盒 + 可翻折纹理礼纸折翼 + 彩色丝绸蝴蝶结，以基于 dt 的阻尼弹簧物理逐帧演绎「解蝴蝶结 → 翻开礼纸 → 掀开 CD 盒盖 → 弹出全息光盘旋转」四段连续仪式。\n3. 彻底清理 package.json 中的历史 Electron 依赖与脚本残留，全面轻量化为纯 Tauri v2 原生架构。",
-  "downloadUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v3.3.0/Spinora_Windows_x64_Setup.exe",
-  "sha256": "070193159617C64DBA48A94ABF51636B8A61B7D8777502161D68EDFD76D5696E",
-  "patchUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v3.3.0/Spinora_Patch_Win64.zip",
-  "patchSha256": "7B34E690AE36BC91924EBF3B2AADA14E07577B632C027F8355FA86776AE0D1E4"
+  "version": "4.0.0",
+  "tag": "v4.0.0",
+  "publishedAt": "2026-11-23T11:55:00Z",
+  "notes": "1. 全新纯原生 Windows x64 软件内核（Zero-WebView2 / Zero-Chromium）：采用微软 WinUI 3 + Win2D 液态玻璃合成层与 Rust wgpu DirectX 12 统一渲染引擎，彻底消除浏览器多进程内存底噪与右键菜单泄露。\n2. 自研 DX12 多载体 PBR + 全息衍射渲染器：支持 CD 盒（亚克力折射盒盖）、黑胶唱片机（智能区分饱和度底座）、留声机、磁带机及纯 WGSL 轻量 2.5D 动态封面（17-Tap 广域羽化）。\n3. 原生 SMTC 媒体同步、OpenCC 2965 条繁转简歌词同步滚动、6 秒无操作自动隐藏 HUD、Win32 原生托盘、灵动岛独立悬浮窗、3D 音乐礼物盒云端接口与 4K 离屏卡片导出。",
+  "downloadUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v4.0.0/Spinora_Windows_x64_Setup.exe",
+  "sha256": "BDB413E321FE8B04E09C9A9F0838AF0C8E6C147973C4AACE97F8B32622C915E8",
+  "patchUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v4.0.0/SpinoraNative_Win64.zip",
+  "patchSha256": "A1107AE4E0550EFB600E56CFAEA6EAFF7B3EDB1A3E483E450D54B956F14D0837"
 }
