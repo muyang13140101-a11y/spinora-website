@@ -1,10 +1,10 @@
 {
-  "version": "3.2.12",
-  "tag": "v3.2.12",
-  "publishedAt": "2026-11-22T17:52:00Z",
-  "notes": "1. 紧急修复 CD 盒封面与黑胶中心贴纸被待机缓存纹理锁死的 Bug：切歌后立即恢复真实歌曲专辑封面，不再停留在默认图标。\n2. 移除生硬粉紫色背景，改为自动提取图标自身不透明像素平均色并做柔和淡化处理，确保待机/未连接状态下 CD 银色边缘清晰自然。",
-  "downloadUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v3.2.12/Spinora_Windows_x64_Setup.exe",
-  "sha256": "27D339878E998B57B947CD27C8DF8BA20E11E66378F50F1CA0CB2D2778E86FE4",
-  "patchUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v3.2.12/Spinora_Patch_Win64.zip",
-  "patchSha256": "017651909F120789415E515223B82F7067A1C2C5B1F5888EE55625216DFD4C31"
+  "version": "3.2.13",
+  "tag": "v3.2.13",
+  "publishedAt": "2026-11-23T02:15:00Z",
+  "notes": "1. 紧急修复 CD 盒封面与黑胶中心贴纸变成纯白的 Bug：修正 applyDecodedTexture 中 cleanTexForCurrent 变量作用域错误导致的 ReferenceError 中断，确保 CD 盒、黑胶、留声机与磁带封面正常渲染。",
+  "downloadUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v3.2.13/Spinora_Windows_x64_Setup.exe",
+  "sha256": "E4B39E32D018D32C77BA5255CD61543875EB734819E77BE93E7556808B1158ED",
+  "patchUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v3.2.13/Spinora_Patch_Win64.zip",
+  "patchSha256": "95A96D15916DDC4E5490398528D2E6C88FDFC2BCC42F2DE630798F5758D47F23"
 }
