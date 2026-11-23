@@ -26,10 +26,32 @@ export async function onRequestPost({ request, env }) {
       return new Response(JSON.stringify({ code: 422, message: "礼物 ID 不能为空" }), { status: 422 });
     }
 
-    // 检查礼物是否存在
-    const gift = await env.DB.prepare(
+    // 检查礼物是否存在（若老表缺少扩展列，自动执行 ALTER TABLE 补齐并重试）
+    const selectGift = () => env.DB.prepare(
       "SELECT id, song_title, artist, nickname, sender_email, likes_count FROM gifts WHERE id = ?"
     ).bind(gift_id).first();
+
+    let gift;
+    try {
+      gift = await selectGift();
+    } catch (colErr) {
+      if (String(colErr && colErr.message).includes('no such column')) {
+        const alters = [
+          "ALTER TABLE gifts ADD COLUMN sender_email TEXT DEFAULT ''",
+          "ALTER TABLE gifts ADD COLUMN album_cover TEXT DEFAULT ''",
+          "ALTER TABLE gifts ADD COLUMN preview_url TEXT DEFAULT ''",
+          "ALTER TABLE gifts ADD COLUMN platform_links TEXT DEFAULT '{}'",
+          "ALTER TABLE gifts ADD COLUMN likes_count INTEGER DEFAULT 0",
+          "ALTER TABLE gifts ADD COLUMN reply_message TEXT DEFAULT ''"
+        ];
+        for (const sql of alters) {
+          try { await env.DB.prepare(sql).run(); } catch (_) {}
+        }
+        gift = await selectGift();
+      } else {
+        throw colErr;
+      }
+    }
 
     if (!gift) {
       return new Response(JSON.stringify({ code: 404, message: "未找到该音乐礼物" }), { status: 404 });

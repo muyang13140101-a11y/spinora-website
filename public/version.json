@@ -1,10 +1,10 @@
 {
-  "version": "3.2.15",
-  "tag": "v3.2.15",
-  "publishedAt": "2026-11-23T06:03:00Z",
-  "notes": "1. 黑胶底座 HSL 差异化提色与经典外置喇叭留声机重构：黑胶金属底座随封面主色实时改变并保持独立饱和度反差；留声机木箱重构为经典 2.6:1 低矮稳重比例与极简阶梯线脚造型。\n2. 3D 音乐礼物盒重大更新：接入 Motion 弹簧动力学滑动 Dock 胶囊（#gift-dock-active-pill）、面板弹性切换与按钮回弹手感；新增邮箱格式实时校验、本机自动记住邮箱、回信留邮箱以及「我封存的礼物」历史记录；后端接入 Resend / MailChannels API Key 双路邮件通知。",
-  "downloadUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v3.2.15/Spinora_Windows_x64_Setup.exe",
-  "sha256": "1DC6879415872AD8F3D5E6F7DF692205505B7179A6CB1C6697E6A54E1EFF2017",
-  "patchUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v3.2.15/Spinora_Patch_Win64.zip",
-  "patchSha256": "5A17D0EFAC8BCD11C44BDEF841697F1FB1BD58C1C7EABE03BCF4C2DEB33957C9"
+  "version": "3.2.16",
+  "tag": "v3.2.16",
+  "publishedAt": "2026-11-23T07:12:00Z",
+  "notes": "1. 彻底修复礼物盒点击「发送回响」提示「处理交互失败」：为 Cloudflare D1 后端 gifts/react.js 与 gifts/index.js 接入缺失列自动 ALTER TABLE 自愈迁移，自动补齐 sender_email、likes_count、reply_message 等字段。\n2. 新增全局 6 秒无操作自动沉浸隐藏：无论处于任何界面，6 秒无点击或键鼠操作即自动渐隐顶栏、播放控台与悬浮按钮，鼠标轻触或按键即刻恢复。",
+  "downloadUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v3.2.16/Spinora_Windows_x64_Setup.exe",
+  "sha256": "A1C50EA9DEC5B2862D765AB3DA2AF8688701981EFE2A5DB2937C8013F3972277",
+  "patchUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v3.2.16/Spinora_Patch_Win64.zip",
+  "patchSha256": "F7E573B8125A4583F1DDE500AD97CB9BC88A833D31690878B637B25719168BC2"
 }

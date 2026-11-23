@@ -84,9 +84,9 @@ export async function onRequestPost({ request, env }) {
       });
     }
 
-    // 3. 写入 D1 (兼容模式：如果额外列存在则写入，降级处理确保健壮)
-    try {
-      const stmt = await env.DB.prepare(
+    // 3. 写入 D1 (若老表缺少扩展列，自动执行 ALTER TABLE 补齐并重试，彻底避免静默丢弃邮箱)
+    const insertFull = async () => {
+      return await env.DB.prepare(
         `INSERT INTO gifts (
           song_title, artist, message, song_url, nickname, ip_hash,
           sender_email, album_cover, preview_url, platform_links
@@ -95,6 +95,30 @@ export async function onRequestPost({ request, env }) {
         song_title, artist, message, song_url, nickname, ipHash,
         sender_email, album_cover, preview_url, linksJson
       ).run();
+    };
+
+    try {
+      let stmt;
+      try {
+        stmt = await insertFull();
+      } catch (colErr) {
+        if (String(colErr && colErr.message).includes('no such column')) {
+          const alters = [
+            "ALTER TABLE gifts ADD COLUMN sender_email TEXT DEFAULT ''",
+            "ALTER TABLE gifts ADD COLUMN album_cover TEXT DEFAULT ''",
+            "ALTER TABLE gifts ADD COLUMN preview_url TEXT DEFAULT ''",
+            "ALTER TABLE gifts ADD COLUMN platform_links TEXT DEFAULT '{}'",
+            "ALTER TABLE gifts ADD COLUMN likes_count INTEGER DEFAULT 0",
+            "ALTER TABLE gifts ADD COLUMN reply_message TEXT DEFAULT ''"
+          ];
+          for (const sql of alters) {
+            try { await env.DB.prepare(sql).run(); } catch (_) {}
+          }
+          stmt = await insertFull();
+        } else {
+          throw colErr;
+        }
+      }
 
       return new Response(JSON.stringify({
         code: 200,
@@ -105,7 +129,6 @@ export async function onRequestPost({ request, env }) {
         headers: { "Content-Type": "application/json; charset=utf-8" }
       });
     } catch (dbErr) {
-      // 容错降级：如果用户尚未执行 ALTER TABLE，按基础字段写入
       const fallbackStmt = await env.DB.prepare(
         "INSERT INTO gifts (song_title, artist, message, song_url, nickname, ip_hash) VALUES (?, ?, ?, ?, ?, ?)"
       ).bind(song_title, artist, message, song_url, nickname, ipHash).run();
