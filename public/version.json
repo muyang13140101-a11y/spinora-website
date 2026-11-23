@@ -1,10 +1,10 @@
 {
-  "version": "3.2.16",
-  "tag": "v3.2.16",
-  "publishedAt": "2026-11-23T07:12:00Z",
-  "notes": "1. 彻底修复礼物盒点击「发送回响」提示「处理交互失败」：为 Cloudflare D1 后端 gifts/react.js 与 gifts/index.js 接入缺失列自动 ALTER TABLE 自愈迁移，自动补齐 sender_email、likes_count、reply_message 等字段。\n2. 新增全局 6 秒无操作自动沉浸隐藏：无论处于任何界面，6 秒无点击或键鼠操作即自动渐隐顶栏、播放控台与悬浮按钮，鼠标轻触或按键即刻恢复。",
-  "downloadUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v3.2.16/Spinora_Windows_x64_Setup.exe",
-  "sha256": "A1C50EA9DEC5B2862D765AB3DA2AF8688701981EFE2A5DB2937C8013F3972277",
-  "patchUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v3.2.16/Spinora_Patch_Win64.zip",
-  "patchSha256": "F7E573B8125A4583F1DDE500AD97CB9BC88A833D31690878B637B25719168BC2"
+  "version": "3.3.0",
+  "tag": "v3.3.0",
+  "publishedAt": "2026-11-23T09:36:00Z",
+  "notes": "1. 灵动岛纯 GPU 合成层逐帧动画升级：固定 420×140 容器，以 clip-path 与矢量高光框替代 CSS 宽高重排，彻底消除毛玻璃纹理每帧重建与点击延迟，实现 60/120Hz 原生丝滑伸缩。\n2. 3D 礼物盒重大重构：引入高精亚克力 CD 盒 + 可翻折纹理礼纸折翼 + 彩色丝绸蝴蝶结，以基于 dt 的阻尼弹簧物理逐帧演绎「解蝴蝶结 → 翻开礼纸 → 掀开 CD 盒盖 → 弹出全息光盘旋转」四段连续仪式。\n3. 彻底清理 package.json 中的历史 Electron 依赖与脚本残留，全面轻量化为纯 Tauri v2 原生架构。",
+  "downloadUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v3.3.0/Spinora_Windows_x64_Setup.exe",
+  "sha256": "070193159617C64DBA48A94ABF51636B8A61B7D8777502161D68EDFD76D5696E",
+  "patchUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v3.3.0/Spinora_Patch_Win64.zip",
+  "patchSha256": "7B34E690AE36BC91924EBF3B2AADA14E07577B632C027F8355FA86776AE0D1E4"
 }
