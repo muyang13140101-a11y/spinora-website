@@ -1,10 +1,10 @@
 {
   "version": "4.0.0",
   "tag": "v4.0.0",
-  "publishedAt": "2026-11-23T12:18:00Z",
+  "publishedAt": "2026-11-23T16:40:00Z",
   "notes": "1. 全新纯原生 Windows x64 软件内核（Zero-WebView2 / Zero-Chromium）：采用微软 WinUI 3 + Win2D 液态玻璃合成层与 Rust wgpu DirectX 12 统一渲染引擎，彻底消除浏览器多进程内存底噪与右键菜单泄露。\n2. 自研 DX12 多载体 PBR + 全息衍射渲染器：支持 CD 盒（亚克力折射盒盖）、黑胶唱片机（智能区分饱和度底座）、留声机、磁带机及纯 WGSL 轻量 2.5D 动态封面（17-Tap 广域羽化）。\n3. 原生 SMTC 媒体同步、OpenCC 2965 条繁转简歌词同步滚动、6 秒无操作自动隐藏 HUD、Win32 原生托盘、灵动岛独立悬浮窗、3D 音乐礼物盒云端接口与 4K 离屏卡片导出。",
   "downloadUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v4.0.0/Spinora_Windows_x64_Setup.exe",
-  "sha256": "155BE4B743DAE269EC25B4E71C50E7DD1A73899908A67E01BA5BB1AE664527E4",
+  "sha256": "4F4FC6DFA3E0749956971D53BA18136FD97C05E99BE27ED0690CDDF14281D6ED",
   "patchUrl": "https://github.com/muyang13140101-a11y/spinora-website/releases/download/v4.0.0/SpinoraNative_Win64.zip",
-  "patchSha256": "B2A666F926F0AA088DB8A91D4C098128ED4FC536D87EAFFD89EC1152F3A1E4C1"
+  "patchSha256": "25404CC387AC8A9768ECC87BAF8F434F8787F0F718C1A45BB376BA3B8141656E"
 }
